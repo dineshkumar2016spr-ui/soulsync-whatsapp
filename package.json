@@ -1,0 +1,12 @@
+{
+  "name": "soul-sync-server",
+  "type": "module",
+  "scripts": { "start": "node index.js" },
+  "dependencies": {
+    "@whiskeysockets/baileys": "^6.7.0",
+    "express": "^4.19.2",
+    "ws": "^8.17.0",
+    "pino": "^9.0.0"
+  },
+  "engines": { "node": ">=20" }
+}
