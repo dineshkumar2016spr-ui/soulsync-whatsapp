@@ -1,3 +1,38 @@
 node_modules/
 .env
-data/
+.env.local
+.env.production
+.DS_Store
+Thumbs.db
+.data/
+.github/
+*.log
+
+# HTML/PDF documents
+*.html
+*.pdf
+
+# Build artifacts
+web/dist/
+web/node_modules/
+
+# SSH keys
+*.pem
+*key*
+
+# Mac
+.DS_Store
+*.DS_Store
+
+# Windows
+Thumbs.db
+
+# session artifacts
+server/data/
+
+# Editor artifacts
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
