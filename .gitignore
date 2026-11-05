@@ -8,9 +8,7 @@ Thumbs.db
 .github/
 *.log
 
-# HTML/PDF documents
-*.html
-*.pdf
+# Build artifacts
 
 # Build artifacts
 web/dist/
