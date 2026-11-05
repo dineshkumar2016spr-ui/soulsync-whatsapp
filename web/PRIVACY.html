@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy - Soul Sync</title>
+  <style>
+    body {font-family: Arial, sans-serif; max-width: 820px; margin: 0 auto; padding: 24px; line-height: 1.65; color: #1d2147; background: #eceef6;}
+    h1 {font-family: Georgia, serif; color: #1d2147;}
+    .card {background: #f8f9fd; padding: 26px 30px; border-radius: 14px; margin: 22px 0; border: 1px solid #d9dcec;}
+    h2 {font-size: 20px; margin-top: 26px; color: #1d2147;}
+    p, li {font-size: 15px; color: #33375a;}
+    a {color: #4a45b8;}
+    .meta {color: #666b8f; font-size: 13px; margin-bottom: 18px;}
+  </style>
+</head>
+<body>
+  <h1>Privacy Policy</h1>
+  <p class="meta">Last updated: 2026-11-05 &middot; Soul Sync</p>
+
+  <div class="card">
+    <h2>1. Information We Collect</h2>
+    <ul>
+      <li><strong>Chat content</strong> you explicitly import via file or WhatsApp bridge.</li>
+      <li><strong>Consent flags</strong> (terms, privacy, readChats, aiAnalysis) and policy version.</li>
+      <li><strong>Session tokens</strong> issued after consent (hashed, in-memory, 12h TTL).</li>
+      <li><strong>AI analysis outputs</strong> (tone, friction, insights, drafts) generated for the user.</li>
+      <li><strong>WhatsApp session data</strong> (auth credentials) stored on the server while connected.</li>
+    </ul>
+
+    <h2>2. How We Use Information</h2>
+    <u>Within the Service</u>
+    <ul>
+      <li>Authenticate WebSocket sessions and enforce consent.</li>
+      <li>Buffer chats in memory until you pick which chats to import.</li>
+      <li>Run AI analysis and return drafts/insights.</li>
+    </ul>
+    <u>For AI Providers</u>
+    <ul>
+      <li>Only the chat text, the user's name, and the chosen goal are sent to the configured provider (Gemini or OpenAI) when you press "Write drafts".</li>
+      <li>The system prompt instructs the model that chat text is data, not instructions.</li>
+    </ul>
+
+    <h2>3. Data Storage &amp; Retention</h2>
+    <ul>
+      <li>WhatsApp auth sessions live only while a tab is connected; leftovers are wiped on restart.</li>
+      <li>Consents are written to disk with a policy version and timestamp.</li>
+      <li>Access tokens are hashed and kept in memory with a 12-hour TTL.</li>
+      <li>You can delete your data at any time via "Disconnect and delete my data".</li>
+    </ul>
+
+    <h2>4. Third-Party AI Providers</h2>
+    <p>Your chat content may be transmitted to Google (Gemini) or OpenAI for AI analysis. Their own privacy policies and data-handling practices apply. Soul Sync does not store AI prompts/responses beyond the in-memory handling of the analysis request.</p>
+
+    <h2>5. Security</h2>
+    <p>Server environment variables hold AI keys and origin allowlists. Data directory should be encrypted at rest on a persistent volume. Sessions use hashed tokens.</p>
+
+    <h2>6. Your Rights</h2>
+    <ul>
+      <li>Access / delete your data via the disconnect flow.</li>
+      <li>Withdraw consent via the consent gate.</li>
+      <li>Choose which chats are analysed (pick before import).</li>
+    </ul>
+
+    <h2>7. Children's Privacy</h2>
+    <p>The service is not directed at children under 13/16. WhatsApp's own age requirements apply to the underlying messaging service.</p>
+
+    <h2>8. Changes</h2>
+    <p>We may update this policy. Continued use after changes constitutes acceptance.</p>
+  </div>
+</body>
+</html>
