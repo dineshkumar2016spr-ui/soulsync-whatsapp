@@ -3,7 +3,7 @@ import { WebSocketServer } from 'ws';
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import pino from 'pino';
-import makeWASocket, { useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion } from '@whiskeysockets/baileys';
+import makeWASocket, { Browsers, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion } from '@whiskeysockets/baileys';
 
 // Load .env if present (Node 20.12+). On Railway/Fly the real environment is used instead.
 try { process.loadEnvFile?.(); } catch { /* no .env file */ }
@@ -13,7 +13,8 @@ const ORIGINS = ALLOWED_ORIGIN.split(',').map(s => s.trim().replace(/\/$/, '')).
 const ANY_ORIGIN = ORIGINS.includes('*');
 const POLICY_VERSION = '2026-11-04';
 const TOKEN_TTL_MS = 12 * 3600 * 1000;
-const HISTORY_CAP = 500; // max buffered messages per chat while the user is choosing chats
+const HISTORY_CAP = 2000; // messages kept in memory per chat while this tab is connected
+const RECENT_LIMIT = 50;  // messages sent to the browser when a chat is opened
 
 fs.mkdirSync(DATA_DIR, { recursive: true });
 const log = pino({ level: 'warn' });
@@ -169,7 +170,7 @@ function toMsg(m) {
   c = c?.ephemeralMessage?.message || c?.viewOnceMessage?.message || c;
   const text = c?.conversation || c?.extendedTextMessage?.text;
   if (!text) return null;
-  return { jid, fromMe: !!m.key.fromMe, sender: m.pushName || jid.split('@')[0], text, ts: tsOf(m.messageTimestamp) || Date.now() };
+  return { jid, id: m.key.id || '', fromMe: !!m.key.fromMe, sender: m.pushName || jid.split('@')[0], text, ts: tsOf(m.messageTimestamp) || Date.now() };
 }
 
 wss.on('connection', (ws, req) => {
@@ -185,17 +186,271 @@ wss.on('connection', (ws, req) => {
   active.set(userId, ws);
 
   const send = o => ws.readyState === 1 && ws.send(JSON.stringify(o));
-  const chats = new Map();   // jid -> {jid,name}
-  const picked = new Set();  // only these jids are forwarded or sendable
-  const buffer = new Map();  // jid -> messages held in memory until the user picks chats
-  const sentAt = [];         // send rate limit
-  let sock, closed = false, attempts = 0, imported = false;
+  const chats = new Map();       // jid -> {jid, rawName, name}
+  const picked = new Set();      // only these jids are forwarded or sendable
+  const archive = new Map();     // chat id -> { list, ids } recent messages kept in memory for this tab
+  const sentAt = [];             // send rate limit
+  const oldest = new Map();      // chat id -> { key, tsMs } oldest message seen (used to ask the phone for older ones)
+  const seen = new Set();        // jid:messageId, so overlapping history batches never create duplicates
+  const pending = new Map();     // client jid -> { jid, total, rounds, all, anchorTs, timer } older-history requests in flight
+  const contactMap = new Map();  // jid / lid / phone jid -> saved (address book) name
+  const pushNames = new Map();   // jid -> name the other person set for themselves
+  let sock, closed = false, attempts = 0, pushTimer;
+
+  // ---- chat list + name resolution ----
+  // WhatsApp now uses two ids per person: a private LID (long number, ends @lid) and the phone jid.
+  // Saved contact names are usually filed under the phone jid, so we keep a map between the two.
+  const lidToPn = new Map(), pnToLid = new Map();
+  const norm = j => (typeof j === 'string' ? j.replace(/:\d+@/, '@') : j);
+  const linkIds = (a, b) => {
+    a = norm(a); b = norm(b);
+    if (!a || !b) return;
+    const [lid, pn] = a.endsWith('@lid') ? [a, b] : [b, a];
+    if (!lid.endsWith('@lid') || !pn.endsWith('@s.whatsapp.net')) return;
+    lidToPn.set(lid, pn); pnToLid.set(pn, lid);
+  };
+  const alt = id => lidToPn.get(id) || pnToLid.get(id);
+  // WhatsApp wraps some names in invisible direction marks and sometimes sends a bare number
+  // (even "0") as a chat's "name". Neither is a real contact name.
+  const cleanName = n => typeof n === 'string'
+    ? n.replace(/[\u200b-\u200f\u202a-\u202e\u2060-\u2064\ufeff]/g, ' ').replace(/\s+/g, ' ').trim()
+    : n;
+  const realName = n => {
+    n = cleanName(n);
+    return !!n && !n.includes('@') && !/^[+\d\s().-]+$/.test(n);
+  };
+  const prettyNumber = jid => {
+    const pn = jid.endsWith('@lid') ? lidToPn.get(jid) : jid;
+    if (!pn) return 'Unknown contact ' + jid.split('@')[0].slice(-4);
+    return '+' + pn.split('@')[0].split(':')[0];
+  };
+  const bestName = (jid, fallback) =>
+    contactMap.get(jid) || contactMap.get(alt(jid))
+    || (realName(fallback) ? cleanName(fallback) : null)
+    || pushNames.get(jid) || pushNames.get(alt(jid))
+    || prettyNumber(jid);
+
+  // The same person can arrive as a LID chat and as a phone-number message. Resolve both
+  // to whichever id already has a chat entry so they never become two threads.
+  const chatIdFor = jid => {
+    jid = norm(jid);
+    if (!jid || chats.has(jid)) return jid;
+    const a = alt(jid);
+    return a && chats.has(a) ? a : jid;
+  };
+  const pickedIdFor = jid => {
+    jid = norm(jid);
+    if (picked.has(jid)) return jid;
+    const a = alt(jid);
+    return a && picked.has(a) ? a : null;
+  };
+  const idCandidates = jid => {
+    jid = norm(jid);
+    return [...new Set([jid, chatIdFor(jid), alt(jid), lidToPn.get(jid), pnToLid.get(jid)].filter(Boolean))];
+  };
+  const findArchive = jid => {
+    for (const id of idCandidates(jid)) if (archive.has(id)) return archive.get(id);
+    return null;
+  };
+  const findOldest = jid => {
+    let best = null;
+    for (const id of idCandidates(jid)) {
+      const o = oldest.get(id);
+      if (o && (!best || o.tsMs < best.tsMs)) best = o;
+    }
+    return best;
+  };
+
+  // Keep recent messages so opening a chat can show the latest 50 right away
+  const remember = m => {
+    const id = chatIdFor(m.jid);
+    let box = archive.get(id);
+    if (!box) { box = { list: [], ids: new Set() }; archive.set(id, box); }
+    if (m.id && box.ids.has(m.id)) return id;
+    if (m.id) box.ids.add(m.id);
+    box.list.push({ ...m, jid: id });
+    box.list.sort((a, b) => a.ts - b.ts);
+    const chat = chats.get(id);
+    if (chat && m.ts > (chat.ts || 0)) chat.ts = m.ts;
+    if (box.list.length > HISTORY_CAP) {
+      for (const old of box.list.splice(0, box.list.length - HISTORY_CAP)) if (old.id) box.ids.delete(old.id);
+    }
+    return id;
+  };
+  const sendRecent = jid => {
+    const box = findArchive(jid);
+    const list = box ? box.list.slice(-RECENT_LIMIT) : [];
+    for (const m of list) send({ type: 'message', history: true, ...m, jid });
+    if (!list.length) send({ type: 'recent', jid, count: 0 });
+  };
+
+  // Fold a duplicate entry (the same person under their other id) into the chat we keep
+  const mergeChat = (from, to) => {
+    if (!from || !to || from === to || !chats.has(from)) return;
+    // A chat the browser already opened keeps its id, so messages never move to a new thread
+    if (picked.has(from) && !picked.has(to)) [from, to] = [to, from];
+    if (!chats.has(from)) return;
+    const a = chats.get(from), b = chats.get(to) || { jid: to, rawName: '', name: '' };
+    chats.delete(from);
+    chats.set(to, {
+      jid: to,
+      rawName: realName(b.rawName) ? b.rawName : (realName(a.rawName) ? a.rawName : ''),
+      name: b.name || a.name,
+      ts: Math.max(a.ts || 0, b.ts || 0)
+    });
+    if (picked.delete(from)) picked.add(to);
+    const sa = archive.get(from);
+    if (sa) {
+      const sb = archive.get(to) || { list: [], ids: new Set() };
+      for (const m of sa.list) {
+        if (m.id && sb.ids.has(m.id)) continue;
+        if (m.id) sb.ids.add(m.id);
+        sb.list.push({ ...m, jid: to });
+      }
+      sb.list.sort((x, y) => x.ts - y.ts);
+      archive.set(to, sb); archive.delete(from);
+    }
+    const o = oldest.get(from);
+    if (o && (!oldest.get(to) || o.tsMs < oldest.get(to).tsMs)) oldest.set(to, o);
+    oldest.delete(from);
+  };
+
+  // Debounced: WhatsApp delivers history in many batches, so send the list once things settle
+  const pushChats = () => {
+    clearTimeout(pushTimer);
+    pushTimer = setTimeout(async () => {
+      if (closed) return;
+      // Ask Baileys' own LID store for any phone numbers we still don't know
+      for (const c of [...chats.values()]) {
+        if (c.jid.endsWith('@lid') && !lidToPn.has(c.jid)) {
+          try { linkIds(c.jid, await sock?.signalRepository?.lidMapping?.getPNForLID?.(c.jid)); } catch { /* not supported */ }
+        }
+      }
+      if (closed) return;
+      for (const [id] of [...chats]) {
+        const pn = lidToPn.get(id);
+        if (pn && chats.has(pn)) mergeChat(id, pn);
+      }
+      for (const c of chats.values()) c.name = bestName(c.jid, c.rawName);
+      if (process.env.DEBUG_NAMES) console.log('[names]', chats.size, 'chats,', contactMap.size, 'contact names,', lidToPn.size, 'lid links');
+      send({ type: 'chats', chats: [...chats.values()].map(({ jid, name, ts }) => ({ jid, name, ts: ts || 0 })) });
+    }, 400);
+  };
+
+  const addChats = list => {
+    for (const c of list || []) {
+      if (hiddenJid(c.id)) continue;
+      linkIds(c.id, c.pnJid || c.lidJid || c.phoneNumber);
+      const id = chatIdFor(c.id);          // reuse the entry whose id we already list
+      if (id !== c.id) mergeChat(c.id, id);
+      const old = chats.get(id);
+      const raw = [c.name, c.subject, c.displayName].map(cleanName).find(realName) || old?.rawName || '';
+      chats.set(id, {
+        jid: id, rawName: raw, name: old?.name || '',
+        ts: Math.max(old?.ts || 0, tsOf(c.conversationTimestamp) || 0)
+      });
+    }
+    pushChats();
+  };
+
+  // `weak` = names taken from a history payload (often the contact's own display name).
+  // Address-book contacts from contacts.upsert always win, even if they arrive later.
+  const updateContacts = (list, weak) => {
+    if (process.env.DEBUG_NAMES && list?.length) {
+      console.log('[contacts]', list.length, 'entries; saved-name:', list.filter(c => realName(c.name)).length,
+        'lid:', list.filter(c => c.lid).length, 'pn:', list.filter(c => c.phoneNumber).length, weak ? '(history)' : '(address book)');
+    }
+    for (const c of list || []) {
+      linkIds(c.id, c.lid || c.phoneNumber);
+      // `name` is the name saved in the phone's address book; `notify` is only their own display name.
+      // Keep them apart so a push-name update never replaces a saved contact name.
+      const saved = cleanName(c.name || c.verifiedName);
+      if (!c.id) continue;
+      if (realName(saved)) {
+        const keys = [c.id, c.lid, c.phoneNumber].filter(Boolean);
+        for (const key of keys) {
+          if (!weak || !contactMap.has(key)) contactMap.set(key, saved);
+        }
+      }
+      if (realName(c.notify)) {
+        const notify = cleanName(c.notify);
+        pushNames.set(c.id, notify);
+        if (c.lid) pushNames.set(c.lid, notify);
+        if (c.phoneNumber) pushNames.set(c.phoneNumber, notify);
+      }
+    }
+    pushChats();
+  };
+
+  // Make sure every chat that has messages is listed, and remember push names as a fallback
+  function noteMessage(m) {
+    const jid = m.key?.remoteJid;
+    if (hiddenJid(jid)) return;
+    linkIds(jid, m.key.remoteJidAlt);
+    const id = chatIdFor(jid);
+    if (!chats.has(id)) { chats.set(id, { jid: id, rawName: '', name: '' }); pushChats(); }
+    if (!m.key.fromMe && realName(m.pushName)) {
+      const notify = cleanName(m.pushName);
+      pushNames.set(id, notify);
+      const a = alt(id); if (a) pushNames.set(a, notify);
+    }
+    const tsMs = tsOf(m.messageTimestamp);
+    if (m.key.id && tsMs) {
+      for (const key of idCandidates(id)) {
+        const o = oldest.get(key);
+        if (!o || tsMs < o.tsMs) oldest.set(key, { key: m.key, tsMs });
+      }
+    }
+  }
+
+  // ---- on-demand older history (asks the phone for 50 messages older than the oldest we have) ----
+  async function requestOlder(key, p) {
+    const a = findOldest(p.jid);
+    if (!a) return finishOlder(key, 'no_anchor');
+    p.rounds++; p.anchorTs = a.tsMs;
+    // The protocol field is oldestMsgTimestampMs: pass milliseconds, not seconds.
+    try { await sock.fetchMessageHistory(RECENT_LIMIT, a.key, a.tsMs); }
+    catch { return finishOlder(key, 'error'); }
+    send({ type: 'older', jid: p.jid, status: 'loading', total: p.total });
+    clearTimeout(p.timer);
+    p.timer = setTimeout(() => finishOlder(key, 'none'), 30000);
+  }
+  function finishOlder(key, status) {
+    const p = pending.get(key);
+    if (!p) return;
+    clearTimeout(p.timer);
+    pending.delete(key);
+    send({ type: 'older', jid: p.jid, status: p.total && status === 'none' ? 'done' : status, total: p.total });
+  }
+  function olderBatch(messages) {
+    if (!pending.size) return;
+    const counts = new Map();
+    for (const m of messages) {
+      const j = m.key?.remoteJid;
+      if (hiddenJid(j)) continue;
+      const id = pickedIdFor(j) || chatIdFor(j);
+      if (pending.has(id)) counts.set(id, (counts.get(id) || 0) + 1);
+    }
+    for (const [key, n] of counts) {
+      const p = pending.get(key);
+      if (!p) continue;
+      clearTimeout(p.timer);
+      p.total += n;
+      const progressed = (findOldest(p.jid)?.tsMs ?? Infinity) < p.anchorTs;
+      if (p.all && progressed && p.rounds < 60) requestOlder(key, p);
+      else finishOlder(key, 'done');
+    }
+  }
 
   async function teardown() {
     if (closed) return;
     closed = true;
+    clearTimeout(pushTimer);
     active.delete(userId);
-    buffer.clear();
+    archive.clear();
+    oldest.clear();
+    for (const p of pending.values()) clearTimeout(p.timer);
+    pending.clear();
     try { if (sock?.authState?.creds?.registered) await sock.logout(); } catch { /* already closed */ }
     try { sock?.end(undefined); } catch { /* ignore */ }
     fs.rmSync(authDir(userId), { recursive: true, force: true });
@@ -204,13 +459,24 @@ wss.on('connection', (ws, req) => {
   async function connect() {
     if (closed) return;
     const { state, saveCreds } = await useMultiFileAuthState(authDir(userId));
-    const { version } = await fetchLatestBaileysVersion();
+    const { version, isLatest } = await fetchLatestBaileysVersion();
+    console.log('[wa] version', version?.join('.'), 'latest:', isLatest);
     if (closed) { fs.rmSync(authDir(userId), { recursive: true, force: true }); return; }
-    sock = makeWASocket({ version, auth: state, logger: log, syncFullHistory: true, browser: ['Soul Sync', 'Chrome', '1.0'] });
+    sock = makeWASocket({
+      version,
+      auth: state,
+      logger: log,
+      syncFullHistory: true,
+      // WhatsApp now rejects the legacy 'Desktop' sub-platform (DARWIN/WIN32) with a 428 close
+      // before any QR is emitted (Baileys #2677/#2880). A Chrome tuple pairs reliably and still
+      // receives history; the Desktop label is what breaks registration.
+      browser: Browsers.macOS('Chrome')
+    });
     sock.ev.on('creds.update', saveCreds);
     sock.ev.on('connection.update', ({ connection, lastDisconnect, qr }) => {
       if (closed) return;
-      if (qr) send({ type: 'qr', qr }); // render with any QR library on the client
+      if (qr) { attempts = 0; console.log('[wa] qr received'); send({ type: 'qr', qr }); } // QR refreshes every ~20s while you scan
+      if (connection) console.log('[wa] connection', connection, 'code:', lastDisconnect?.error?.output?.statusCode || '-', 'reason:', lastDisconnect?.error?.message || '-');
       if (connection === 'open') { attempts = 0; send({ type: 'ready' }); }
       if (connection === 'close') {
         const code = lastDisconnect?.error?.output?.statusCode;
@@ -223,24 +489,34 @@ wss.on('connection', (ws, req) => {
         setTimeout(() => connect().catch(e => log.error(e)), Math.min(1000 * attempts, 5000));
       }
     });
-    const addChats = list => {
-      for (const c of list) if (!hiddenJid(c.id)) chats.set(c.id, { jid: c.id, name: c.name || c.id.split('@')[0] });
-      send({ type: 'chats', chats: [...chats.values()] });
-    };
-    sock.ev.on('messaging-history.set', ({ chats: c, messages }) => { addChats(c); messages.forEach(m => handle(m, true)); });
+
+    sock.ev.on('contacts.upsert', updateContacts);
+    sock.ev.on('contacts.update', updateContacts);
     sock.ev.on('chats.upsert', addChats);
-    sock.ev.on('messages.upsert', ({ messages }) => messages.forEach(m => handle(m, false)));
+    sock.ev.on('lid-mapping.update', ({ lid, pn } = {}) => { linkIds(lid, pn); pushChats(); });
+    sock.ev.on('messaging-history.set', ({ chats: c, contacts, messages, lidPnMappings }) => {
+      (lidPnMappings || []).forEach(x => linkIds(x.lid, x.pn));
+      updateContacts(contacts, true);
+      addChats(c);
+      (messages || []).forEach(m => noteMessage(m));
+      (messages || []).forEach(m => handle(m, true));
+      olderBatch(messages || []);
+    });
+    sock.ev.on('messages.upsert', ({ messages }) => {
+      messages.forEach(m => { noteMessage(m); handle(m, false); });
+    });
   }
 
-  // Forward picked chats; until the user has picked, hold messages in memory only (never on disk)
+  // Forward picked chats; every chat stays in memory only (never on disk, never analysed) so it can be opened later
   function handle(m, history) {
     const x = toMsg(m);
     if (!x) return;
-    if (picked.has(x.jid)) return send({ type: 'message', history, ...x });
-    if (imported) return; // unpicked chats are discarded once the user has chosen
-    const a = buffer.get(x.jid) || [];
-    a.push(x); if (a.length > HISTORY_CAP) a.shift();
-    buffer.set(x.jid, a);
+    if (x.id) { const k = x.jid + ':' + x.id; if (seen.has(k)) return; seen.add(k); }
+    const openAs = pickedIdFor(x.jid);
+    x.jid = openAs || chatIdFor(x.jid);
+    remember(x);
+    // Send under the id the browser opened for this chat, so LID/phone-number events never split a thread
+    if (openAs) send({ type: 'message', history, ...x });
   }
 
   ws.on('message', async raw => {
@@ -253,12 +529,27 @@ wss.on('connection', (ws, req) => {
         catch { send({ type: 'error', message: 'Could not get a pairing code. Try the QR code instead.' }); }
       }
       if (msg.type === 'import') {
-        picked.clear();
-        (Array.isArray(msg.jids) ? msg.jids : []).filter(j => typeof j === 'string' && chats.has(j)).forEach(j => picked.add(j));
-        imported = true;
-        send({ type: 'imported', jids: [...picked] });
-        for (const jid of picked) for (const x of (buffer.get(jid) || []).sort((a, b) => a.ts - b.ts)) send({ type: 'message', history: true, ...x });
-        buffer.clear(); // everything not picked is dropped here
+        // Additive: every call can add more chats; already-imported ones are kept
+        const add = [];
+        for (const j of (Array.isArray(msg.jids) ? msg.jids : []).slice(0, 50)) {
+          if (typeof j !== 'string') continue;
+          const id = chatIdFor(j);
+          if (!chats.has(id) || picked.has(id) || pickedIdFor(id)) continue;
+          picked.add(id);
+          add.push(id);
+        }
+        send({ type: 'imported', jids: [...picked], added: add });
+        // Opening a chat shows its latest 50 messages right away
+        for (const jid of add) sendRecent(jid);
+      }
+      if (msg.type === 'open' && typeof msg.jid === 'string' && picked.has(msg.jid) && sock) {
+        sendRecent(msg.jid);
+      }
+      if (msg.type === 'load_older' && typeof msg.jid === 'string' && picked.has(msg.jid) && sock) {
+        if (pending.has(msg.jid)) return;
+        const p = { jid: msg.jid, total: 0, rounds: 0, all: !!msg.all, anchorTs: 0, timer: null };
+        pending.set(msg.jid, p);
+        await requestOlder(msg.jid, p);
       }
       if (msg.type === 'send' && picked.has(msg.jid) && typeof msg.text === 'string' && msg.text.trim() && sock) {
         const now = Date.now();
