@@ -181,6 +181,45 @@ const server = app.listen(PORT, () => console.log('Soul Sync server on', PORT));
 const wss = new WebSocketServer({ server, path: '/ws', maxPayload: 20 * 1024 * 1024 }); // photos and voice clips
 const active = new Map(); // userId -> ws
 
+// ---- Soul Sync calls: presence + WebRTC signaling relay. Audio/video goes straight between
+// the two browsers; this server only passes small setup messages and never sees the media. ----
+const calls = new Map(); // callId -> { a, b, state, media, timer }
+const TURN_URL = process.env.TURN_URL || '';
+const ICE_SERVERS = [{ urls: ['stun:stun.l.google.com:19302', 'stun:stun1.l.google.com:19302'] }];
+if (TURN_URL) ICE_SERVERS.push({
+  urls: TURN_URL.split(',').map(s => s.trim()).filter(Boolean),
+  username: process.env.TURN_USERNAME || undefined,
+  credential: process.env.TURN_CREDENTIAL || undefined
+});
+const callName = n => String(n || '').replace(/[\u0000-\u001f\u007f]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 40);
+const callIdOk = id => typeof id === 'string' && /^[A-Za-z0-9_-]{8,64}$/.test(id);
+const wsSend = (id, o) => {
+  const w = active.get(id);
+  if (!w || w.readyState !== 1) return;
+  try { w.send(JSON.stringify(o)); } catch { /* connection is closing */ }
+};
+const peersFor = uid => [...active.entries()]
+  .filter(([id, w]) => id !== uid && w.readyState === 1)
+  .map(([id, w]) => ({ id, name: w.peerName || 'Soul Sync user', inCall: !!w.inCall }));
+function broadcastPeers() {
+  for (const [uid, w] of active) {
+    if (w.readyState !== 1) continue;
+    try { w.send(JSON.stringify({ type: 'peers', peers: peersFor(uid) })); } catch { /* closing */ }
+  }
+}
+function dropCall(callId) {
+  const c = calls.get(callId);
+  if (!c) return null;
+  calls.delete(callId);
+  clearTimeout(c.timer);
+  for (const id of [c.a, c.b]) {
+    const w = active.get(id);
+    if (w && w.inCall === callId) w.inCall = null;
+  }
+  broadcastPeers();
+  return c;
+}
+
 // Drop dead connections so their WhatsApp sessions get cleaned up
 setInterval(() => {
   for (const ws of wss.clients) {
@@ -230,6 +269,11 @@ wss.on('connection', (ws, req) => {
   active.set(userId, ws);
 
   const send = o => ws.readyState === 1 && ws.send(JSON.stringify(o));
+  ws.peerName = 'Guest ' + userId.slice(0, 4);
+  ws.inCall = null;
+  send({ type: 'you', id: userId });
+  send({ type: 'call_config', iceServers: ICE_SERVERS });
+  broadcastPeers();
   const allowSend = () => {
     const now = Date.now();
     while (sentAt.length && now - sentAt[0] > 60000) sentAt.shift();
@@ -240,6 +284,13 @@ wss.on('connection', (ws, req) => {
   const picked = new Set();      // only these jids are forwarded or sendable
   const archive = new Map();     // chat id -> { list, ids } recent messages kept in memory for this tab
   const sentAt = [];             // send rate limit
+  const callAt = [];             // call-invite rate limit
+  const allowCall = () => {
+    const now = Date.now();
+    while (callAt.length && now - callAt[0] > 60000) callAt.shift();
+    if (callAt.length >= 8) { send({ type: 'error', message: 'Too many calls. Try again in a minute.' }); return false; }
+    callAt.push(now); return true;
+  };
   const oldest = new Map();      // chat id -> { key, tsMs } oldest message seen (used to ask the phone for older ones)
   const seen = new Set();        // jid:messageId, so overlapping history batches never create duplicates
   const pending = new Map();     // client jid -> { jid, total, rounds, all, anchorTs, timer } older-history requests in flight
@@ -523,6 +574,14 @@ wss.on('connection', (ws, req) => {
     closed = true;
     clearTimeout(pushTimer);
     active.delete(userId);
+    // Tell anyone still on a call with this tab that it is over, and free the line.
+    for (const [callId, c] of [...calls]) {
+      if (c.a !== userId && c.b !== userId) continue;
+      const other = c.a === userId ? c.b : c.a;
+      dropCall(callId);
+      wsSend(other, { type: 'call_end', callId, reason: 'disconnected' });
+    }
+    broadcastPeers();
     archive.clear();
     oldest.clear();
     for (const p of pending.values()) clearTimeout(p.timer);
@@ -647,6 +706,66 @@ wss.on('connection', (ws, req) => {
   ws.on('message', async raw => {
     let msg; try { msg = JSON.parse(raw); } catch { return; }
     try {
+      // ---- call presence and signaling ----
+      if (msg.type === 'hello') {
+        const n = callName(msg.name);
+        if (n) { ws.peerName = n; broadcastPeers(); }
+      }
+      if (msg.type === 'call') {
+        const callId = String(msg.callId || ''), to = String(msg.to || '');
+        const media = msg.media === 'video' ? 'video' : 'audio';
+        const target = active.get(to);
+        if (!callIdOk(callId) || to === userId || !target || target.readyState !== 1) {
+          return send({ type: 'call_failed', callId, reason: 'unavailable' });
+        }
+        if (ws.inCall || target.inCall || calls.has(callId)) {
+          return send({ type: 'call_busy', callId, reason: 'busy' });
+        }
+        if (!allowCall()) return send({ type: 'call_failed', callId, reason: 'rate' });
+        const timer = setTimeout(() => {
+          const c = calls.get(callId);
+          if (!c || c.state !== 'ringing') return;
+          dropCall(callId);
+          wsSend(userId, { type: 'call_end', callId, reason: 'timeout' });
+          wsSend(to, { type: 'call_end', callId, reason: 'timeout' });
+        }, 60000);
+        calls.set(callId, { a: userId, b: to, state: 'ringing', media, timer });
+        ws.inCall = callId; target.inCall = callId;
+        wsSend(to, { type: 'call_invite', callId, from: userId, fromName: ws.peerName, media });
+        send({ type: 'call_ringing', callId });
+        broadcastPeers();
+      }
+      if (msg.type === 'call_accept' || msg.type === 'call_reject' || msg.type === 'call_end') {
+        const callId = String(msg.callId || '');
+        const c = calls.get(callId);
+        if (!c || (c.a !== userId && c.b !== userId)) return;
+        if (msg.type === 'call_accept') {
+          if (c.b !== userId || c.state !== 'ringing') return;
+          c.state = 'active';
+          clearTimeout(c.timer);
+          wsSend(c.a, { type: 'call_accept', callId, from: userId });
+        } else {
+          const other = c.a === userId ? c.b : c.a;
+          const rejected = msg.type === 'call_reject';
+          const reason = rejected ? (msg.reason === 'busy' ? 'busy' : 'declined') : 'ended';
+          dropCall(callId);
+          wsSend(other, { type: rejected ? 'call_reject' : 'call_end', callId, reason });
+        }
+      }
+      if (msg.type === 'offer' || msg.type === 'answer' || msg.type === 'ice') {
+        const callId = String(msg.callId || '');
+        const c = calls.get(callId);
+        if (!c || c.state !== 'active' || (c.a !== userId && c.b !== userId)) return;
+        const other = c.a === userId ? c.b : c.a;
+        if (msg.type === 'ice') {
+          if (msg.candidate != null && JSON.stringify(msg.candidate).length > 4000) return;
+          wsSend(other, { type: 'ice', callId, from: userId, candidate: msg.candidate ?? null });
+        } else {
+          const sdp = msg.sdp;
+          if (!sdp || typeof sdp !== 'object' || typeof sdp.sdp !== 'string' || sdp.sdp.length > 120000) return;
+          wsSend(other, { type: msg.type, callId, from: userId, sdp: { type: msg.type, sdp: sdp.sdp } });
+        }
+      }
       if (msg.type === 'pair') {
         const phone = String(msg.phone || '').replace(/\D/g, '');
         if (phone.length < 8 || !sock || sock.authState.creds.registered) return;
