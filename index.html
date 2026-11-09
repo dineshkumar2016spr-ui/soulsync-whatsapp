@@ -32,10 +32,34 @@ button{cursor:pointer}
 .drop{margin:12px;padding:12px;border:1.5px dashed var(--line);border-radius:10px;color:var(--mute);font-size:13px}
 .msgs{display:flex;flex-direction:column;gap:6px}
 .day{align-self:center;color:var(--mute);font-size:12px;margin:10px 0 2px}
-.msg{max-width:78%;padding:8px 12px;border-radius:14px;background:var(--them);white-space:pre-wrap;overflow-wrap:anywhere}
+.msg{max-width:78%;padding:8px 12px;border-radius:14px;background:var(--them);overflow-wrap:anywhere}
 .msg.me{align-self:flex-end;background:var(--me);color:var(--me-ink)}
 .msg small{display:block;font-size:11px;opacity:.65;margin-top:2px}
 .msg.flag{box-shadow:0 0 0 2px var(--warn)}
+.msg .txt{white-space:pre-wrap}
+.msg img{display:block;max-width:100%;max-height:320px;border-radius:10px;margin:2px 0 4px;cursor:zoom-in}
+.msg .quote{font-size:12px;border-left:3px solid currentColor;opacity:.72;padding:1px 8px;margin-bottom:4px;white-space:pre-wrap;overflow-wrap:anywhere}
+.msg .reacts{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}
+.msg .reacts span{background:rgba(0,0,0,.08);border-radius:99px;padding:1px 6px;font-size:12px}
+.msg.me .reacts span{background:rgba(255,255,255,.2)}
+.msg .acts{display:flex;gap:2px;margin-top:4px;opacity:.5}
+.msg:hover .acts,.msg:focus-within .acts{opacity:1}
+.acts button{border:0;background:transparent;padding:2px 5px;border-radius:6px;font-size:14px;line-height:1}
+.acts button:hover{background:rgba(0,0,0,.08)}
+.msg.me .acts button:hover{background:rgba(255,255,255,.16)}
+.emojirow{display:flex;gap:2px;flex-wrap:wrap;margin-top:4px}
+.emojirow button{border:0;background:transparent;font-size:18px;padding:2px 4px;border-radius:6px}
+.emojirow button:hover{background:rgba(0,0,0,.1)}
+.quotebar{padding:7px 12px;border-top:1px solid var(--line);font-size:13px;color:var(--mute);display:flex;gap:8px;align-items:center}
+.quotebar span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.quotebar b{color:var(--ink)}
+.quotebar button{margin-left:auto;border:0;background:transparent;font-size:19px;color:var(--mute);line-height:1}
+.send{position:relative}
+.emojipop{position:absolute;bottom:56px;left:8px;right:8px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px;display:none;grid-template-columns:repeat(8,1fr);gap:2px;box-shadow:0 6px 24px rgba(0,0,0,.18);z-index:5}
+.emojipop.on{display:grid}
+.emojipop button{border:0;background:transparent;font-size:20px;padding:4px;border-radius:6px}
+.emojipop button:hover{background:var(--bg)}
+@media(hover:none){.msg .acts{opacity:.85}}
 .stat{display:grid;grid-template-columns:1fr auto;gap:2px 10px;font-size:14px;margin:0 0 12px}
 .stat span:nth-child(even){font-weight:600;text-align:right}
 .bar{height:8px;border-radius:4px;background:var(--them);overflow:hidden;display:flex;margin:6px 0 4px}
@@ -75,9 +99,11 @@ select{background:var(--bg);border:1px solid var(--line);border-radius:8px;paddi
 <div class="app">
  <section class="panel on" id="p1" aria-label="Threads">
   <div class="head"><h1>Soul Sync</h1></div>
+  <div class="note" id="conn" style="padding:0 16px 8px;display:none"></div>
   <div class="drop">
    <input type="file" id="file" accept=".txt" hidden>
    <button class="btn primary" id="pick">Import chat (.txt)</button>
+   <button class="btn" id="import-more" hidden style="margin-top:8px;width:100%">Import More Chats (Live)</button>
    <p class="note" style="margin:8px 0 0">Export a chat from WhatsApp, then choose the file. It stays in your browser.</p>
    <button class="btn" id="wipe" hidden style="margin-top:8px;width:100%">Disconnect and delete my data</button>
   </div>
@@ -87,8 +113,14 @@ select{background:var(--bg);border:1px solid var(--line);border-radius:8px;paddi
  <section class="panel center" id="p2" aria-label="Conversation">
   <div class="head"><h2 id="title">Conversation</h2>
    <label class="note">I am <select id="me" aria-label="Which sender are you"></select></label></div>
+  <div id="olderbar" style="display:none;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 12px;border-bottom:1px solid var(--line)">
+   <button class="btn" id="older">Sync older messages</button>
+   <button class="btn" id="olderall">Sync full history</button>
+   <span class="note" id="olderst"></span>
+  </div>
   <div class="scroll"><div class="msgs" id="msgs"></div></div>
-  <div class="send"><textarea id="out" rows="1" aria-label="Message to send" placeholder="Write a message"></textarea><button class="btn primary" id="sendbtn">Send</button></div>
+  <div id="quote" class="quotebar" hidden></div>
+  <div class="send"><button class="btn" id="emojibtn" aria-label="Insert emoji" title="Emoji">😊</button><textarea id="out" rows="1" aria-label="Message to send" placeholder="Write a message"></textarea><button class="btn primary" id="sendbtn">Send</button><div class="emojipop" id="emojipop" role="group" aria-label="Emoji picker"></div></div>
  </section>
 
  <section class="panel" id="p3" aria-label="Insights and drafts" style="border-right:0">
@@ -107,6 +139,7 @@ select{background:var(--bg);border:1px solid var(--line);border-radius:8px;paddi
  </section>
 </div>
 <div class="gate" id="gate" role="dialog" aria-modal="true" aria-label="Connect WhatsApp"><div class="card" id="gcard"></div></div>
+<div class="gate" id="frwd" role="dialog" aria-modal="true" aria-label="Forward message" hidden><div class="card"><h2>Forward to</h2><p>Choose an imported chat.</p><div id="flist"></div><button class="btn" id="fcancel" style="width:100%;margin-top:6px">Cancel</button></div></div>
 <nav class="tabs" role="tablist" aria-label="Panels">
  <button role="tab" data-p="p1" aria-selected="false">Threads</button>
  <button role="tab" data-p="p2" aria-selected="true">Chat</button>
@@ -125,6 +158,8 @@ const SAMPLE=`14/10/2026, 19:02 - Maya: Hey, are we still on for Saturday?
 16/10/2026, 12:11 - You: I just forgot to reply last night
 16/10/2026, 17:45 - Maya: Whatever. Are we still doing Saturday or not?`;
 let threads=[],cur=0;
+let replyTo=null,reactFor=null,forwarding=null;
+let globalPickerFn = null; // Global reference for re-opening chat selector
 const $=id=>document.getElementById(id);
 const FR=/\b(whatever|fine|always|never|busy|again|forgot|not fair|annoyed|tired of|ignored)\b/i;
 const WARM=/\b(thanks|thank you|love|miss|haha|glad|great|looking forward|care|sorry|appreciate)\b/i;
@@ -148,14 +183,25 @@ function addThread(name,msgs){
 }
 function renderThreads(){
  const box=$('threads');box.textContent='';
- threads.forEach((t,i)=>{const b=document.createElement('button');b.className='thread';
+ // Most recent conversation first, like the WhatsApp chat list
+ threads.map((t,i)=>({t,i,ts:t.msgs.reduce((m,x)=>Math.max(m,x.t.getTime()),0)}))
+  .sort((a,b)=>b.ts-a.ts)
+  .forEach(({t,i})=>{const b=document.createElement('button');b.className='thread';
   b.setAttribute('aria-current',i===cur);
   const n=document.createElement('b');n.textContent=t.name;
   const s=document.createElement('small');s.textContent=t.msgs.length+' messages';
-  b.append(n,s);b.onclick=()=>{cur=i;render();show('p2')};box.append(b)});
+  b.append(n,s);b.onclick=()=>openThread(i);box.append(b)});
+}
+function openThread(i){
+ cur=i;replyTo=null;reactFor=null;updateQuote();render();show('p2');
+ // Ask the server for the latest 50 messages of this chat (safe to repeat: ids dedupe them)
+ const t=threads[i];
+ if(LIVE&&t&&t.jid&&!t.loading)LIVE.ws.send(JSON.stringify({type:'open',jid:t.jid}));
 }
 function renderChat(){
- const t=threads[cur],box=$('msgs');box.textContent='';
+ const t=threads[cur],box=$('msgs'),sc=box.parentElement;
+ const keep=renderChat.cur===cur&&sc.scrollHeight-sc.scrollTop-sc.clientHeight>80,fb=sc.scrollHeight-sc.scrollTop;
+ box.textContent='';
  $('title').textContent=t.name;
  const sel=$('me');sel.textContent='';
  [...new Set(t.msgs.map(m=>m.sender))].forEach(n=>{const o=document.createElement('option');o.textContent=n;o.value=n;o.selected=n===t.me;sel.append(o)});
@@ -164,13 +210,35 @@ function renderChat(){
   const day=m.t.toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'});
   if(day!==last){const d=document.createElement('div');d.className='day';d.textContent=day;box.append(d);last=day}
   const el=document.createElement('div');
-  el.className='msg'+(m.sender===t.me?' me':'')+(m.sender!==t.me&&FR.test(m.text)?' flag':'');
-  el.textContent=m.text;
+  el.className='msg'+(m.sender===t.me?' me':'')+(m.sender!==t.me&&FR.test(m.text||'')?' flag':'');
+  if(m.replyTo){const q=document.createElement('div');q.className='quote';q.textContent=m.replyTo.text||'Message';el.append(q)}
+  if(m.type==='image'&&m.mediaId&&LIVE){
+   const img=document.createElement('img');img.loading='lazy';img.alt=m.text||'Photo';
+   img.src=LIVE.url+'/media/'+encodeURIComponent(m.mediaId)+'?token='+encodeURIComponent(LIVE.token);
+   img.onclick=()=>window.open(img.src,'_blank','noopener');
+   img.onerror=()=>{img.remove();const n=document.createElement('div');n.className='note';n.textContent='Photo unavailable';el.prepend(n)};
+   el.append(img);
+  }else if(m.type==='image'&&!m.text){const n=document.createElement('div');n.className='note';n.textContent='[photo]';el.append(n)}
+  if(m.text){const txt=document.createElement('div');txt.className='txt';txt.textContent=m.text;el.append(txt)}
+  const counts={};Object.values(m.reacts||{}).forEach(e=>{if(e)counts[e]=(counts[e]||0)+1});
+  if(Object.keys(counts).length){const r=document.createElement('div');r.className='reacts';
+   Object.entries(counts).forEach(([e,n])=>{const c=document.createElement('span');c.textContent=e+(n>1?' '+n:'');r.append(c)});el.append(r)}
+  const acts=document.createElement('div');acts.className='acts';
+  const mk=(label,title,fn)=>{const b=document.createElement('button');b.type='button';b.textContent=label;b.title=title;b.onclick=fn;acts.append(b)};
+  mk('😊','React',()=>{reactFor=reactFor===m?null:m;renderChat()});
+  mk('↩','Reply',()=>{replyTo={id:m.id,text:m.text||(m.type==='image'?'[photo]':'…'),sender:m.sender};updateQuote();$('out').focus()});
+  mk('➦','Forward',()=>openForward(m));
+  el.append(acts);
+  if(reactFor===m){const row=document.createElement('div');row.className='emojirow';
+   ['❤️','😂','😮','😢','👍','🙏','🔥','👏'].forEach(e=>{const b=document.createElement('button');b.type='button';b.textContent=e;b.title='React '+e;b.onclick=()=>sendReaction(m,e);row.append(b)});el.append(row)}
   const s=document.createElement('small');
   s.textContent=(m.sender===t.me?'':m.sender+' · ')+m.t.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
   el.append(s);box.append(el);
  });
- box.parentElement.scrollTop=box.parentElement.scrollHeight;
+ if(!t.msgs.length){const n=document.createElement('div');n.className='note';
+  n.textContent=t.jid?'No messages on this device yet. Tap “Sync older messages”, then keep WhatsApp open on your phone.':'No messages in this chat.';
+  box.append(n)}
+ sc.scrollTop=keep?sc.scrollHeight-fb:sc.scrollHeight;renderChat.cur=cur;
 }
 function analyze(){
  const t=threads[cur],me=t.me,ms=t.msgs;
@@ -223,7 +291,57 @@ function drafts(ai){
   w.append(l,ta,b,u);box.append(w);
  });
 }
-function render(){renderThreads();renderChat();analyze();$('drafts').textContent=''}
+function when(ts){
+ if(!ts)return '';
+ const d=new Date(ts),n=new Date(),today=new Date(n.getFullYear(),n.getMonth(),n.getDate()).getTime();
+ if(d.getTime()>=today)return d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+ if(d.getTime()>=today-86400000)return 'Yesterday';
+ return d.toLocaleDateString(undefined,{day:'numeric',month:'short'});
+}
+function updateOlder(){
+ const bar=$('olderbar'),t=threads[cur];if(!bar)return;
+ const on=!!(LIVE&&t&&t.jid);bar.style.display=on?'flex':'none';if(!on)return;
+ $('older').disabled=$('olderall').disabled=!!t.loading;
+ $('olderst').textContent=t.olderMsg||'';
+}
+function updateQuote(){
+ const q=$('quote');if(!q)return;
+ if(!replyTo){q.hidden=true;q.textContent='';return}
+ q.hidden=false;q.textContent='';
+ const s=document.createElement('span');
+ const b=document.createElement('b');b.textContent=(replyTo.sender||'Message')+': ';
+ s.append(b,document.createTextNode(replyTo.text||''));
+ const x=document.createElement('button');x.type='button';x.textContent='×';x.title='Cancel reply';
+ x.onclick=()=>{replyTo=null;updateQuote()};
+ q.append(s,x);
+}
+function sendReaction(m,emoji){
+ const t=threads[cur];if(!t||!m)return;
+ const mine=m.sender===t.me?'me':'them';
+ m.reacts=m.reacts||{};
+ if(m.reacts[mine]===emoji)delete m.reacts[mine];else m.reacts[mine]=emoji;
+ reactFor=null;
+ if(LIVE&&t.jid&&m.id)LIVE.ws.send(JSON.stringify({type:'react',jid:t.jid,id:m.id,emoji:m.reacts[mine]||''}));
+ renderChat();
+}
+function openForward(m){
+ forwarding=m;
+ const box=$('flist');box.textContent='';
+ const others=threads.filter(x=>x!==threads[cur]);
+ if(!others.length){const p=document.createElement('p');p.className='note';p.textContent='Import another chat first.';box.append(p)}
+ others.forEach(x=>{const b=document.createElement('button');b.className='btn';
+  b.style.cssText='display:block;width:100%;text-align:left;margin-bottom:6px';
+  b.textContent=x.name;b.onclick=()=>doForward(x);box.append(b)});
+ $('frwd').hidden=false;
+}
+function doForward(target){
+ const m=forwarding;forwarding=null;$('frwd').hidden=true;
+ if(!m||!target)return;
+ if(LIVE&&m.id&&target.jid){LIVE.ws.send(JSON.stringify({type:'forward',id:m.id,toJid:target.jid}));return}
+ target.msgs.push({sender:target.me,t:new Date(),text:m.text||(m.type==='image'?'[photo]':''),type:'text',replyTo:null,reacts:{}});
+ target.msgs.sort((a,b)=>a.t-b.t);renderThreads();
+}
+function render(){renderThreads();renderChat();analyze();updateOlder();$('drafts').textContent=''}
 function show(id){document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('on',p.id===id));
  document.querySelectorAll('.tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.p===id))}
 document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>show(b.dataset.p));
@@ -234,6 +352,14 @@ $('file').onchange=async e=>{const f=e.target.files[0];if(!f)return;
  addThread(f.name.replace(/^WhatsApp Chat with /i,'').replace(/\.txt$/i,''),msgs);show('p2');e.target.value=''};
 $('me').onchange=e=>{threads[cur].me=e.target.value;render()};
 
+// Open live chat picker button handler
+$('import-more').onclick=()=>{
+  if(globalPickerFn){
+    $('gate').hidden=false;
+    globalPickerFn();
+  }
+};
+
 /* ---- Connect flow (simulated; see server/ for the real Baileys bridge) ---- */
 const CHATS=[{name:'Maya',text:SAMPLE},
 {name:'Dad',text:'14/10/2026, 18:00 - Dad: Did you eat?\n14/10/2026, 18:20 - You: Yes, pasta\n14/10/2026, 18:21 - Dad: Good. Call me Sunday?'},
@@ -241,8 +367,18 @@ const CHATS=[{name:'Maya',text:SAMPLE},
 const POL=['I accept the Terms of Service','I accept the Privacy Policy','I allow Soul Sync to read the chats I select','I allow selected messages to be sent to Gemini or OpenAI for analysis'];
 const gc=$('gcard');
 function step1(){
- gc.innerHTML='<h2>Connect WhatsApp</h2><p>Tick every box to continue. Demo mode: no real account is touched.</p>'+POL.map((p,i)=>'<label class="chk"><input type="checkbox" class="pol" data-i="'+i+'"><span>'+p+'</span></label>').join('')+'<label class="note" for="srv">Server URL (leave empty for demo)</label><input id="srv" placeholder="https://your-server.example.com" style="width:100%;margin:4px 0 8px;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)"><button class="btn primary" id="g1" disabled>Continue</button>';
- try{$('srv').value=localStorage.getItem('ss_server')||''}catch(e){}
+ gc.innerHTML='<h2>Connect WhatsApp</h2><p>Tick every box to continue. Demo mode: no real account is touched.</p>'+POL.map((p,i)=>'<label class="chk"><input type="checkbox" class="pol" data-i="'+i+'"><span>'+p+'</span></label>').join('')+'<p class="note" style="margin:8px 0 0"><a href="TERMS.html" target="_blank" rel="noopener">Terms of Service</a> &middot; <a href="PRIVACY.html" target="_blank" rel="noopener">Privacy Policy</a></p>'+'<label class="note" for="srv">Server URL (leave empty for demo)</label><input id="srv" placeholder="https://your-server.example.com" style="width:100%;margin:4px 0 8px;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)"><button class="btn primary" id="g1" disabled>Continue</button>';
+ try{
+  const saved=localStorage.getItem('ss_server')||'';
+  const local=/^(localhost|127\.0\.0\.1|\[::1\])$/i.test(location.hostname);
+  const savedIsLocal=/^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(:|\/|$)/i.test(saved);
+  $('srv').value=local?(savedIsLocal?saved:'http://localhost:8080'):saved;
+  if(local&&saved&&!savedIsLocal){
+   const n=document.createElement('p');n.className='note';n.style.margin='0 0 8px';
+   n.textContent='This page is running locally, so it will use the local server. Saved server: '+saved;
+   $('srv').before(n);
+  }
+ }catch(e){}
  const boxes=[...gc.querySelectorAll('.pol')],go=$('g1');
  boxes.forEach(b=>b.onchange=()=>go.disabled=!boxes.every(x=>x.checked));
  go.onclick=()=>{const u=$('srv').value.trim().replace(/\/$/,'');if(u){try{localStorage.setItem('ss_server',u)}catch(e){}live(u)}else step2()};
@@ -269,8 +405,10 @@ function incoming(){
 }
 $('sendbtn').onclick=()=>{
  const v=$('out').value.trim();if(!v||!threads[cur])return;
- const t=threads[cur];if(LIVE&&t.jid)LIVE.ws.send(JSON.stringify({type:'send',jid:t.jid,text:v}));t.msgs.push({sender:t.me,t:new Date(),text:v});
- $('out').value='';render();
+ const t=threads[cur],q=replyTo;
+ if(LIVE&&t.jid)LIVE.ws.send(JSON.stringify({type:'send',jid:t.jid,text:v,quotedId:q&&q.id||undefined}));
+ else t.msgs.push({sender:t.me,t:new Date(),text:v,replyTo:q?{text:q.text}:null,reacts:{}});
+ $('out').value='';replyTo=null;updateQuote();render();
 };
 let LIVE=null;
 function liveErr(m){gc.innerHTML='<h2>Could not connect</h2><p></p><button class="btn primary" id="gr">Try again</button>';gc.querySelector('p').textContent=m;$('gate').hidden=false;$('gr').onclick=step1}
@@ -280,34 +418,97 @@ async function live(url){
  try{const r=await fetch(url+'/api/consent',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({terms:true,privacy:true,readChats:true,aiAnalysis:true})});
   if(!r.ok)throw new Error('Server answered '+r.status);token=(await r.json()).token}
  catch(e){return liveErr('Check the server URL, and that ALLOWED_ORIGIN on the server matches this site’s address. '+e.message)}
- const ws=new WebSocket(url.replace(/^http/,'ws')+'/ws?token='+encodeURIComponent(token));
- LIVE={ws,url,token};$('wipe').hidden=false;
+ const ws=new WebSocket(url.replace(/^http/,'ws')+'/ws?token='+encodeURIComponent(token));  LIVE={ws,url,token};
+  const cn=$('conn');cn.style.display='block';cn.textContent='Server: '+url.replace(/^https?:\/\//,'');
+  $('wipe').hidden=false;
+ $('import-more').hidden=false; // Show live import more button when connected
+
  const chats=new Map(),sel=new Set();
  ws.onopen=()=>{
   gc.innerHTML='<h2>Link this device</h2><p>In WhatsApp open Settings, Linked devices, Link a device, then scan. The code refreshes about every 20 seconds.</p><div id="qrbox" style="width:230px;margin:0 auto 12px;padding:8px;background:#fff;border-radius:8px;min-height:230px"></div><div class="code" id="pc"></div><input id="ph" placeholder="Phone with country code, e.g. 14155550123" style="width:100%;margin-bottom:8px;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)"><button class="btn" id="pairbtn" style="width:100%">Use a pairing code instead</button>';
   $('pairbtn').onclick=()=>{const p=$('ph').value.trim();if(p)ws.send(JSON.stringify({type:'pair',phone:p}))};
  };
- function picker(){
-  gc.innerHTML='<h2>Choose chats to import</h2><p>Only the chats you pick are kept and analysed. Everything else is dropped when you import.</p><div id="cl" style="max-height:46vh;overflow:auto;margin-bottom:8px"></div><button class="btn primary" id="gi">Import selected</button>';
-  const cl=$('cl');
-  [...chats.values()].sort((a,b)=>a.name.localeCompare(b.name)).forEach(c=>{
+
+ function drawList(){
+  const cl=$('cl');if(!cl)return;
+  const q=($('cq').value||'').toLowerCase();
+  cl.textContent='';
+  [...chats.values()].filter(c=>!q||c.name.toLowerCase().includes(q)||c.jid.includes(q))
+   .sort((x,y)=>(y.ts||0)-(x.ts||0)||x.name.localeCompare(y.name)).forEach(c=>{
+   const done=threads.some(t=>t.jid===c.jid);
    const l=document.createElement('label');l.className='chk';
-   const i=document.createElement('input');i.type='checkbox';i.checked=sel.has(c.jid);
+   const i=document.createElement('input');i.type='checkbox';i.checked=done||sel.has(c.jid);i.disabled=done;
    i.onchange=()=>i.checked?sel.add(c.jid):sel.delete(c.jid);
-   const sp=document.createElement('span');sp.textContent=c.name;l.append(i,sp);cl.append(l)});
-  $('gi').onclick=()=>{if(sel.size)ws.send(JSON.stringify({type:'import',jids:[...sel]}))};
+   const sp=document.createElement('span');sp.textContent=c.name+(done?' (imported)':'');
+   const w=document.createElement('small');w.style.marginLeft='auto';w.style.color='var(--mute)';w.textContent=when(c.ts);
+   l.append(i,sp,w);cl.append(l)});
+  $('cc').textContent=chats.size+' chats found · newest first';
  }
+ function picker(){
+  LIVE.pickerOpen=true;
+  gc.innerHTML='<h2>Choose chats to import</h2><p>Pick the chats to add. You can come back and add more at any time. Chats you do not pick are held in server memory only, never analysed, and wiped when you disconnect.</p><input id="cq" placeholder="Search chats" style="width:100%;margin-bottom:6px;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)"><p class="note" id="cc" style="margin:0 0 6px"></p><div id="cl" style="max-height:42vh;overflow:auto;margin-bottom:8px"></div><button class="btn primary" id="gi">Import selected</button>'+(threads.some(t=>t.jid)?'<button class="btn" id="gx" style="margin-left:6px">Close</button>':'');
+  $('cq').oninput=drawList;drawList();
+  $('gi').onclick=()=>{if(sel.size){ws.send(JSON.stringify({type:'import',jids:[...sel]}));sel.clear()}};
+  if($('gx'))$('gx').onclick=()=>{LIVE.pickerOpen=false;$('gate').hidden=true};
+ }
+ globalPickerFn = picker; // Assign global reference
+
  const thread=jid=>{let t=threads.find(x=>x.jid===jid);
-  if(!t){t={name:(chats.get(jid)||{}).name||jid.split('@')[0],msgs:[],me:'You',jid};threads.push(t)}return t};
+  if(!t){t={name:(chats.get(jid)||{}).name||jid.split('@')[0],msgs:[],ids:new Set(),me:'You',jid};threads.push(t)}return t};
  ws.onmessage=ev=>{
   const m=JSON.parse(ev.data);
   if(m.type==='qr'){const q=qrcode(0,'L');q.addData(m.qr);q.make();const b=$('qrbox');if(b){b.innerHTML=q.createSvgTag(4,0);const v=b.querySelector('svg');if(v){v.style.width='100%';v.style.height='auto'}}}
   else if(m.type==='pairing_code'){$('pc').textContent=m.code}
-  else if(m.type==='ready'){gc.innerHTML='<h2>Linked</h2><p>Loading your chats. This can take a moment.</p>'}
-  else if(m.type==='chats'){m.chats.forEach(c=>chats.set(c.jid,c));clearTimeout(LIVE.pk);LIVE.pk=setTimeout(()=>{if(!$('gate').hidden&&!threads.length)picker()},400)}
-  else if(m.type==='imported'){m.jids.forEach(j=>{thread(j);cur=threads.findIndex(t=>t.jid===j)});$('gate').hidden=true;show('p2');render()}
-  else if(m.type==='message'){const t=thread(m.jid);t.msgs.push({sender:m.fromMe?'You':(m.sender||t.name),t:new Date(m.ts),text:m.text});
+  else if(m.type==='ready'){
+   gc.innerHTML='<h2>Linked</h2><p>Loading your chats. This can take a moment.</p>';
+   // The chat list often arrives before this message; don't wait for another one
+   clearTimeout(LIVE.ready);
+   LIVE.ready=setTimeout(()=>{
+    if(!chats.size)return;
+    if(threads.length){$('gate').hidden=true;show('p2');render()}
+    else picker();
+   },900);
+  }
+  else if(m.type==='chats'){
+    m.chats.forEach(c=>{chats.set(c.jid,c);const t=threads.find(x=>x.jid===c.jid);if(t&&t.name!==c.name){t.name=c.name;t.msgs.forEach(x=>{if(x.dm)x.sender=c.name})}});
+    clearTimeout(LIVE.pk);
+    LIVE.pk=setTimeout(()=>{
+      if($('gate').hidden){renderThreads();const t=threads[cur];if(t)$('title').textContent=t.name;return}
+      if(LIVE.pickerOpen)drawList();
+      else if(!threads.length)picker();
+      else if(!$('gate').hidden){$('gate').hidden=true;show('p2');render()}
+    },400)
+  }
+  else if(m.type==='imported'){
+    (m.added&&m.added.length?m.added:m.jids).forEach(j=>{thread(j);cur=threads.findIndex(t=>t.jid===j)});
+    LIVE.pickerOpen=false;$('gate').hidden=true;
+    show('p2');
+    render();
+  }
+  else if(m.type==='message'){const t=thread(m.jid);
+   if(m.id){if(!t.ids)t.ids=new Set();if(t.ids.has(m.id))return;t.ids.add(m.id)}
+   const dm=!m.jid.endsWith('@g.us');t.msgs.push({id:m.id,sender:m.fromMe?'You':(dm?t.name:(m.sender||t.name)),dm:dm&&!m.fromMe,t:new Date(m.ts),text:m.text||'',type:m.type||'text',mediaId:m.mediaId,replyTo:m.replyTo||null,reacts:m.reacts||{}});
    clearTimeout(LIVE.r);LIVE.r=setTimeout(()=>{threads.forEach(x=>x.msgs.sort((a,b)=>a.t-b.t));render()},150)}
+  else if(m.type==='reaction'){
+   const t=thread(m.jid),target=t.msgs.find(x=>x.id===m.targetId);
+   if(target){target.reacts=target.reacts||{};const who=m.fromMe?'me':'them';
+    if(m.emoji)target.reacts[who]=m.emoji;else delete target.reacts[who];renderChat()}
+  }
+  else if(m.type==='recent'){
+   const t=thread(m.jid);
+   t.olderMsg=m.count?'':'No recent messages came back. Keep WhatsApp open on your phone, then tap Sync older messages.';
+   updateOlder();
+  }
+  else if(m.type==='older'){
+   const t=thread(m.jid),n=m.total||0;
+   t.loading=m.status==='loading';
+   t.olderMsg={loading:'Loading older messages… '+n+' so far',
+    done:'Loaded '+n+' older messages. Tap again to go further back.',
+    none:'No older messages came back. You may be at the start of this chat, or your phone is offline.',
+    no_anchor:'No messages known for this chat yet. Wait a moment and try again.',
+    error:'Could not ask your phone for older messages. Try again.'}[m.status]||'';
+   updateOlder();
+  }
   else if(m.type==='logged_out'){liveErr('WhatsApp logged this device out. Link it again.')}
   else if(m.type==='deleted'){location.reload()}
   else if(m.type==='error'){const pc=$('pc');if(pc&&!$('gate').hidden)pc.textContent=m.message;else $('tone').textContent=m.message}
@@ -328,6 +529,21 @@ $('gen').onclick=async()=>{
  b.disabled=false;b.textContent='Write drafts';
 };
 $('wipe').onclick=()=>{if(LIVE&&confirm('Disconnect WhatsApp and delete your data from the server?'))LIVE.ws.send(JSON.stringify({type:'disconnect'}))};
+function askOlder(all){
+ const t=threads[cur];if(!(LIVE&&t&&t.jid)||t.loading)return;
+ t.loading=true;t.olderMsg='Syncing older messages… keep WhatsApp open on your phone.';updateOlder();
+ LIVE.ws.send(JSON.stringify({type:'load_older',jid:t.jid,all}));
+}
+$('older').onclick=()=>askOlder(false);
+$('olderall').onclick=()=>askOlder(true);
+// Composer emoji picker: inserts at the caret so it also works mid-message
+const EMOJIS=['😀','😂','🥰','😍','😊','😉','😎','🤔','😅','😢','😭','😡','🥺','🤗','🙌','👏','👍','🙏','❤️','🔥','✨','🎉','☕','🌙'];
+const ep=$('emojipop');
+EMOJIS.forEach(e=>{const b=document.createElement('button');b.type='button';b.textContent=e;b.title='Insert '+e;
+ b.onclick=()=>{const ta=$('out');const a=ta.selectionStart??ta.value.length,z=ta.selectionEnd??a;ta.value=ta.value.slice(0,a)+e+ta.value.slice(z);ta.focus();ta.selectionStart=ta.selectionEnd=a+e.length};ep.append(b)});
+$('emojibtn').onclick=e=>{e.stopPropagation();ep.classList.toggle('on')};
+document.addEventListener('click',e=>{if(!ep.contains(e.target)&&e.target!==$('emojibtn'))ep.classList.remove('on')});
+$('fcancel').onclick=()=>{forwarding=null;$('frwd').hidden=true};
 function init(){if(innerWidth<=1000)show('p2');step1()}
 init();
 </script>

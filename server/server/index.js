@@ -3,7 +3,7 @@ import { WebSocketServer } from 'ws';
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import pino from 'pino';
-import makeWASocket, { Browsers, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion } from '@whiskeysockets/baileys';
+import makeWASocket, { Browsers, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion, downloadMediaMessage } from '@whiskeysockets/baileys';
 
 // Load .env if present (Node 20.12+). On Railway/Fly the real environment is used instead.
 try { process.loadEnvFile?.(); } catch { /* no .env file */ }
@@ -15,6 +15,10 @@ const POLICY_VERSION = '2026-11-04';
 const TOKEN_TTL_MS = 12 * 3600 * 1000;
 const HISTORY_CAP = 2000; // messages kept in memory per chat while this tab is connected
 const RECENT_LIMIT = 50;  // messages sent to the browser when a chat is opened
+const RAW_CAP = 3000;     // raw messages kept so replies and forwards can quote/forward them
+const MEDIA_CAP = 300;    // photo entries kept (raw message refs; buffers are byte-capped)
+const MEDIA_BYTES = 64 * 1024 * 1024;
+let mediaBytes = 0;
 
 fs.mkdirSync(DATA_DIR, { recursive: true });
 const log = pino({ level: 'warn' });
@@ -71,6 +75,30 @@ app.use((req, res, next) => {
   next();
 });
 app.get('/health', (_req, res) => res.json({ ok: true }));
+
+// Photos are downloaded lazily when the browser asks for them. The token ties each photo to
+// the session that received it, so one user can never read another user's media.
+const media = new Map(); // `${userId}:${messageId}` -> { userId, raw, mime, at, buf? }
+app.get('/media/:id', async (req, res) => {
+  const userId = userFor(req.query.token);
+  if (!userId) return res.sendStatus(401);
+  const e = media.get(String(req.params.id));
+  if (!e || e.userId !== userId) return res.sendStatus(404);
+  try {
+    if (!e.buf) {
+      const buf = await downloadMediaMessage(e.raw, 'buffer', {}, { logger: log });
+      if (buf.length <= 4 * 1024 * 1024) { e.buf = buf; mediaBytes += buf.length; }
+      // Keep total cached photo memory bounded; older photos are re-downloaded on demand.
+      for (const v of media.values()) {
+        if (mediaBytes <= MEDIA_BYTES) break;
+        if (v.buf) { mediaBytes -= v.buf.length; v.buf = null; }
+      }
+      return res.set({ 'Content-Type': e.mime || 'image/jpeg', 'Cache-Control': 'private, max-age=3600' }).send(buf);
+    }
+    res.set({ 'Content-Type': e.mime || 'image/jpeg', 'Cache-Control': 'private, max-age=3600' });
+    res.send(e.buf);
+  } catch (err) { log.error(err); res.sendStatus(502); }
+});
 
 // 1) Consent: all four boxes must be true. Stored with a timestamp and policy version.
 app.post('/api/consent', limiter(10, 3600e3), (req, res) => {
@@ -163,14 +191,30 @@ setInterval(() => {
 
 const hiddenJid = j => !j || j === 'status@broadcast' || j.endsWith('@broadcast') || j.endsWith('@newsletter');
 const tsOf = t => (typeof t === 'object' && t?.toNumber ? t.toNumber() : Number(t || 0)) * 1000;
+function quoteText(q) {
+  if (!q) return '';
+  return (q.conversation || q.extendedTextMessage?.text || q.imageMessage?.caption
+    || (q.imageMessage ? '[photo]' : q.stickerMessage ? '[sticker]' : q.audioMessage ? '[voice note]' :''));
+}
 function toMsg(m) {
   const jid = m.key?.remoteJid;
   if (hiddenJid(jid)) return null;
   let c = m.message;
-  c = c?.ephemeralMessage?.message || c?.viewOnceMessage?.message || c;
-  const text = c?.conversation || c?.extendedTextMessage?.text;
-  if (!text) return null;
-  return { jid, id: m.key.id || '', fromMe: !!m.key.fromMe, sender: m.pushName || jid.split('@')[0], text, ts: tsOf(m.messageTimestamp) || Date.now() };
+  c = c?.ephemeralMessage?.message || c?.viewOnceMessage?.message || c?.viewOnceMessageV2?.message || c;
+  const img = c?.imageMessage;
+  const text = c?.conversation || c?.extendedTextMessage?.text || img?.caption || '';
+  if (!text && !img) return null;
+  // A reply carries the quoted message in contextInfo; surface a short preview to the browser.
+  const ctx = c?.extendedTextMessage?.contextInfo || img?.contextInfo;
+  const replyTo = ctx?.stanzaId
+    ? { id: ctx.stanzaId, text: String(quoteText(ctx.quotedMessage)).slice(0, 300) }
+    : null;
+  return {
+    jid, id: m.key.id || '', fromMe: !!m.key.fromMe,
+    sender: m.pushName || jid.split('@')[0], text, ts: tsOf(m.messageTimestamp) || Date.now(),
+    type: img ? 'image' : 'text', mime: img?.mimetype || '',
+    participant: m.key.participant || '', replyTo
+  };
 }
 
 wss.on('connection', (ws, req) => {
@@ -186,6 +230,12 @@ wss.on('connection', (ws, req) => {
   active.set(userId, ws);
 
   const send = o => ws.readyState === 1 && ws.send(JSON.stringify(o));
+  const allowSend = () => {
+    const now = Date.now();
+    while (sentAt.length && now - sentAt[0] > 60000) sentAt.shift();
+    if (sentAt.length >= 20) { send({ type: 'error', message: 'Sending too fast. Wait a minute.' }); return false; }
+    sentAt.push(now); return true;
+  };
   const chats = new Map();       // jid -> {jid, rawName, name}
   const picked = new Set();      // only these jids are forwarded or sendable
   const archive = new Map();     // chat id -> { list, ids } recent messages kept in memory for this tab
@@ -193,6 +243,8 @@ wss.on('connection', (ws, req) => {
   const oldest = new Map();      // chat id -> { key, tsMs } oldest message seen (used to ask the phone for older ones)
   const seen = new Set();        // jid:messageId, so overlapping history batches never create duplicates
   const pending = new Map();     // client jid -> { jid, total, rounds, all, anchorTs, timer } older-history requests in flight
+  const rawById = new Map();     // message id -> raw WAMessage (for quoted replies and forwarding)
+  const reactsById = new Map();  // message id -> { me, them } emoji reactions, replayed with messages
   const contactMap = new Map();  // jid / lid / phone jid -> saved (address book) name
   const pushNames = new Map();   // jid -> name the other person set for themselves
   let sock, closed = false, attempts = 0, pushTimer;
@@ -265,7 +317,7 @@ wss.on('connection', (ws, req) => {
   const remember = m => {
     const id = chatIdFor(m.jid);
     let box = archive.get(id);
-    if (!box) { box = { list: [], ids: new Set() }; archive.set(id, box); }
+    if (!box) { box = { list: [], ids: new Set(), sent: new Set() }; archive.set(id, box); }
     if (m.id && box.ids.has(m.id)) return id;
     if (m.id) box.ids.add(m.id);
     box.list.push({ ...m, jid: id });
@@ -273,15 +325,28 @@ wss.on('connection', (ws, req) => {
     const chat = chats.get(id);
     if (chat && m.ts > (chat.ts || 0)) chat.ts = m.ts;
     if (box.list.length > HISTORY_CAP) {
-      for (const old of box.list.splice(0, box.list.length - HISTORY_CAP)) if (old.id) box.ids.delete(old.id);
+      for (const old of box.list.splice(0, box.list.length - HISTORY_CAP)) if (old.id) { box.ids.delete(old.id); box.sent?.delete(old.id); }
     }
     return id;
   };
+  const markSent = (box, m) => { if (box && m.id) (box.sent ||= new Set()).add(m.id); };
+  const withReacts = m => ({ ...m, reacts: reactsById.get(m.id) || null });
   const sendRecent = jid => {
     const box = findArchive(jid);
     const list = box ? box.list.slice(-RECENT_LIMIT) : [];
-    for (const m of list) send({ type: 'message', history: true, ...m, jid });
-    if (!list.length) send({ type: 'recent', jid, count: 0 });
+    for (const m of list) { send({ type: 'message', history: true, ...withReacts(m), jid }); markSent(box, m); }
+    send({ type: 'recent', jid, count: list.length });
+  };
+  // Older history may already be in memory (WhatsApp syncs more than 50 at a time).
+  // Send the next batch adjacent to what the browser has before asking the phone.
+  const sendOlderFromArchive = (jid, limit = RECENT_LIMIT) => {
+    const box = findArchive(jid);
+    if (!box) return 0;
+    const sent = box.sent || (box.sent = new Set());
+    const list = box.list.filter(m => !sent.has(m.id)).slice(-limit);
+    for (const m of list) { send({ type: 'message', history: true, ...withReacts(m), jid }); markSent(box, m); }
+    if (list.length) send({ type: 'older', jid, status: 'done', total: list.length });
+    return list.length;
   };
 
   // Fold a duplicate entry (the same person under their other id) into the chat we keep
@@ -301,7 +366,8 @@ wss.on('connection', (ws, req) => {
     if (picked.delete(from)) picked.add(to);
     const sa = archive.get(from);
     if (sa) {
-      const sb = archive.get(to) || { list: [], ids: new Set() };
+      const sb = archive.get(to) || { list: [], ids: new Set(), sent: new Set() };
+      sb.sent = new Set([...(sa.sent || []), ...(sb.sent || [])]);
       for (const m of sa.list) {
         if (m.id && sb.ids.has(m.id)) continue;
         if (m.id) sb.ids.add(m.id);
@@ -403,6 +469,16 @@ wss.on('connection', (ws, req) => {
     }
   }
 
+  function findMsg(jid, id) {
+    const box = findArchive(jid);
+    return box ? box.list.find(x => x.id === id) || null : null;
+  }
+  function keepRaw(id, m) {
+    if (!id) return;
+    rawById.delete(id); rawById.set(id, m);
+    if (rawById.size > RAW_CAP) rawById.delete(rawById.keys().next().value);
+  }
+
   // ---- on-demand older history (asks the phone for 50 messages older than the oldest we have) ----
   async function requestOlder(key, p) {
     const a = findOldest(p.jid);
@@ -453,6 +529,8 @@ wss.on('connection', (ws, req) => {
     pending.clear();
     try { if (sock?.authState?.creds?.registered) await sock.logout(); } catch { /* already closed */ }
     try { sock?.end(undefined); } catch { /* ignore */ }
+    rawById.clear(); reactsById.clear();
+    for (const [k, v] of media) if (v.userId === userId) { if (v.buf) mediaBytes -= v.buf.length; media.delete(k); }
     fs.rmSync(authDir(userId), { recursive: true, force: true });
   }
 
@@ -477,7 +555,15 @@ wss.on('connection', (ws, req) => {
       if (closed) return;
       if (qr) { attempts = 0; console.log('[wa] qr received'); send({ type: 'qr', qr }); } // QR refreshes every ~20s while you scan
       if (connection) console.log('[wa] connection', connection, 'code:', lastDisconnect?.error?.output?.statusCode || '-', 'reason:', lastDisconnect?.error?.message || '-');
-      if (connection === 'open') { attempts = 0; send({ type: 'ready' }); }
+      if (connection === 'open') {
+        attempts = 0;
+        send({ type: 'ready' });
+        // Saved contact names live in WhatsApp's app-state 'regular' collection. The first sync
+        // can race with history, so pull it once more after the connection settles.
+        setTimeout(() => {
+          if (!closed) sock?.resyncAppState?.(['regular'], false).catch(() => {});
+        }, 3000);
+      }
       if (connection === 'close') {
         const code = lastDisconnect?.error?.output?.statusCode;
         if (code === DisconnectReason.loggedOut) {
@@ -493,6 +579,7 @@ wss.on('connection', (ws, req) => {
     sock.ev.on('contacts.upsert', updateContacts);
     sock.ev.on('contacts.update', updateContacts);
     sock.ev.on('chats.upsert', addChats);
+    sock.ev.on('chats.update', addChats); // also carries newer names for existing chats
     sock.ev.on('lid-mapping.update', ({ lid, pn } = {}) => { linkIds(lid, pn); pushChats(); });
     sock.ev.on('messaging-history.set', ({ chats: c, contacts, messages, lidPnMappings }) => {
       (lidPnMappings || []).forEach(x => linkIds(x.lid, x.pn));
@@ -509,14 +596,52 @@ wss.on('connection', (ws, req) => {
 
   // Forward picked chats; every chat stays in memory only (never on disk, never analysed) so it can be opened later
   function handle(m, history) {
+    const jid0 = m.key?.remoteJid;
+    let c = m.message;
+    c = c?.ephemeralMessage?.message || c;
+    // Reactions are not chat messages: attach the emoji to the message they point at.
+    const reaction = c?.reactionMessage;
+    if (reaction?.key?.id && !hiddenJid(jid0)) {
+      const rk = jid0 + ':' + m.key.id;
+      if (seen.has(rk)) return;
+      seen.add(rk);
+      // Keep reactions even while the chat is not imported, so opening it later still shows them.
+      const tid = reaction.key.id, who = m.key.fromMe ? 'me' : 'them';
+      let r = reactsById.get(tid);
+      if (reaction.text) {
+        if (!r) {
+          r = {}; reactsById.set(tid, r);
+          if (reactsById.size > 5000) reactsById.delete(reactsById.keys().next().value);
+        }
+        r[who] = reaction.text;
+      } else if (r) {
+        delete r[who];
+        if (!Object.keys(r).length) reactsById.delete(tid);
+      }
+      const openAs = pickedIdFor(jid0);
+      if (openAs) send({ type: 'reaction', jid: openAs, targetId: tid, emoji: reaction.text || '', fromMe: !!m.key.fromMe });
+      return;
+    }
     const x = toMsg(m);
     if (!x) return;
-    if (x.id) { const k = x.jid + ':' + x.id; if (seen.has(k)) return; seen.add(k); }
+    if (x.id) { const k = x.jid + ':' + x.id; if (seen.has(k)) return; seen.add(k); keepRaw(x.id, m); }
+    if (x.type === 'image' && x.id) {
+      x.mediaId = userId + ':' + x.id;
+      media.set(x.mediaId, { userId, raw: m, mime: x.mime || 'image/jpeg', at: Date.now() });
+      while (media.size > MEDIA_CAP) {
+        const [k, v] = media.entries().next().value;
+        if (v.buf) mediaBytes -= v.buf.length;
+        media.delete(k);
+      }
+    }
     const openAs = pickedIdFor(x.jid);
     x.jid = openAs || chatIdFor(x.jid);
     remember(x);
     // Send under the id the browser opened for this chat, so LID/phone-number events never split a thread
-    if (openAs) send({ type: 'message', history, ...x });
+    if (openAs) {
+      send({ type: 'message', history, ...withReacts(x) });
+      markSent(findArchive(openAs), x);
+    }
   }
 
   ws.on('message', async raw => {
@@ -547,17 +672,44 @@ wss.on('connection', (ws, req) => {
       }
       if (msg.type === 'load_older' && typeof msg.jid === 'string' && picked.has(msg.jid) && sock) {
         if (pending.has(msg.jid)) return;
+        if (sendOlderFromArchive(msg.jid)) return; // messages already in memory: no phone round-trip
         const p = { jid: msg.jid, total: 0, rounds: 0, all: !!msg.all, anchorTs: 0, timer: null };
         pending.set(msg.jid, p);
         await requestOlder(msg.jid, p);
       }
       if (msg.type === 'send' && picked.has(msg.jid) && typeof msg.text === 'string' && msg.text.trim() && sock) {
-        const now = Date.now();
-        while (sentAt.length && now - sentAt[0] > 60000) sentAt.shift();
-        if (sentAt.length >= 20) return send({ type: 'error', message: 'Sending too fast. Wait a minute.' });
-        sentAt.push(now);
-        await sock.sendMessage(msg.jid, { text: msg.text.slice(0, 4000) });
+        if (!allowSend()) return;
+        // A reply quotes the original message. Prefer the raw message; fall back to a minimal
+        // quote built from the archive when only the text copy is left.
+        let quoted = msg.quotedId ? rawById.get(String(msg.quotedId)) : null;
+        // The quoted key must point at the chat we are sending to, even if the original came in
+        // through the person's LID instead of their phone JID.
+        if (quoted) quoted = { ...quoted, key: { ...quoted.key, remoteJid: msg.jid } };
+        if (!quoted && msg.quotedId) {
+          const rec = findMsg(msg.jid, String(msg.quotedId));
+          if (rec) quoted = {
+            key: { remoteJid: msg.jid, id: rec.id, fromMe: !!rec.fromMe, ...(rec.participant ? { participant: rec.participant } : {}) },
+            message: { conversation: rec.text || '' }
+          };
+        }
+        const sent = await sock.sendMessage(msg.jid, { text: msg.text.slice(0, 4000) }, quoted ? { quoted } : undefined);
         send({ type: 'sent', jid: msg.jid });
+        if (sent) handle(sent, false); // one copy in the browser, not an optimistic one plus the echo
+      }
+      if (msg.type === 'react' && picked.has(msg.jid) && typeof msg.id === 'string' && sock) {
+        const rec = findMsg(msg.jid, msg.id);
+        if (!rec) return send({ type: 'error', message: 'That message is no longer in memory. Reopen the chat and try again.' });
+        if (!allowSend()) return;
+        const key = { remoteJid: msg.jid, id: rec.id, fromMe: !!rec.fromMe };
+        if (rec.participant) key.participant = rec.participant;
+        await sock.sendMessage(msg.jid, { react: { text: String(msg.emoji || '').slice(0, 8), key } });
+      }
+      if (msg.type === 'forward' && picked.has(msg.toJid) && typeof msg.id === 'string' && sock) {
+        const raw = rawById.get(msg.id);
+        if (!raw) return send({ type: 'error', message: 'That message is no longer in memory to forward.' });
+        if (!allowSend()) return;
+        const sent = await sock.sendMessage(msg.toJid, { forward: raw });
+        if (sent) handle(sent, false);
       }
       if (msg.type === 'disconnect') {
         // "Delete my data": unlink WhatsApp, wipe the session, consent record and token
