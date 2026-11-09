@@ -178,7 +178,7 @@ app.post('/api/analyze', limiter(30, 60e3), async (req, res) => {
 const server = app.listen(PORT, () => console.log('Soul Sync server on', PORT));
 
 // 3) WhatsApp bridge over WebSocket (one Baileys socket per connected tab)
-const wss = new WebSocketServer({ server, path: '/ws', maxPayload: 64 * 1024 });
+const wss = new WebSocketServer({ server, path: '/ws', maxPayload: 20 * 1024 * 1024 }); // photos and voice clips
 const active = new Map(); // userId -> ws
 
 // Drop dead connections so their WhatsApp sessions get cleaned up
@@ -201,19 +201,19 @@ function toMsg(m) {
   if (hiddenJid(jid)) return null;
   let c = m.message;
   c = c?.ephemeralMessage?.message || c?.viewOnceMessage?.message || c?.viewOnceMessageV2?.message || c;
-  const img = c?.imageMessage;
-  const text = c?.conversation || c?.extendedTextMessage?.text || img?.caption || '';
-  if (!text && !img) return null;
+  const img = c?.imageMessage, aud = c?.audioMessage;
+  const text = c?.conversation || c?.extendedTextMessage?.text || img?.caption || aud?.caption || '';
+  if (!text && !img && !aud) return null;
   // A reply carries the quoted message in contextInfo; surface a short preview to the browser.
-  const ctx = c?.extendedTextMessage?.contextInfo || img?.contextInfo;
+  const ctx = c?.extendedTextMessage?.contextInfo || img?.contextInfo || aud?.contextInfo;
   const replyTo = ctx?.stanzaId
     ? { id: ctx.stanzaId, text: String(quoteText(ctx.quotedMessage)).slice(0, 300) }
     : null;
   return {
     jid, id: m.key.id || '', fromMe: !!m.key.fromMe,
     sender: m.pushName || jid.split('@')[0], text, ts: tsOf(m.messageTimestamp) || Date.now(),
-    type: img ? 'image' : 'text', mime: img?.mimetype || '',
-    participant: m.key.participant || '', replyTo
+    type: img ? 'image' : aud ? 'audio' : 'text', mime: img?.mimetype || aud?.mimetype || '',
+    ptt: !!aud?.ptt, participant: m.key.participant || '', replyTo
   };
 }
 
@@ -625,9 +625,9 @@ wss.on('connection', (ws, req) => {
     const x = toMsg(m);
     if (!x) return;
     if (x.id) { const k = x.jid + ':' + x.id; if (seen.has(k)) return; seen.add(k); keepRaw(x.id, m); }
-    if (x.type === 'image' && x.id) {
+    if ((x.type === 'image' || x.type === 'audio') && x.id) {
       x.mediaId = userId + ':' + x.id;
-      media.set(x.mediaId, { userId, raw: m, mime: x.mime || 'image/jpeg', at: Date.now() });
+      media.set(x.mediaId, { userId, raw: m, mime: x.mime || (x.type === 'audio' ? 'audio/ogg' : 'image/jpeg'), at: Date.now() });
       while (media.size > MEDIA_CAP) {
         const [k, v] = media.entries().next().value;
         if (v.buf) mediaBytes -= v.buf.length;
@@ -695,6 +695,31 @@ wss.on('connection', (ws, req) => {
         const sent = await sock.sendMessage(msg.jid, { text: msg.text.slice(0, 4000) }, quoted ? { quoted } : undefined);
         send({ type: 'sent', jid: msg.jid });
         if (sent) handle(sent, false); // one copy in the browser, not an optimistic one plus the echo
+      }
+      if (msg.type === 'send_image' && picked.has(msg.jid) && sock) {
+        if (!allowSend()) return;
+        const b64 = String(msg.data || '');
+        if (!b64 || b64.length > 12 * 1024 * 1024) return send({ type: 'error', message: 'That photo is too large. Pick one under 8 MB.' });
+        const mime = /^image\/(jpeg|png|webp|gif)$/i.test(String(msg.mime || '')) ? msg.mime : 'image/jpeg';
+        try {
+          const sent = await sock.sendMessage(msg.jid, {
+            image: Buffer.from(b64, 'base64'), mimetype: mime,
+            caption: String(msg.caption || '').slice(0, 1000) || undefined
+          });
+          if (sent) handle(sent, false);
+        } catch (e) { log.error(e); send({ type: 'error', message: 'WhatsApp could not send that photo.' }); }
+      }
+      if (msg.type === 'send_audio' && picked.has(msg.jid) && sock) {
+        if (!allowSend()) return;
+        const b64 = String(msg.data || '');
+        if (!b64 || b64.length > 16 * 1024 * 1024) return send({ type: 'error', message: 'That voice message is too long. Try a shorter one.' });
+        const mime = /^audio\/[\w.+-]+/i.test(String(msg.mime || '')) ? msg.mime : 'audio/webm';
+        try {
+          const sent = await sock.sendMessage(msg.jid, {
+            audio: Buffer.from(b64, 'base64'), mimetype: mime, ptt: !!msg.ptt
+          });
+          if (sent) handle(sent, false);
+        } catch (e) { log.error(e); send({ type: 'error', message: 'WhatsApp could not send that voice message.' }); }
       }
       if (msg.type === 'react' && picked.has(msg.jid) && typeof msg.id === 'string' && sock) {
         const rec = findMsg(msg.jid, msg.id);

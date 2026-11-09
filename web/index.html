@@ -38,6 +38,9 @@ button{cursor:pointer}
 .msg.flag{box-shadow:0 0 0 2px var(--warn)}
 .msg .txt{white-space:pre-wrap}
 .msg img{display:block;max-width:100%;max-height:320px;border-radius:10px;margin:2px 0 4px;cursor:zoom-in}
+.msg audio{display:block;width:240px;max-width:100%;margin:2px 0 4px}
+.send .icon{padding:7px 8px;line-height:1}
+#micbtn.rec{background:var(--warn);border-color:var(--warn);color:#fff}
 .msg .quote{font-size:12px;border-left:3px solid currentColor;opacity:.72;padding:1px 8px;margin-bottom:4px;white-space:pre-wrap;overflow-wrap:anywhere}
 .msg .reacts{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}
 .msg .reacts span{background:rgba(0,0,0,.08);border-radius:99px;padding:1px 6px;font-size:12px}
@@ -120,7 +123,8 @@ select{background:var(--bg);border:1px solid var(--line);border-radius:8px;paddi
   </div>
   <div class="scroll"><div class="msgs" id="msgs"></div></div>
   <div id="quote" class="quotebar" hidden></div>
-  <div class="send"><button class="btn" id="emojibtn" aria-label="Insert emoji" title="Emoji">😊</button><textarea id="out" rows="1" aria-label="Message to send" placeholder="Write a message"></textarea><button class="btn primary" id="sendbtn">Send</button><div class="emojipop" id="emojipop" role="group" aria-label="Emoji picker"></div></div>
+  <div id="rec" class="quotebar" hidden></div>
+  <div class="send"><input type="file" id="imgfile" accept="image/*" hidden><button class="btn icon" id="imgbtn" aria-label="Send photo" title="Send photo">📷</button><button class="btn icon" id="micbtn" aria-label="Record voice message" title="Record voice message">🎤</button><button class="btn icon" id="emojibtn" aria-label="Insert emoji" title="Emoji">😊</button><textarea id="out" rows="1" aria-label="Message to send" placeholder="Write a message"></textarea><button class="btn primary" id="sendbtn">Send</button><div class="emojipop" id="emojipop" role="group" aria-label="Emoji picker"></div></div>
  </section>
 
  <section class="panel" id="p3" aria-label="Insights and drafts" style="border-right:0">
@@ -214,11 +218,15 @@ function renderChat(){
   if(m.replyTo){const q=document.createElement('div');q.className='quote';q.textContent=m.replyTo.text||'Message';el.append(q)}
   if(m.type==='image'&&m.mediaId&&LIVE){
    const img=document.createElement('img');img.loading='lazy';img.alt=m.text||'Photo';
-   img.src=LIVE.url+'/media/'+encodeURIComponent(m.mediaId)+'?token='+encodeURIComponent(LIVE.token);
+   img.src=mediaURL(m.mediaId);
    img.onclick=()=>window.open(img.src,'_blank','noopener');
    img.onerror=()=>{img.remove();const n=document.createElement('div');n.className='note';n.textContent='Photo unavailable';el.prepend(n)};
    el.append(img);
-  }else if(m.type==='image'&&!m.text){const n=document.createElement('div');n.className='note';n.textContent='[photo]';el.append(n)}
+  }else if(m.type==='audio'&&m.mediaId&&LIVE){
+   const a=document.createElement('audio');a.controls=true;a.preload='none';a.src=mediaURL(m.mediaId);
+   a.onerror=()=>{a.remove();const n=document.createElement('div');n.className='note';n.textContent='Voice message unavailable';el.prepend(n)};
+   el.append(a);
+  }else if((m.type==='image'||m.type==='audio')&&!m.text){const n=document.createElement('div');n.className='note';n.textContent=m.type==='audio'?'[voice message]':'[photo]';el.append(n)}
   if(m.text){const txt=document.createElement('div');txt.className='txt';txt.textContent=m.text;el.append(txt)}
   const counts={};Object.values(m.reacts||{}).forEach(e=>{if(e)counts[e]=(counts[e]||0)+1});
   if(Object.keys(counts).length){const r=document.createElement('div');r.className='reacts';
@@ -291,6 +299,7 @@ function drafts(ai){
   w.append(l,ta,b,u);box.append(w);
  });
 }
+function mediaURL(id){return LIVE.url+'/media/'+encodeURIComponent(id)+'?token='+encodeURIComponent(LIVE.token)}
 function when(ts){
  if(!ts)return '';
  const d=new Date(ts),n=new Date(),today=new Date(n.getFullYear(),n.getMonth(),n.getDate()).getTime();
@@ -409,6 +418,71 @@ $('sendbtn').onclick=()=>{
  if(LIVE&&t.jid)LIVE.ws.send(JSON.stringify({type:'send',jid:t.jid,text:v,quotedId:q&&q.id||undefined}));
  else t.msgs.push({sender:t.me,t:new Date(),text:v,replyTo:q?{text:q.text}:null,reacts:{}});
  $('out').value='';replyTo=null;updateQuote();render();
+};
+function shrinkImage(file){
+ return new Promise((resolve,reject)=>{
+  const url=URL.createObjectURL(file),img=new Image();
+  img.onload=()=>{
+   try{
+    const max=1600,scale=Math.min(1,max/Math.max(img.width,img.height));
+    const c=document.createElement('canvas');
+    c.width=Math.max(1,Math.round(img.width*scale));c.height=Math.max(1,Math.round(img.height*scale));
+    const ctx=c.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,c.width,c.height);ctx.drawImage(img,0,0,c.width,c.height);
+    resolve(c.toDataURL('image/jpeg',0.85).split(',')[1]);
+   }catch(e){reject(e)}finally{URL.revokeObjectURL(url)}
+  };
+  img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error('decode'))};
+  img.src=url;
+ });
+}
+function blobB64(blob){
+ return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(String(r.result).split(',')[1]||'');r.onerror=reject;r.readAsDataURL(blob)});
+}
+$('imgbtn').onclick=()=>$('imgfile').click();
+$('imgfile').onchange=async e=>{
+ const f=e.target.files&&e.target.files[0];e.target.value='';
+ if(!f)return;
+ const t=threads[cur];
+ if(!(LIVE&&t&&t.jid))return alert('Connect WhatsApp to send a photo.');
+ try{
+  const data=await shrinkImage(f);
+  if(data.length>12*1024*1024)return alert('That image is too large. Try a smaller one.');
+  LIVE.ws.send(JSON.stringify({type:'send_image',jid:t.jid,data,mime:'image/jpeg',caption:$('out').value.trim()}));
+  $('out').value='';replyTo=null;updateQuote();
+ }catch(err){alert('Could not read that image.')}
+};
+let recorder=null,recChunks=[],recTimer=null,recStarted=0;
+$('micbtn').onclick=async()=>{
+ if(recorder){try{recorder.stop()}catch(e){}return}
+ const t=threads[cur];
+ if(!(LIVE&&t&&t.jid))return alert('Connect WhatsApp to send a voice message.');
+ if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder)return alert('This browser cannot record audio.');
+ let stream;
+ try{stream=await navigator.mediaDevices.getUserMedia({audio:true})}
+ catch(e){return alert('Microphone permission is needed to record a voice message.')}
+ const types=['audio/ogg;codecs=opus','audio/webm;codecs=opus','audio/mp4'];
+ const mime=types.find(x=>MediaRecorder.isTypeSupported(x))||'';
+ recorder=new MediaRecorder(stream,mime?{mimeType:mime}:undefined);
+ recChunks=[];recStarted=Date.now();
+ recorder.ondataavailable=e=>{if(e.data&&e.data.size)recChunks.push(e.data)};
+ recorder.onstop=async()=>{
+  clearInterval(recTimer);recTimer=null;
+  stream.getTracks().forEach(x=>x.stop());
+  const blob=new Blob(recChunks,{type:recorder.mimeType||mime||'audio/webm'});
+  recorder=null;
+  $('micbtn').classList.remove('rec');$('micbtn').textContent='🎤';
+  const bar=$('rec');bar.hidden=true;bar.textContent='';
+  if(blob.size<800)return;
+  if(blob.size>10*1024*1024)return alert('That voice message is too long.');
+  try{
+   const data=await blobB64(blob);
+   LIVE.ws.send(JSON.stringify({type:'send_audio',jid:t.jid,data,mime:blob.type,ptt:/ogg/i.test(blob.type)}));
+  }catch(e){alert('Could not read the recording.')}
+ };
+ recorder.start();
+ $('micbtn').classList.add('rec');$('micbtn').textContent='⏹';
+ const bar=$('rec');bar.hidden=false;bar.textContent='Recording… tap ⏹ to send';
+ recTimer=setInterval(()=>{bar.textContent='Recording '+Math.floor((Date.now()-recStarted)/1000)+'s — tap ⏹ to send'},500);
 };
 let LIVE=null;
 function liveErr(m){gc.innerHTML='<h2>Could not connect</h2><p></p><button class="btn primary" id="gr">Try again</button>';gc.querySelector('p').textContent=m;$('gate').hidden=false;$('gr').onclick=step1}
