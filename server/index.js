@@ -220,6 +220,58 @@ function dropCall(callId) {
   return c;
 }
 
+// Group calls use a mesh: every participant connects directly to every other participant.
+// The server keeps the roster and relays setup messages; media never passes through it.
+const rooms = new Map(); // callId -> { host, media, members:Set, pending:Set, timer }
+const ROOM_MAX = 6;      // keeps mesh calls usable on phones; bigger rooms need an SFU
+const roomRoster = r => [...r.members].map(id => ({ id, name: active.get(id)?.peerName || 'Soul Sync user' }));
+function sendRoomRoster(callId) {
+  const r = rooms.get(callId);
+  if (!r) return;
+  const participants = roomRoster(r);
+  for (const id of r.members) wsSend(id, { type: 'room_roster', callId, media: r.media, participants });
+}
+function endRoom(callId, reason) {
+  const r = rooms.get(callId);
+  if (!r) return;
+  rooms.delete(callId);
+  clearTimeout(r.timer);
+  for (const id of new Set([...r.members, ...r.pending])) {
+    const w = active.get(id);
+    if (w && w.inCall === callId) w.inCall = null;
+    wsSend(id, { type: 'room_end', callId, reason });
+  }
+  broadcastPeers();
+}
+function expireInvite(callId, id) {
+  const r = rooms.get(callId);
+  if (!r || !r.pending.has(id)) return;
+  r.pending.delete(id);
+  const w = active.get(id);
+  if (w && w.inCall === callId) w.inCall = null;
+  wsSend(id, { type: 'room_end', callId, reason: 'timeout' });
+  broadcastPeers();
+}
+function leaveRoom(callId, uid, reason = 'left') {
+  const r = rooms.get(callId);
+  if (!r) return;
+  const wasMember = r.members.delete(uid);
+  r.pending.delete(uid);
+  const w = active.get(uid);
+  if (w && w.inCall === callId) w.inCall = null;
+  if (!r.members.size) {
+    rooms.delete(callId);
+    clearTimeout(r.timer);
+    broadcastPeers();
+    return;
+  }
+  if (wasMember) {
+    for (const id of r.members) wsSend(id, { type: 'room_left', callId, from: uid });
+    sendRoomRoster(callId);
+  }
+  broadcastPeers();
+}
+
 // Drop dead connections so their WhatsApp sessions get cleaned up
 setInterval(() => {
   for (const ws of wss.clients) {
@@ -581,6 +633,9 @@ wss.on('connection', (ws, req) => {
       dropCall(callId);
       wsSend(other, { type: 'call_end', callId, reason: 'disconnected' });
     }
+    for (const [roomId, r] of [...rooms]) {
+      if (r.members.has(userId) || r.pending.has(userId)) leaveRoom(roomId, userId, 'disconnected');
+    }
     broadcastPeers();
     archive.clear();
     oldest.clear();
@@ -616,6 +671,9 @@ wss.on('connection', (ws, req) => {
       if (connection) console.log('[wa] connection', connection, 'code:', lastDisconnect?.error?.output?.statusCode || '-', 'reason:', lastDisconnect?.error?.message || '-');
       if (connection === 'open') {
         attempts = 0;
+        // Remember this tab's own WhatsApp ids so a chat can be matched to an online Soul Sync user.
+        ws.waJid = sock.user?.id || '';
+        ws.waLid = sock.user?.lid || '';
         send({ type: 'ready' });
         // Saved contact names live in WhatsApp's app-state 'regular' collection. The first sync
         // can race with history, so pull it once more after the connection settles.
@@ -750,6 +808,131 @@ wss.on('connection', (ws, req) => {
           const reason = rejected ? (msg.reason === 'busy' ? 'busy' : 'declined') : 'ended';
           dropCall(callId);
           wsSend(other, { type: rejected ? 'call_reject' : 'call_end', callId, reason });
+        }
+      }
+      // ---- group call rooms (mesh) ----
+      if (msg.type === 'group_call') {
+        const callId = String(msg.callId || '');
+        const media = msg.media === 'video' ? 'video' : 'audio';
+        const to = [...new Set((Array.isArray(msg.to) ? msg.to : []).map(String))]
+          .filter(id => id !== userId && active.has(id));
+        if (!callIdOk(callId) || !to.length || to.length > ROOM_MAX - 1 || ws.inCall) {
+          return send({ type: 'call_failed', callId, reason: 'unavailable' });
+        }
+        if (to.some(id => active.get(id).inCall)) return send({ type: 'call_busy', callId, reason: 'busy' });
+        if (!allowCall()) return send({ type: 'call_failed', callId, reason: 'rate' });
+        const r = { host: userId, media, members: new Set([userId]), pending: new Set(to), timer: null };
+        rooms.set(callId, r);
+        ws.inCall = callId;
+        for (const id of to) active.get(id).inCall = callId;
+        for (const id of to) {
+          wsSend(id, { type: 'room_invite', callId, from: userId, fromName: ws.peerName, media, count: to.length + 1 });
+          const t = setTimeout(() => expireInvite(callId, id), 60000);
+          if (t.unref) t.unref();
+        }
+        send({ type: 'room_started', callId, media, participants: [{ id: userId, name: ws.peerName }] });
+        r.timer = setTimeout(() => {
+          const live = rooms.get(callId);
+          if (live && live.members.size <= 1) endRoom(callId, 'timeout');
+        }, 60000);
+        broadcastPeers();
+      }
+      if (msg.type === 'group_join') {
+        const callId = String(msg.callId || '');
+        const r = rooms.get(callId);
+        if (!r || !r.pending.has(userId)) return send({ type: 'room_end', callId, reason: 'timeout' });
+        r.pending.delete(userId);
+        r.members.add(userId);
+        if (r.timer) { clearTimeout(r.timer); r.timer = null; }
+        ws.inCall = callId;
+        wsSend(userId, { type: 'room_joined', callId, media: r.media, participants: roomRoster(r) });
+        for (const id of r.members) {
+          if (id !== userId) wsSend(id, { type: 'room_peer', callId, peer: { id: userId, name: ws.peerName } });
+        }
+        sendRoomRoster(callId);
+        broadcastPeers();
+      }
+      if (msg.type === 'group_reject') {
+        const callId = String(msg.callId || '');
+        const r = rooms.get(callId);
+        if (!r || !r.pending.has(userId)) return;
+        r.pending.delete(userId);
+        const w = active.get(userId);
+        if (w && w.inCall === callId) w.inCall = null;
+        for (const id of r.members) wsSend(id, { type: 'room_reject', callId, from: userId, name: w?.peerName || '' });
+        if (!r.members.size && !r.pending.size) { rooms.delete(callId); clearTimeout(r.timer); }
+        broadcastPeers();
+      }
+      if (msg.type === 'group_add') {
+        const callId = String(msg.callId || '');
+        const r = rooms.get(callId);
+        if (!r || !r.members.has(userId)) return;
+        const add = [...new Set((Array.isArray(msg.to) ? msg.to : []).map(String))]
+          .filter(id => id !== userId && !r.members.has(id) && !r.pending.has(id) && active.get(id)?.readyState === 1 && !active.get(id).inCall);
+        if (!add.length) return send({ type: 'error', message: 'No one available to add.' });
+        if (r.members.size + r.pending.size + add.length > ROOM_MAX) {
+          return send({ type: 'error', message: 'A call can hold up to ' + ROOM_MAX + ' people.' });
+        }
+        for (const id of add) {
+          r.pending.add(id);
+          active.get(id).inCall = callId;
+          wsSend(id, { type: 'room_invite', callId, from: userId, fromName: ws.peerName, media: r.media, count: r.members.size + r.pending.size + 1 });
+          const t = setTimeout(() => expireInvite(callId, id), 60000);
+          if (t.unref) t.unref();
+        }
+        send({ type: 'room_added', callId, invited: add.map(id => ({ id, name: active.get(id)?.peerName || '' })) });
+        broadcastPeers();
+      }
+      if (msg.type === 'group_leave') {
+        leaveRoom(String(msg.callId || ''), userId, 'left');
+      }
+      if (msg.type === 'call_contact') {
+        // "Call this chat": match the WhatsApp jid from the imported chat to an online Soul Sync
+        // user who has linked that same account. The number is never sent to the browser.
+        const callId = String(msg.callId || '');
+        const media = msg.media === 'video' ? 'video' : 'audio';
+        const jid = String(msg.jid || '');
+        if (!callIdOk(callId) || !jid || jid.endsWith('@g.us')) {
+          return send({ type: 'contact_call_failed', callId, reason: 'group' });
+        }
+        const want = new Set([norm(jid), lidToPn.get(norm(jid)), pnToLid.get(norm(jid))].filter(Boolean));
+        let targetId = null;
+        for (const [uid, w] of active) {
+          if (uid === userId || w.readyState !== 1) continue;
+          const have = [w.waJid, w.waLid].filter(Boolean).map(norm);
+          if (have.some(x => want.has(x))) { targetId = uid; break; }
+        }
+        if (!targetId) return send({ type: 'contact_call_failed', callId, reason: 'offline' });
+        if (ws.inCall || active.get(targetId).inCall) return send({ type: 'call_busy', callId, reason: 'busy' });
+        if (!allowCall()) return send({ type: 'call_failed', callId, reason: 'rate' });
+        const timer = setTimeout(() => {
+          const c = calls.get(callId);
+          if (!c || c.state !== 'ringing') return;
+          dropCall(callId);
+          wsSend(userId, { type: 'call_end', callId, reason: 'timeout' });
+          wsSend(targetId, { type: 'call_end', callId, reason: 'timeout' });
+        }, 60000);
+        calls.set(callId, { a: userId, b: targetId, state: 'ringing', media, timer });
+        ws.inCall = callId;
+        active.get(targetId).inCall = callId;
+        const peerName = active.get(targetId).peerName || 'Soul Sync user';
+        wsSend(targetId, { type: 'call_invite', callId, from: userId, fromName: ws.peerName, media });
+        send({ type: 'contact_call_started', callId, to: targetId, peerName, media });
+        broadcastPeers();
+      }
+      if (msg.type === 'room_offer' || msg.type === 'room_answer' || msg.type === 'room_ice') {
+        const callId = String(msg.callId || '');
+        const r = rooms.get(callId);
+        if (!r || !r.members.has(userId)) return;
+        const to = String(msg.to || '');
+        if (!r.members.has(to) || to === userId) return;
+        if (msg.type === 'room_ice') {
+          if (msg.candidate != null && JSON.stringify(msg.candidate).length > 4000) return;
+          wsSend(to, { type: 'room_ice', callId, from: userId, fromName: ws.peerName, candidate: msg.candidate ?? null });
+        } else {
+          const sdp = msg.sdp;
+          if (!sdp || typeof sdp !== 'object' || typeof sdp.sdp !== 'string' || sdp.sdp.length > 120000) return;
+          wsSend(to, { type: msg.type, callId, from: userId, fromName: ws.peerName, sdp: { type: msg.type === 'room_offer' ? 'offer' : 'answer', sdp: sdp.sdp } });
         }
       }
       if (msg.type === 'offer' || msg.type === 'answer' || msg.type === 'ice') {
