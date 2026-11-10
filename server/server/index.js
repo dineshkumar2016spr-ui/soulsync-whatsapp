@@ -101,7 +101,7 @@ app.get('/media/:id', async (req, res) => {
 });
 
 // 1) Consent: all four boxes must be true. Stored with a timestamp and policy version.
-app.post('/api/consent', limiter(10, 3600e3), (req, res) => {
+app.post('/api/consent', limiter(30, 3600e3), (req, res) => {
   const c = req.body || {};
   if (!(c.terms === true && c.privacy === true && c.readChats === true && c.aiAnalysis === true)) {
     return res.status(400).json({ error: 'All consents are required' });

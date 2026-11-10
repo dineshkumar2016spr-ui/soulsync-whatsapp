@@ -99,6 +99,9 @@ select{background:var(--bg);border:1px solid var(--line);border-radius:8px;paddi
 .peer b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
 .peer button{padding:5px 9px;font-size:13px;white-space:nowrap}
 #incoming{z-index:60}
+.callfab{position:fixed;right:16px;bottom:16px;z-index:55;background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.callfab[hidden]{display:none}
+@media (max-width:1000px){.callfab{bottom:72px}}
 .calltoast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#1d2147;color:#fff;padding:10px 16px;border-radius:10px;z-index:90;font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,.3)}
 @media (max-width:600px){#local{width:32%}.callctl button{min-width:64px;padding:9px 12px;font-size:13px}.calltop{padding:12px}.callctl{padding:12px;gap:6px}}
 .gate{position:fixed;inset:0;z-index:50;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto}
@@ -166,6 +169,7 @@ select{background:var(--bg);border:1px solid var(--line);border-radius:8px;paddi
   </div>
  </section>
 </div>
+<button class="btn callfab" id="gatecall" hidden>📞 Soul Sync calls</button>
 <div class="gate" id="gate" role="dialog" aria-modal="true" aria-label="Connect WhatsApp"><div class="card" id="gcard"></div></div>
 <div class="gate" id="frwd" role="dialog" aria-modal="true" aria-label="Forward message" hidden><div class="card"><h2>Forward to</h2><p>Choose an imported chat.</p><div id="flist"></div><button class="btn" id="fcancel" style="width:100%;margin-top:6px">Cancel</button></div></div>
 <div class="gate" id="calldlg" role="dialog" aria-modal="true" aria-label="Soul Sync calls" hidden><div class="card">
@@ -554,6 +558,7 @@ async function live(url){
   gc.innerHTML='<h2>Link this device</h2><p>In WhatsApp open Settings, Linked devices, Link a device, then scan. The code refreshes about every 20 seconds.</p><div id="qrbox" style="width:230px;margin:0 auto 12px;padding:8px;background:#fff;border-radius:8px;min-height:230px"></div><div class="code" id="pc"></div><input id="ph" placeholder="Phone with country code, e.g. 14155550123" style="width:100%;margin-bottom:8px;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)"><button class="btn" id="pairbtn" style="width:100%">Use a pairing code instead</button>';
   $('pairbtn').onclick=()=>{const p=$('ph').value.trim();if(p)ws.send(JSON.stringify({type:'pair',phone:p}))};
   sendCall({type:'hello',name:myCallName()});
+  syncGateCall();
  };
 
  function drawList(){
@@ -641,7 +646,7 @@ async function live(url){
   else if(m.type==='deleted'){location.reload()}
   else if(m.type==='error'){const pc=$('pc');if(pc&&!$('gate').hidden)pc.textContent=m.message;else $('tone').textContent=m.message}
  };
- ws.onclose=()=>{if(CALL||INVITE){endCallLocal('ended',false);hideIncoming()}if(!$('gate').hidden)liveErr('The connection closed before linking finished.');else $('tone').textContent='Disconnected'};
+ ws.onclose=()=>{syncGateCall();if(CALL||INVITE){endCallLocal('ended',false);hideIncoming()}if(!$('gate').hidden)liveErr('The connection closed before linking finished.');else $('tone').textContent='Disconnected'};
 }
 $('gen').onclick=async()=>{
  const t=threads[cur];
@@ -676,9 +681,13 @@ $('fcancel').onclick=()=>{forwarding=null;$('frwd').hidden=true};
 const CALL_PEERS=new Map();
 let CALL=null,INVITE=null,RING=null,CALL_ICE=null,nameTimer=null;
 function myCallName(){
- let n='';try{n=localStorage.getItem('ss_callname')||''}catch(e){}
+ let n='';
+ // Per-tab so two tabs (or two devices) can use different names; localStorage only seeds a new tab.
+ try{n=sessionStorage.getItem('ss_callname')||''}catch(e){}
+ if(!n){try{n=localStorage.getItem('ss_callname')||''}catch(e){}}
  n=n.replace(/\s+/g,' ').trim().slice(0,40);
- if(!n){n='Guest '+Math.floor(1000+Math.random()*9000);try{localStorage.setItem('ss_callname',n)}catch(e){}}
+ if(!n)n='Guest '+Math.floor(1000+Math.random()*9000);
+ try{sessionStorage.setItem('ss_callname',n)}catch(e){}
  return n;
 }
 function sendCall(o){try{if(LIVE&&LIVE.ws&&LIVE.ws.readyState===1)LIVE.ws.send(JSON.stringify(o))}catch(e){}}
@@ -700,17 +709,24 @@ function renderPeers(){
   row.append(b,a,v);box.append(row);
  });
 }
-$('callbtn').onclick=()=>{
- if(!LIVE)return alert('Connect WhatsApp first.');
+function openCallDialog(){
+ if(!LIVE)return alert('Connect first.');
+ $('gatecall').hidden=true;
  $('myname').value=myCallName();
  $('calldlg').hidden=false;
  renderPeers();
  sendCall({type:'hello',name:myCallName()});
-};
-$('callclose').onclick=()=>$('calldlg').hidden=true;
+}
+function syncGateCall(){
+ const b=$('gatecall');if(!b)return;
+ b.hidden=!($('gate')&&!$('gate').hidden&&LIVE&&LIVE.ws&&LIVE.ws.readyState===1);
+}
+$('callbtn').onclick=openCallDialog;
+$('gatecall').onclick=openCallDialog;
+$('callclose').onclick=()=>{$('calldlg').hidden=true;syncGateCall()};
 $('myname').oninput=e=>{
  const n=e.target.value.replace(/\s+/g,' ').slice(0,40);
- try{localStorage.setItem('ss_callname',n)}catch(_){}
+ try{sessionStorage.setItem('ss_callname',n);localStorage.setItem('ss_callname',n)}catch(_){}
  clearTimeout(nameTimer);nameTimer=setTimeout(()=>sendCall({type:'hello',name:n}),450);
 };
 function stopRing(){if(!RING)return;clearInterval(RING.timer);try{RING.ctx.close()}catch(e){}RING=null}
@@ -841,6 +857,7 @@ function endCallLocal(reason,notify,status){
  $('callavatar').classList.remove('on');
  $('calltimer').textContent='';$('callstatus').textContent='';
  stopRing();
+ syncGateCall();
  if(status)toastCall(status);
 }
 function hideIncoming(){INVITE=null;$('incoming').hidden=true;stopRing()}
@@ -966,6 +983,7 @@ function handleCallMessage(m){
  return false;
 }
 function init(){if(innerWidth<=1000)show('p2');step1()}
+try{new MutationObserver(syncGateCall).observe($('gate'),{attributes:true,attributeFilter:['hidden']})}catch(e){}
 init();
 </script>
 </body>
