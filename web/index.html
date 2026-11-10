@@ -89,6 +89,17 @@ select{background:var(--bg);border:1px solid var(--line);border-radius:8px;paddi
 .callavatar i{width:92px;height:92px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font:600 36px Fraunces,Georgia,serif;font-style:normal}
 #local{position:absolute;right:14px;bottom:14px;width:26%;max-width:220px;aspect-ratio:3/4;object-fit:cover;border-radius:12px;background:#000;transform:scaleX(-1);box-shadow:0 6px 20px rgba(0,0,0,.4)}
 #local.hide{display:none}
+.callgrid{position:absolute;inset:0;display:none;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:6px;padding:6px;align-content:center;overflow:auto}
+.callgrid.on{display:grid}
+.cg{position:relative;background:#05070f;border-radius:10px;overflow:hidden;min-height:130px}
+.cg video{width:100%;height:100%;object-fit:cover;display:block}
+.cg span{position:absolute;left:8px;bottom:6px;background:rgba(0,0,0,.55);padding:2px 8px;border-radius:6px;font-size:12px;max-width:80%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cg.audio{display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 40%,#232a4a,#0a0f1e)}
+.cg.audio video{display:none}
+.cg.audio span{position:static;background:none;font-size:15px}
+.peer input[type=checkbox]{width:16px;height:16px;accent-color:var(--accent);flex:none}
+.groupbtns{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.groupbtns button{flex:1;white-space:nowrap}
 .calltop{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:16px;background:linear-gradient(rgba(0,0,0,.55),transparent)}
 .calltop b{font-size:17px}.calltop .note{color:#c9cdea;margin:2px 0 0}
 .callctl{display:flex;gap:10px;justify-content:center;padding:16px;flex-wrap:wrap;background:#0b0f1c}
@@ -142,7 +153,11 @@ select{background:var(--bg);border:1px solid var(--line);border-radius:8px;paddi
 
  <section class="panel center" id="p2" aria-label="Conversation">
   <div class="head"><h2 id="title">Conversation</h2>
-   <label class="note">I am <select id="me" aria-label="Which sender are you"></select></label></div>
+   <div style="display:flex;gap:4px;align-items:center;min-width:0">
+    <button class="btn icon" id="chatcall" type="button" aria-label="Audio call this chat" title="Audio call this chat">📞</button>
+    <button class="btn icon" id="chatvideo" type="button" aria-label="Video call this chat" title="Video call this chat">🎥</button>
+    <label class="note">I am <select id="me" aria-label="Which sender are you"></select></label>
+   </div></div>
   <div id="olderbar" style="display:none;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 12px;border-bottom:1px solid var(--line)">
    <button class="btn" id="older">Sync older messages</button>
    <button class="btn" id="olderall">Sync full history</button>
@@ -177,6 +192,8 @@ select{background:var(--bg);border:1px solid var(--line);border-radius:8px;paddi
  <label class="note" for="myname">Your name for calls</label>
  <input id="myname" maxlength="40" autocomplete="nickname" style="width:100%;margin:4px 0 12px;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)">
  <div id="peerlist"></div>
+ <div class="groupbtns"><button class="btn" id="gvideo" type="button">🎥 Group video</button><button class="btn" id="gaudio" type="button">📞 Group audio</button></div>
+ <p class="note" style="margin:6px 0 0">Tick people above to start a group call, or use 📞 / 🎥 on one person for a 1-to-1 call.</p>
  <p class="note" id="callnote">No one else is online yet. Open Soul Sync in another tab, or share this page with someone.</p>
  <button class="btn" id="callclose" style="width:100%;margin-top:10px">Close</button>
 </div></div>
@@ -185,9 +202,16 @@ select{background:var(--bg);border:1px solid var(--line);border-radius:8px;paddi
  <button class="btn primary" id="incaccept">Accept</button>
  <button class="btn" id="increject" style="width:100%;margin-top:8px">Decline</button>
 </div></div>
+<div class="gate" id="adddlg" role="dialog" aria-modal="true" aria-label="Add people to call" hidden><div class="card">
+ <h2>Add to call</h2><p>Choose people who are online. The call can hold up to 6 people.</p>
+ <div id="addlist"></div>
+ <button class="btn primary" id="addgo" style="width:100%;margin-top:8px">Add selected</button>
+ <button class="btn" id="addclose" style="width:100%;margin-top:6px">Close</button>
+</div></div>
 <div class="callui" id="callui" role="dialog" aria-modal="true" aria-label="Call">
  <div class="callstage">
   <video id="remote" autoplay playsinline></video>
+  <div class="callgrid" id="callgrid"></div>
   <div class="callavatar" id="callavatar"><i id="callinitial">?</i><b id="callavname"></b><span class="note" id="callavsub"></span></div>
   <video id="local" autoplay playsinline muted class="hide"></video>
   <div class="calltop"><div><b id="callpeer"></b><div class="note" id="callstatus">Calling…</div></div><span id="calltimer" class="note"></span></div>
@@ -197,6 +221,7 @@ select{background:var(--bg);border:1px solid var(--line);border-radius:8px;paddi
   <button id="cambtn" type="button">📷 Camera</button>
   <button id="sharebtn" type="button">🖥 Share</button>
   <button id="flipbtn" type="button">🔄 Flip</button>
+  <button id="addbtn" type="button" hidden>➕ Add</button>
   <button id="hangbtn" type="button" class="hang">End call</button>
  </div>
 </div>
@@ -646,7 +671,7 @@ async function live(url){
   else if(m.type==='deleted'){location.reload()}
   else if(m.type==='error'){const pc=$('pc');if(pc&&!$('gate').hidden)pc.textContent=m.message;else $('tone').textContent=m.message}
  };
- ws.onclose=()=>{syncGateCall();if(CALL||INVITE){endCallLocal('ended',false);hideIncoming()}if(!$('gate').hidden)liveErr('The connection closed before linking finished.');else $('tone').textContent='Disconnected'};
+ ws.onclose=()=>{syncGateCall();if(CALL||GROUP||INVITE){endCallLocal('ended',false);hideIncoming()}if(!$('gate').hidden)liveErr('The connection closed before linking finished.');else $('tone').textContent='Disconnected'};
 }
 $('gen').onclick=async()=>{
  const t=threads[cur];
@@ -679,7 +704,8 @@ document.addEventListener('click',e=>{if(!ep.contains(e.target)&&e.target!==$('e
 $('fcancel').onclick=()=>{forwarding=null;$('frwd').hidden=true};
 /* ---- Soul Sync calls: WebRTC between two connected Soul Sync users ---- */
 const CALL_PEERS=new Map();
-let CALL=null,INVITE=null,RING=null,CALL_ICE=null,nameTimer=null;
+const GROUP_PICK=new Set();
+let CALL=null,GROUP=null,INVITE=null,RING=null,CALL_ICE=null,nameTimer=null;
 function myCallName(){
  let n='';
  // Per-tab so two tabs (or two devices) can use different names; localStorage only seeds a new tab.
@@ -701,12 +727,15 @@ function renderPeers(){
  $('callnote').textContent=list.length?'Calls connect directly between browsers. The other person must accept.':'No one else is online yet. Open Soul Sync in another tab, or share this page with someone.';
  list.forEach(p=>{
   const row=document.createElement('div');row.className='peer';
+  const cb=document.createElement('input');cb.type='checkbox';cb.disabled=!!p.inCall;cb.checked=GROUP_PICK.has(p.id);
+  cb.setAttribute('aria-label','Include '+p.name+' in a group call');
+  cb.onchange=()=>{if(cb.checked)GROUP_PICK.add(p.id);else GROUP_PICK.delete(p.id)};
   const b=document.createElement('b');b.textContent=p.name+(p.inCall?' · in a call':'');
   const a=document.createElement('button');a.type='button';a.className='btn';a.textContent='📞';a.title='Audio call';a.disabled=!!p.inCall;
   a.onclick=()=>{$('calldlg').hidden=true;startCall(p,'audio')};
   const v=document.createElement('button');v.type='button';v.className='btn';v.textContent='🎥';v.title='Video call';v.disabled=!!p.inCall;
   v.onclick=()=>{$('calldlg').hidden=true;startCall(p,'video')};
-  row.append(b,a,v);box.append(row);
+  row.append(cb,b,a,v);box.append(row);
  });
 }
 function openCallDialog(){
@@ -724,6 +753,15 @@ function syncGateCall(){
 $('callbtn').onclick=openCallDialog;
 $('gatecall').onclick=openCallDialog;
 $('callclose').onclick=()=>{$('calldlg').hidden=true;syncGateCall()};
+function startGroupFromPick(media){
+ const ids=[...GROUP_PICK].filter(id=>CALL_PEERS.has(id));
+ if(!ids.length)return alert('Tick at least one person for a group call.');
+ if(ids.length>5)return alert('A group call can hold up to 6 people.');
+ $('calldlg').hidden=true;
+ startGroup(ids,media);
+}
+$('gvideo').onclick=()=>startGroupFromPick('video');
+$('gaudio').onclick=()=>startGroupFromPick('audio');
 $('myname').oninput=e=>{
  const n=e.target.value.replace(/\s+/g,' ').slice(0,40);
  try{sessionStorage.setItem('ss_callname',n);localStorage.setItem('ss_callname',n)}catch(_){}
@@ -753,6 +791,9 @@ function ring(on,incoming){
 }
 function showCallUI(status,video){
  $('callui').classList.add('on');
+ $('remote').style.display='';
+ $('callgrid').classList.remove('on');$('callgrid').textContent='';
+ $('addbtn').hidden=true;
  $('callpeer').textContent=CALL?CALL.peerName:'';
  $('callstatus').textContent=status||'';
  $('callavname').textContent=CALL?CALL.peerName:'';
@@ -767,7 +808,7 @@ function showCallUI(status,video){
  $('calltimer').textContent='';
 }
 async function startCall(peer,media){
- if(CALL)return alert('You are already in a call.');
+ if(CALL||GROUP)return alert('You are already in a call.');
  if(!LIVE||!peer)return;
  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)return alert('This browser cannot make calls.');
  let stream;
@@ -781,8 +822,9 @@ async function startCall(peer,media){
  sendCall({type:'call',to:peer.id,callId:CALL.callId,media});
 }
 async function acceptCall(){
- const inv=INVITE;if(!inv||CALL)return;
+ const inv=INVITE;if(!inv||CALL||GROUP)return;
  INVITE=null;$('incoming').hidden=true;stopRing();
+ if(inv.group)return acceptGroup(inv);
  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){sendCall({type:'call_reject',to:inv.from,callId:inv.callId,reason:'declined'});return toastCall('This browser cannot make calls.')}
  let stream;
  try{stream=await navigator.mediaDevices.getUserMedia(inv.media==='video'?{audio:true,video:{width:{ideal:1280},height:{ideal:720},facingMode:'user'}}:{audio:true})}
@@ -794,10 +836,38 @@ async function acceptCall(){
  makePC();
  sendCall({type:'call_accept',to:inv.from,callId:inv.callId});
 }
+function callChat(media){
+ const t=threads[cur];
+ if(!t)return;
+ if(!LIVE)return alert('Connect first.');
+ if(CALL||GROUP)return alert('You are already in a call.');
+ if(!t.jid)return alert('This chat came from a text file. Import it from WhatsApp to call its contact.');
+ if(t.jid.endsWith('@g.us')){
+  openCallDialog();
+  $('callnote').textContent='This is a group chat. Tick the Soul Sync members you want in the call.';
+  return;
+ }
+ startContactCall(t,media);
+}
+async function startContactCall(t,media){
+ if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)return alert('This browser cannot make calls.');
+ let stream;
+ try{stream=await navigator.mediaDevices.getUserMedia(media==='video'?{audio:true,video:{width:{ideal:1280},height:{ideal:720},facingMode:'user'}}:{audio:true})}
+ catch(e){return alert(media==='video'?'Camera and microphone permission are needed for a video call.':'Microphone permission is needed for a call.')}
+ CALL={callId:newCallId(),peerId:null,peerName:t.name,media,role:'caller',local:stream,pc:null,ice:[],timer:null,started:0,muted:false,screen:null};
+ showCallUI('Calling '+t.name+'…',media==='video');
+ $('local').srcObject=stream;
+ ring(true,false);
+ sendCall({type:'call_contact',callId:CALL.callId,jid:t.jid,media});
+}
+$('chatcall').onclick=()=>callChat('audio');
+$('chatvideo').onclick=()=>callChat('video');
 $('incaccept').onclick=acceptCall;
 $('increject').onclick=()=>{
  const inv=INVITE;INVITE=null;$('incoming').hidden=true;stopRing();
- if(inv)sendCall({type:'call_reject',to:inv.from,callId:inv.callId,reason:'declined'});
+ if(!inv)return;
+ if(inv.group)sendCall({type:'group_reject',callId:inv.callId});
+ else sendCall({type:'call_reject',to:inv.from,callId:inv.callId,reason:'declined'});
 };
 function makePC(){
  if(!CALL)return null;
@@ -842,10 +912,11 @@ function startCallTimer(){
  CALL.timer=setInterval(()=>{if(!CALL)return;const s=Math.max(0,Math.floor((Date.now()-CALL.started)/1000));$('calltimer').textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')},1000);
 }
 function endCallLocal(reason,notify,status){
+ if(GROUP)return endGroup(reason,notify,status);
  const c=CALL;
  if(c){
   CALL=null;
-  if(notify!==false&&c.peerId)sendCall({type:'call_end',to:c.peerId,callId:c.callId});
+  if(notify!==false&&c.callId)sendCall({type:'call_end',to:c.peerId||undefined,callId:c.callId});
   clearInterval(c.timer);
   try{c.pc&&c.pc.close()}catch(e){}
   try{c.local&&c.local.getTracks().forEach(t=>t.stop())}catch(e){}
@@ -861,10 +932,209 @@ function endCallLocal(reason,notify,status){
  if(status)toastCall(status);
 }
 function hideIncoming(){INVITE=null;$('incoming').hidden=true;stopRing()}
+
+/* ---- multi-person calls (mesh: each participant connects to every other) ---- */
+function showGroupUI(status){
+ $('callui').classList.add('on');
+ $('remote').style.display='none';
+ $('callgrid').classList.add('on');
+ $('callgrid').textContent='';
+ $('callavatar').classList.remove('on');
+ $('local').classList.toggle('hide',!GROUP||GROUP.media!=='video');
+ $('callpeer').textContent='Group call';
+ $('callstatus').textContent=status||'';
+ $('calltimer').textContent='';
+ $('addbtn').hidden=false;
+ const video=!!GROUP&&GROUP.media==='video';
+ $('cambtn').hidden=!video;$('sharebtn').hidden=!video;$('flipbtn').hidden=!video;
+ $('mutebtn').classList.remove('off');$('mutebtn').textContent='🎙 Mute';
+ $('cambtn').classList.remove('off');$('cambtn').textContent='📷 Camera';
+ $('sharebtn').classList.remove('off');$('sharebtn').textContent='🖥 Share';
+}
+async function startGroup(ids,media){
+ if(CALL||GROUP)return alert('You are already in a call.');
+ if(!LIVE||!ids.length)return;
+ if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)return alert('This browser cannot make calls.');
+ let stream;
+ try{stream=await navigator.mediaDevices.getUserMedia(media==='video'?{audio:true,video:{width:{ideal:1280},height:{ideal:720},facingMode:'user'}}:{audio:true})}
+ catch(e){return alert(media==='video'?'Camera and microphone permission are needed for a video call.':'Microphone permission is needed for a call.')}
+ GROUP={callId:newCallId(),media,role:'host',local:stream,peers:new Map(),timer:null,started:0,muted:false,screen:null};
+ showGroupUI('Calling '+ids.length+'…');
+ $('local').srcObject=stream;
+ ring(true,false);
+ sendCall({type:'group_call',to:ids,callId:GROUP.callId,media});
+}
+async function acceptGroup(inv){
+ if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){sendCall({type:'group_reject',callId:inv.callId});return toastCall('This browser cannot make calls.')}
+ let stream;
+ try{stream=await navigator.mediaDevices.getUserMedia(inv.media==='video'?{audio:true,video:{width:{ideal:1280},height:{ideal:720},facingMode:'user'}}:{audio:true})}
+ catch(e){sendCall({type:'group_reject',callId:inv.callId});return toastCall('Microphone/camera permission is needed to accept.')}
+ GROUP={callId:inv.callId,media:inv.media,role:'member',local:stream,peers:new Map(),timer:null,started:0,muted:false,screen:null};
+ showGroupUI('Joining…');
+ $('local').srcObject=stream;
+ sendCall({type:'group_join',callId:inv.callId});
+}
+function onRoomInvite(m){
+ if(!m||!m.callId)return;
+ if(CALL||GROUP){sendCall({type:'group_reject',callId:m.callId});return}
+ if(INVITE){
+  if(INVITE.group)sendCall({type:'group_reject',callId:INVITE.callId});
+  else sendCall({type:'call_reject',to:INVITE.from,callId:INVITE.callId,reason:'busy'});
+ }
+ INVITE={...m,group:true};
+ $('incname').textContent=(m.fromName||'Someone')+' invited you';
+ $('inctype').textContent='Group '+(m.media==='video'?'video':'audio')+' call · '+(m.count||'')+' people';
+ $('incoming').hidden=false;
+ ring(true,true);
+ try{navigator.vibrate&&navigator.vibrate([300,150,300])}catch(e){}
+}
+function groupPeer(id,name){
+ let p=GROUP.peers.get(id);
+ if(!p){p={id,name:name||'Guest',pc:null,ice:[],stream:null,el:null,video:null};GROUP.peers.set(id,p);addGroupTile(p)}
+ if(name){p.name=name;const s=p.el&&p.el.querySelector('span');if(s)s.textContent=name}
+ return p;
+}
+function addGroupTile(p){
+ if(!GROUP||p.el)return;
+ const d=document.createElement('div');d.className='cg'+(GROUP.media==='audio'?' audio':'');
+ const v=document.createElement('video');v.autoplay=true;v.playsInline=true;d.append(v);
+ const s=document.createElement('span');s.textContent=p.name;d.append(s);
+ $('callgrid').append(d);p.el=d;p.video=v;
+ if(p.stream){v.srcObject=p.stream;if(v.play)v.play().catch(()=>{})}
+}
+function removeGroupPeer(id){
+ const p=GROUP&&GROUP.peers.get(id);if(!p)return;
+ try{p.pc&&p.pc.close()}catch(e){}
+ if(p.el)p.el.remove();
+ GROUP.peers.delete(id);
+}
+function groupPC(p){
+ if(!GROUP)return null;
+ if(p.pc)return p.pc;
+ if(!window.RTCPeerConnection)return null;
+ const pc=new RTCPeerConnection({iceServers:CALL_ICE||[{urls:['stun:stun.l.google.com:19302']}]});
+ p.pc=pc;
+ GROUP.local.getTracks().forEach(t=>pc.addTrack(t,GROUP.local));
+ pc.onicecandidate=e=>{if(e.candidate&&GROUP&&p.pc===pc)sendCall({type:'room_ice',callId:GROUP.callId,to:p.id,candidate:e.candidate.toJSON?e.candidate.toJSON():e.candidate})};
+ pc.ontrack=e=>{
+  if(!GROUP)return;
+  p.stream=e.streams&&e.streams[0]?e.streams[0]:new MediaStream([e.track]);
+  if(p.video){p.video.srcObject=p.stream;if(p.video.play)p.video.play().catch(()=>{})}
+ };
+ pc.onconnectionstatechange=()=>{
+  if(!GROUP||p.pc!==pc)return;
+  if(pc.connectionState==='connected'){stopRing();$('callstatus').textContent=(GROUP.peers.size+1)+' in call';startGroupTimer()}
+  else if(pc.connectionState==='failed'){toastCall((p.name||'Someone')+' lost connection.');removeGroupPeer(p.id)}
+ };
+ return pc;
+}
+async function groupOffer(p){
+ const pc=groupPC(p);if(!pc)return;
+ try{const offer=await pc.createOffer();await pc.setLocalDescription(offer);sendCall({type:'room_offer',callId:GROUP.callId,to:p.id,sdp:{type:'offer',sdp:offer.sdp}})}catch(e){}
+}
+function groupAddIce(p,c){
+ if(!p.pc||!p.pc.remoteDescription){p.ice.push(c);return}
+ try{const q=p.pc.addIceCandidate(c);if(q&&q.catch)q.catch(()=>{})}catch(e){}
+}
+function groupFlushIce(p){if(!p.pc)return;const q=p.ice.splice(0);q.forEach(c=>groupAddIce(p,c))}
+function startGroupTimer(){
+ if(!GROUP||GROUP.started)return;
+ GROUP.started=Date.now();clearInterval(GROUP.timer);
+ GROUP.timer=setInterval(()=>{if(!GROUP)return;const s=Math.max(0,Math.floor((Date.now()-GROUP.started)/1000));$('calltimer').textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')},1000);
+}
+function endGroup(reason,notify,status){
+ const g=GROUP;GROUP=null;
+ if(g){
+  if(notify!==false)sendCall({type:'group_leave',callId:g.callId});
+  clearInterval(g.timer);
+  for(const p of g.peers.values()){try{p.pc&&p.pc.close()}catch(e){}}
+  try{g.local&&g.local.getTracks().forEach(t=>t.stop())}catch(e){}
+  try{g.screen&&g.screen.getTracks().forEach(t=>t.stop())}catch(e){}
+ }
+ $('callgrid').textContent='';$('callgrid').classList.remove('on');
+ $('remote').style.display='';
+ $('remote').srcObject=null;$('local').srcObject=null;
+ $('callui').classList.remove('on');
+ $('local').classList.add('hide');$('remote').classList.remove('audio');
+ $('callavatar').classList.remove('on');
+ $('calltimer').textContent='';$('callstatus').textContent='';
+ $('addbtn').hidden=true;
+ stopRing();syncGateCall();
+ if(status)toastCall(status);
+}
+function onRoomJoined(m){
+ if(!GROUP||GROUP.callId!==m.callId)return;
+ for(const p of (m.participants||[])) if(p.id!==LIVE.me)groupPeer(p.id,p.name);
+ for(const p of GROUP.peers.values())groupOffer(p);
+}
+function onRoomPeer(m){
+ if(!GROUP||GROUP.callId!==m.callId||!m.peer)return;
+ const p=groupPeer(m.peer.id,m.peer.name);
+ groupPC(p);
+}
+function onRoomRoster(m){
+ if(!GROUP||GROUP.callId!==m.callId)return;
+ const parts=m.participants||[],ids=new Set(parts.map(p=>p.id));
+ for(const p of parts) if(p.id!==LIVE.me)groupPeer(p.id,p.name);
+ for(const id of [...GROUP.peers.keys()]) if(!ids.has(id))removeGroupPeer(id);
+}
+function onRoomOffer(m){
+ if(!GROUP||GROUP.callId!==m.callId)return;
+ const p=groupPeer(m.from,m.fromName),pc=groupPC(p);
+ if(!pc)return;
+ (async()=>{try{
+  await pc.setRemoteDescription(m.sdp);
+  groupFlushIce(p);
+  const ans=await pc.createAnswer();
+  await pc.setLocalDescription(ans);
+  sendCall({type:'room_answer',callId:GROUP.callId,to:p.id,sdp:{type:'answer',sdp:ans.sdp}});
+ }catch(e){toastCall('Could not connect '+(p.name||'that person')+'.')}})();
+}
+function onRoomAnswer(m){
+ if(!GROUP||GROUP.callId!==m.callId)return;
+ const p=GROUP.peers.get(m.from);
+ if(!p||!p.pc)return;
+ p.pc.setRemoteDescription(m.sdp).then(()=>groupFlushIce(p)).catch(()=>{});
+}
+function onRoomIce(m){
+ if(!GROUP||GROUP.callId!==m.callId||!m.candidate)return;
+ const p=GROUP.peers.get(m.from);if(p)groupAddIce(p,m.candidate);
+}
+function onRoomLeft(m){
+ if(!GROUP||GROUP.callId!==m.callId)return;
+ removeGroupPeer(m.from);
+ $('callstatus').textContent=(GROUP.peers.size+1)+' in call';
+}
+function openAddMembers(){
+ if(!GROUP)return;
+ const box=$('addlist');box.textContent='';
+ const list=[...CALL_PEERS.values()].filter(p=>!GROUP.peers.has(p.id));
+ if(!list.length){const n=document.createElement('p');n.className='note';n.textContent='No one else is online right now.';box.append(n)}
+ list.forEach(p=>{
+  const l=document.createElement('label');l.className='chk';
+  const i=document.createElement('input');i.type='checkbox';i.value=p.id;i.disabled=!!p.inCall;
+  const s=document.createElement('span');s.textContent=p.name+(p.inCall?' (in a call)':'');
+  l.append(i,s);box.append(l);
+ });
+ $('adddlg').hidden=false;
+}
+$('addbtn').onclick=openAddMembers;
+$('addclose').onclick=()=>$('adddlg').hidden=true;
+$('addgo').onclick=()=>{
+ if(!GROUP)return;
+ const ids=[...$('addlist').querySelectorAll('input:checked')].map(x=>x.value);
+ if(!ids.length)return alert('Tick at least one person.');
+ sendCall({type:'group_add',callId:GROUP.callId,to:ids});
+ $('adddlg').hidden=true;
+ toastCall('Invitation sent.');
+};
 function onInvite(m){
  if(!m||!m.callId)return;
- if(CALL){sendCall({type:'call_reject',to:m.from,callId:m.callId,reason:'busy'});return}
- if(INVITE)sendCall({type:'call_reject',to:INVITE.from,callId:INVITE.callId,reason:'busy'});
+ if(CALL||GROUP){sendCall({type:'call_reject',to:m.from,callId:m.callId,reason:'busy'});return}
+ if(INVITE){
+  if(INVITE.group)sendCall({type:'group_reject',callId:INVITE.callId});
+  else sendCall({type:'call_reject',to:INVITE.from,callId:INVITE.callId,reason:'busy'});
+ }
  INVITE=m;
  $('incname').textContent=(m.fromName||'Someone')+' is calling';
  $('inctype').textContent=(m.media==='video'?'Video':'Audio')+' call · Soul Sync';
@@ -872,58 +1142,61 @@ function onInvite(m){
  ring(true,true);
  try{navigator.vibrate&&navigator.vibrate([300,150,300])}catch(e){}
 }
+function videoSenders(st){
+ if(!st)return [];
+ if(GROUP)return [...GROUP.peers.values()].map(p=>p.pc&&p.pc.getSenders().find(x=>x.track&&x.track.kind==='video')).filter(Boolean);
+ const s=st.pc&&st.pc.getSenders().find(x=>x.track&&x.track.kind==='video');
+ return s?[s]:[];
+}
 async function toggleShare(){
- if(!CALL||CALL.media!=='video'||!CALL.pc)return;
- if(CALL.screen){stopShare();return}
+ const st=GROUP||CALL;if(!st||st.media!=='video'||(!st.pc&&!GROUP))return;
+ if(st.screen){stopShare();return}
  try{
   const s=await navigator.mediaDevices.getDisplayMedia({video:true});
   const t=s.getVideoTracks()[0];
-  const sender=CALL.pc.getSenders().find(x=>x.track&&x.track.kind==='video');
-  if(sender)await sender.replaceTrack(t);
-  CALL.screen=s;
+  for(const sender of videoSenders(st)){try{await sender.replaceTrack(t)}catch(e){}}
+  st.screen=s;
   t.onended=()=>stopShare();
   $('sharebtn').classList.add('off');$('sharebtn').textContent='🖥 Stop share';
  }catch(e){}
 }
 async function stopShare(){
- if(!CALL||!CALL.screen)return;
- try{CALL.screen.getTracks().forEach(t=>t.stop())}catch(e){}
- CALL.screen=null;
- const cam=CALL.local&&CALL.local.getVideoTracks()[0];
- const sender=CALL.pc&&CALL.pc.getSenders().find(x=>x.track&&x.track.kind==='video');
- if(sender&&cam){try{await sender.replaceTrack(cam)}catch(e){}}
+ const st=GROUP||CALL;if(!st||!st.screen)return;
+ try{st.screen.getTracks().forEach(t=>t.stop())}catch(e){}
+ st.screen=null;
+ const cam=st.local&&st.local.getVideoTracks()[0];
+ if(cam)for(const sender of videoSenders(st)){try{await sender.replaceTrack(cam)}catch(e){}}
  $('sharebtn').classList.remove('off');$('sharebtn').textContent='🖥 Share';
 }
 $('hangbtn').onclick=()=>endCallLocal('ended',true);
 $('mutebtn').onclick=()=>{
- if(!CALL)return;
- CALL.muted=!CALL.muted;
- CALL.local.getAudioTracks().forEach(t=>{t.enabled=!CALL.muted});
- $('mutebtn').classList.toggle('off',CALL.muted);
- $('mutebtn').textContent=CALL.muted?'🔇 Unmute':'🎙 Mute';
+ const st=GROUP||CALL;if(!st)return;
+ st.muted=!st.muted;
+ st.local.getAudioTracks().forEach(t=>{t.enabled=!st.muted});
+ $('mutebtn').classList.toggle('off',st.muted);
+ $('mutebtn').textContent=st.muted?'🔇 Unmute':'🎙 Mute';
 };
 $('cambtn').onclick=()=>{
- if(!CALL||CALL.media!=='video')return;
- const t=CALL.local.getVideoTracks()[0];if(!t)return;
+ const st=GROUP||CALL;if(!st||st.media!=='video')return;
+ const t=st.local.getVideoTracks()[0];if(!t)return;
  t.enabled=!t.enabled;
  $('cambtn').classList.toggle('off',!t.enabled);
  $('cambtn').textContent=t.enabled?'📷 Camera':'🚫 Camera off';
 };
 $('sharebtn').onclick=toggleShare;
 $('flipbtn').onclick=async()=>{
- if(!CALL||CALL.media!=='video')return;
- if(CALL.screen)await stopShare();
- const cur=CALL.local.getVideoTracks()[0]&&CALL.local.getVideoTracks()[0].getSettings().facingMode;
+ const st=GROUP||CALL;if(!st||st.media!=='video')return;
+ if(st.screen)await stopShare();
+ const cur=st.local.getVideoTracks()[0]&&st.local.getVideoTracks()[0].getSettings().facingMode;
  const next=cur==='environment'?'user':'environment';
  try{
   const s=await navigator.mediaDevices.getUserMedia({video:{facingMode:next}});
   const t=s.getVideoTracks()[0];
-  const old=CALL.local.getVideoTracks()[0];
-  const sender=CALL.pc&&CALL.pc.getSenders().find(x=>x.track&&x.track.kind==='video');
-  if(sender)await sender.replaceTrack(t);
-  if(old){CALL.local.removeTrack(old);old.stop()}
-  CALL.local.addTrack(t);
-  $('local').srcObject=CALL.local;
+  const old=st.local.getVideoTracks()[0];
+  for(const sender of videoSenders(st)){try{await sender.replaceTrack(t)}catch(e){}}
+  if(old){st.local.removeTrack(old);old.stop()}
+  st.local.addTrack(t);
+  $('local').srcObject=st.local;
  }catch(e){toastCall('Could not switch camera.')}
 };
 function handleCallMessage(m){
@@ -931,6 +1204,30 @@ function handleCallMessage(m){
  if(m.type==='you'){if(LIVE)LIVE.me=m.id;return true}
  if(m.type==='call_config'){CALL_ICE=Array.isArray(m.iceServers)?m.iceServers:null;return true}
  if(m.type==='peers'){CALL_PEERS.clear();(m.peers||[]).forEach(p=>{if(p&&p.id)CALL_PEERS.set(p.id,p)});renderPeers();return true}
+ if(m.type==='room_invite'){onRoomInvite(m);return true}
+ if(m.type==='room_started'){if(GROUP&&GROUP.callId===m.callId)$('callstatus').textContent='Waiting for others…';return true}
+ if(m.type==='room_joined'){onRoomJoined(m);return true}
+ if(m.type==='room_peer'){onRoomPeer(m);return true}
+ if(m.type==='room_roster'){onRoomRoster(m);return true}
+ if(m.type==='room_offer'){onRoomOffer(m);return true}
+ if(m.type==='room_answer'){onRoomAnswer(m);return true}
+ if(m.type==='room_ice'){onRoomIce(m);return true}
+ if(m.type==='room_left'){onRoomLeft(m);return true}
+ if(m.type==='room_reject'){toastCall((m.name||'Someone')+' declined.');return true}
+ if(m.type==='room_added'){toastCall('Invitation sent to '+((m.invited||[]).length)+' people.');return true}
+ if(m.type==='room_end'){
+  if(GROUP&&GROUP.callId===m.callId)endGroup('ended',false,m.reason==='timeout'?'No one joined the call.':'Call ended.');
+  else if(INVITE&&INVITE.group&&INVITE.callId===m.callId)hideIncoming();
+  return true;
+ }
+ if(m.type==='contact_call_started'){
+  if(CALL&&CALL.callId===m.callId){CALL.peerId=m.to;CALL.peerName=m.peerName||CALL.peerName;$('callpeer').textContent=CALL.peerName;$('callavname').textContent=CALL.peerName;$('callstatus').textContent='Ringing…'}
+  return true;
+ }
+ if(m.type==='contact_call_failed'){
+  if(CALL&&CALL.callId===m.callId)endCallLocal('ended',false,m.reason==='group'?'Group chats call through Soul Sync members.':m.reason==='offline'?'That contact is not on Soul Sync right now. Ask them to open Soul Sync and connect the same WhatsApp account.':'Could not reach that contact.');
+  return true;
+ }
  if(m.type==='call_invite'){onInvite(m);return true}
  if(m.type==='call_ringing'){if(CALL&&CALL.callId===m.callId)$('callstatus').textContent='Ringing…';return true}
  if(m.type==='call_accept'){
