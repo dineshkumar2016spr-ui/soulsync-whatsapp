@@ -542,7 +542,7 @@ Reply ONLY with JSON:
 - "insights": up to 4 short, concrete things the user should understand or change.
 - "drafts": exactly 3 messages the user can send next, written in the user's own texting voice, matched to their goal and the other person's psychology. They must take genuinely different angles (e.g. warm and soft, playful, direct and clear), not three rewordings of one line. Keep each under 60 words. Text-message style: no essays, no headings, at most one emoji, no quotation marks.
 - "why": for each draft, 1-2 sentences telling the user why that exact message is the right one to send: what it makes the other person feel, which pattern in this chat it answers, and which idea from the psychology notes it uses. Plain everyday language, no theory names, and never repeat the draft word for word.
-- Reply language: the input field "replyLanguage" decides the language of "drafts" and "flirts" only. english = plain English. telugu = Telugu script. tenglish = Telugu written in English letters the way people actually text (e.g. "em chestunnav?", "bagunnava"). hinglish = Hindi in English letters (e.g. "kaise ho?", "kya kar rahe ho"). Keep "read", "friction", "insights" and "why" in simple English so the user understands the advice. If the chat itself is clearly in another language and the user did not choose one, write the messages in that chat's language.
+- Reply language: the input field "replyLanguage" decides the language of "drafts" and "flirts" only. english = plain English. telugu = Telugu script. tenglish = Telugu written in English letters the way people actually text (e.g. "em chestunnav?", "bagunnava"). hinglish = Hindi in English letters (e.g. "kaise ho?", "kya kar rahe ho"). Write EVERY field the person will read in the chosen language. If the chat itself is clearly in another language and the user did not choose one, write the messages in that chat's language.
 - "flirts": exactly 3 short, cute flirting lines the user could send, written in the user's voice for THIS moment. Match the situation and the timing: use the gap since the other person's last message and the time of day in the timestamps (a line hours after a chat reads differently from one two days later), and the stage of the relationship. Keep each under 18 words, playful and warm, at most one emoji. If there is tension or a fight, the flirt must be gentle repair-flirting, never dismissive. Never crude, sexual, clingy or guilt-tripping, and never promise something the chat does not support.
 - Goal: the user must leave with something they can send right now, a short plan for the next few messages, and the best honest chance of repairing the relationship or making the other person want them back. Be generous, practical and specific: name what to say, what not to say, and what to do if they do not reply.
 Rules: be warm and direct, use the other person's name when known, ground every claim in the actual messages or the situation the user described. Never advise manipulation, deception, threats, guilt-tripping, love-bombing, stalking, or anything designed to make someone feel they have no choice. Attraction is built by honesty, confidence, consistency and care. If the situation involves danger, coercion, or abuse, say so plainly and point to safety and support instead of a clever text.
@@ -588,6 +588,9 @@ const clean = d => ({
   recommend: String(d?.recommend || d?.recommendation || '').slice(0, 800),
   friction: strs(d?.friction), insights: strs(d?.insights), flirts: strs(d?.flirts).slice(0, 3),
   drafts: (Array.isArray(d?.drafts) ? d.drafts : []).map(cleanDraft).filter(x => x.text).slice(0, 3)
+    // The three options are always natural, cute, contextual in that order: label them even when
+    // the model forgets to.
+    .map((x, i) => ({ ...x, label: x.label || ['natural', 'cute', 'contextual'][i] }))
 });
 
 async function gemini(prompt, system = SYSTEM) {
@@ -774,7 +777,7 @@ function agentContext(body, userId) {
   const base = notes
     ? `${GURU}\n\n=== PSYCHOLOGY NOTES: ${profile.toUpperCase()} ===\n${notes}`
     : GURU;
-  let system = `${base}\n\n=== REPLY LANGUAGE: ${lang.toUpperCase()} ===\n${LANG_RULES[lang]} The "read", "friction", "insights" and "why" fields stay in simple English, but every "drafts" text and every "flirts" line must follow this language.`;
+  let system = `${base}\n\n=== REPLY LANGUAGE: ${lang.toUpperCase()} ===\n${LANG_RULES[lang]} Everything the person reads — "read", "ask", "recommend", "friction", "insights", "why", "drafts" and "flirts" — belongs in this language. Only the JSON keys stay in English.`;
   if (lang === 'tenglish') {
     const kb = tenglishKnowledge();
     if (kb) system += `\n\n=== TELGLISH FLIRT KNOWLEDGE BASE (style/vocabulary reference) ===\n${kb}`;
