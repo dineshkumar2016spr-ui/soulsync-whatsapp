@@ -978,8 +978,10 @@ async function guruListen(text){
  if(!d){ agentTrouble(); return; }
  if(d.read) agentBubble(d.read);
  if(d.ask) agentBubble(d.ask);
- if(d.ready){
-  agentBubble('When you want the exact words to send, just say “what should I say?” and I will read the chat first.');
+ // Make the next step discoverable without nagging: once per chat, only when they have a chat to read.
+ if(t&&t.jid&&!t.hinted&&!guruScanned){
+  t.hinted=true;
+  agentBubble('Whenever you want the exact words to send, just ask “what should I say?” and I will read the chat first.');
  }
 }
 function cacheGet(k){try{const v=localStorage.getItem(k);return v?JSON.parse(v):null}catch(_){return null}}
