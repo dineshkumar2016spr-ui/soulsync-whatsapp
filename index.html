@@ -959,15 +959,28 @@ async function guruStart(){
  if(guruAsked) return;
  guruAsked=true;
  if($('agentmsgs')&&$('agentmsgs').children.length){ guruMood('happy','Picking up our chat about this one.'); return; }
- greetAgent();
- guruMood('happy','Hi! Tell me what you need.');
+ // One calm opening message. Understanding the person comes before any analysis.
+ guruMood('happy','Take your time — I am listening.');
+ agentBubble('Hello! I am your Love Guru. How can I help you — setting a girl, fixing your relationship, or anything else?');
+}
+// A request for an actual message means: read the chat now and write it.
+const asksForReply=v=>/\b(what (should|do) i (say|send|text)|what to (say|send|text)|tell me what to (say|send)|suggest|draft|reply to (her|him|them)|make (her|him|them) (reply|text|set)|fix (it|this|the fight)|cute lines?|flirt)/i.test(String(v||''));
+// Conversation mode: listen, reflect back, ask one question. No drafts until they ask for them.
+async function guruListen(text){
+ const t=threads[cur];
  if(!(LIVE&&LIVE.token)){
-  agentBubble('Hi, I am your Love Guru. Link WhatsApp and import a chat so I can read it — tap Import chat in Threads.');
-  agentBubble('While you do that: what do you need from me? Fix a fight, get them to reply, make them set on you, or understand what they really mean?');
+  agentBubble('I hear you. Link WhatsApp and import this chat when you are ready, and I will read it before suggesting anything.');
   return;
  }
- agentBubble('Hi, I am your Love Guru. I read the chat and tell you exactly what to say next.');
- agentBubble('Before I scan it: what do you need from me? Fix a fight, get them to reply, make them set on you, or understand what they really mean?');
+ if(t&&!t.brief&&text)t.brief=String(text).slice(0,600);
+ const ctx=(t&&t.brief?'In their own words, the situation is: '+t.brief+'\n\n':'')+'They just told you: '+text;
+ const d=await agentCallStream(ctx,'listen');
+ if(!d){ agentTrouble(); return; }
+ if(d.read) agentBubble(d.read);
+ if(d.ask) agentBubble(d.ask);
+ if(d.ready){
+  agentBubble('When you want the exact words to send, just say “what should I say?” and I will read the chat first.');
+ }
 }
 function cacheGet(k){try{const v=localStorage.getItem(k);return v?JSON.parse(v):null}catch(_){return null}}
 function cachePut(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(_){try{localStorage.removeItem(k)}catch(__){}}}
@@ -1063,8 +1076,10 @@ function agentSend(){
  agentBubble(v,'user'); $('agentout').value='';
  const low=v.toLowerCase();
  if(!guruScanned){
-  guruScanned=true;agentMeta();
-  guruReply(v);
+  const t0=threads[cur];
+  if(t0&&!t0.brief)t0.brief=v.slice(0,600);
+  if(asksForReply(v)){ guruScanned=true;agentMeta(); guruReply(v); return; }
+  guruListen(v);
   return;
  }
  if(/\b(yes|yeah|yep|sure|ok|okay)\b/.test(low) && lastFlirts.length){
@@ -1762,7 +1777,6 @@ function openLive(url, token, resumed){
     render();agentRestore();
     guruAsked=false;guruLeave();
     if(guruMet)setTimeout(()=>guruStart(),1200);
-    setTimeout(afterImportTeaser,1600);
   }
   else if(m.type==='message'){const t=thread(m.jid);
    if(m.id){if(!t.ids)t.ids=new Set();if(t.ids.has(m.id))return;t.ids.add(m.id)}
