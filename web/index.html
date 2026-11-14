@@ -143,6 +143,7 @@ select{background:var(--bg);border:1px solid var(--line);border-radius:8px;paddi
  .gurufab{position:fixed;right:16px;bottom:64px;z-index:54;display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:99px;background:var(--me);color:var(--me-ink);border-color:var(--me);font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,.25)}
  .gurufab span{font-size:13px}
  .gurufab[hidden]{display:none}
+body.on-p2 .gurufab{display:none !important}
  @media (max-width:1000px){.gurufab{bottom:124px}.gurufab span{display:none}.gurufab{padding:12px 14px;font-size:18px}}
  .guru{display:flex;align-items:center;gap:12px;margin:4px 0 14px}
  .guru i{width:56px;height:56px;border-radius:50%;background:var(--me);color:var(--me-ink);display:flex;align-items:center;justify-content:center;font-size:26px;font-style:normal;flex:none}
@@ -254,7 +255,9 @@ select{background:var(--bg);border:1px solid var(--line);border-radius:8px;paddi
  .tabs button{border:0;background:transparent;padding:14px 4px;font-weight:600;color:var(--mute)}
  .tabs button[aria-selected="true"]{color:var(--accent);box-shadow:inset 0 3px 0 var(--accent)}
  .msg{max-width:92%;font-size:16px}
+ .send{padding-bottom:72px}
  .send textarea{font-size:16px}
+ .draftopt{font-size:13px;padding:8px 10px}
  .head h2{font-size:20px}
  .tabs button{font-size:15px;padding:16px 4px}
 }
@@ -739,14 +742,11 @@ const agentStore=()=>{ if(AGENT) return AGENT; try{AGENT=JSON.parse(localStorage
 const agentKeyNow=()=>{const t=threads[cur];return t?('j:'+(t.jid||('n:'+t.name))):'none'};
 const agentRec=()=>{const s=agentStore(),k=agentKeyNow();s[k]=s[k]||{log:[]};return s[k]};
 function agentPersist(){
- clearTimeout(agentSaveTimer);
- agentSaveTimer=setTimeout(()=>{
-  try{
-   const s=agentStore(),keys=Object.keys(s);
-   while(keys.length>20) delete s[keys.shift()];
-   localStorage.setItem('ss_agent',JSON.stringify(s));
-  }catch(e){}
- },350);
+ try{
+  const s=agentStore(),keys=Object.keys(s);
+  while(keys.length>20) delete s[keys.shift()];
+  localStorage.setItem('ss_agent',JSON.stringify(s));
+ }catch(e){}
 }
 function agentLog(e){const r=agentRec();r.log.push(e);if(r.log.length>160)r.log=r.log.slice(-160);agentPersist()}
 function agentMeta(){const r=agentRec();r.flirts=(lastFlirts||[]).slice(0,6);r.scanned=!!guruScanned;agentPersist()}
@@ -1246,8 +1246,11 @@ function doForward(target){
 }
 function render(){renderThreads();renderChat();updateOlder();saveSoon()}
 function show(id){document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('on',p.id===id));
- document.querySelectorAll('.tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.p===id))}
-document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{
+ document.querySelectorAll('.tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.p===id));
+ // Keep the floating "Meet your love guru" button out of the conversation panel.
+  document.body.classList.toggle('on-p2', id==='p2');
+}
+ document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{
  if(b.dataset.p==='p3'&&!guruMet){$('guruintro').hidden=false;return}
  show(b.dataset.p);
  if(b.dataset.p==='p3')guruStart();
@@ -1434,7 +1437,7 @@ function incoming(){
  render();
 }
 $('sendbtn').onclick=()=>{
- const v=$('out').value.trim();if(!v||!threads[cur])return;
+ const v=$('out').value.trim();if(!v){return} if(!threads[cur]){toast('Open a chat first.');return} if(LIVE&&!threads[cur].jid){toast('This chat is not linked to WhatsApp yet.');return}
  const t=threads[cur],q=replyTo;
  if(LIVE&&t.jid)LIVE.ws.send(JSON.stringify({type:'send',jid:t.jid,text:v,quotedId:q&&q.id||undefined}));
  else t.msgs.push({sender:t.me,t:new Date(),text:v,replyTo:q?{text:q.text}:null,reacts:{}});
