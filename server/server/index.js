@@ -808,19 +808,29 @@ app.post('/api/agent', limiter(30, 60e3), chargeCredits(COSTS.reply, 'reply'), a
 });
 
 // Token-by-token streaming for the reply endpoint (Server-Sent Events).
-async function geminiStream(prompt, system, onDelta) {
+// Same model list and retry behaviour as the non-streaming gemini() call: a retired or busy
+// model must fall through to the next one instead of failing the whole stream.
+const geminiModels = () => {
+  const primary = process.env.GEMINI_MODEL || 'gemini-2.0-flash';
+  const fallback = process.env.GEMINI_FALLBACK_MODEL || 'gemini-3.5-flash-lite';
+  return [...new Set([primary, ...fallback.split(',').map(m => m.trim()).filter(Boolean)])];
+};
+async function geminiStreamOnce(model, prompt, system, onDelta) {
   const { GEMINI_API_KEY } = process.env;
-  if (!GEMINI_API_KEY) throw new Error('gemini key missing');
-  const model = process.env.GEMINI_MODEL || 'gemini-2.0-flash';
   const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:streamGenerateContent?alt=sse`, {
     method: 'POST',
     headers: { 'content-type': 'application/json', 'x-goog-api-key': GEMINI_API_KEY },
     body: JSON.stringify({ systemInstruction: { parts: [{ text: system }] }, contents: [{ parts: [{ text: prompt }] }], generationConfig: { responseMimeType: 'application/json' } }),
     signal: AbortSignal.timeout(55000)
   });
-  if (!r.ok) throw new Error('gemini ' + r.status);
+  if (!r.ok) {
+    const body = await r.text().catch(() => '');
+    const e = new Error('gemini ' + model + ' HTTP ' + r.status + (body ? ' ' + body.slice(0, 200) : ''));
+    e.status = r.status;
+    throw e;
+  }
   const reader = r.body.getReader(); const dec = new TextDecoder();
-  let buf = '', full = '';
+  let buf = '', full = '', sent = 0;
   for (;;) {
     const { done, value } = await reader.read();
     if (done) break;
@@ -834,11 +844,31 @@ async function geminiStream(prompt, system, onDelta) {
       try {
         const j = JSON.parse(payload);
         const t = j?.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (t) { full += t; onDelta(t); }
+        if (t) { full += t; sent++; onDelta(t); }
       } catch (_) { /* partial frame */ }
     }
   }
-  return JSON.parse(full);
+  if (!full.trim()) { const e = new Error('gemini ' + model + ' returned no text'); e.emitted = sent > 0; throw e; }
+  try { return JSON.parse(full); }
+  catch { const e = new Error('gemini ' + model + ' returned incomplete JSON'); e.emitted = true; throw e; }
+}
+async function geminiStream(prompt, system, onDelta) {
+  const { GEMINI_API_KEY } = process.env;
+  if (!GEMINI_API_KEY) throw new Error('gemini key missing');
+  const models = geminiModels();
+  let last = '';
+  for (let attempt = 0; attempt < 2; attempt++) {
+    for (const model of models) {
+      try { return await geminiStreamOnce(model, prompt, system, onDelta); }
+      catch (e) {
+        last = String(e?.message || e);
+        if (e.emitted) throw e; // text already reached the browser: never replay it
+        if (e.status && ![404, 429, 500, 502, 503, 504].includes(e.status)) throw e;
+      }
+    }
+    if (attempt === 0) await new Promise(res => setTimeout(res, 1200));
+  }
+  throw new Error(last || 'gemini stream failed');
 }
 async function openaiStream(prompt, system, onDelta) {
   const { OPENAI_API_KEY, OPENAI_MODEL = 'gpt-4o-mini' } = process.env;
@@ -886,20 +916,23 @@ app.post('/api/agent/stream', limiter(30, 60e3), chargeCredits(COSTS.reply, 'rep
   send({ start: true, priority: snap.plan.priority });
   const onDelta = (t) => send({ delta: t });
   try {
-    let raw = null;
-    if (snap.plan.priority) {
-      try { raw = await geminiStream(prompt, system, onDelta); }
-      catch { raw = await openaiStream(prompt, system, onDelta); }
-    } else {
-      raw = await geminiStream(prompt, system, onDelta).catch(() => openaiStream(prompt, system, onDelta));
+    // One provider at a time: streaming two in parallel would interleave their tokens.
+    let raw = null, why = '';
+    try { raw = await geminiStream(prompt, system, onDelta); }
+    catch (e) { why = 'gemini: ' + String(e?.message || e); }
+    if (!raw) {
+      try { raw = await openaiStream(prompt, system, onDelta); }
+      catch (e) { why += ' | openai: ' + String(e?.message || e); }
     }
+    if (!raw) throw new Error(why || 'no provider answered');
     const out = clean(raw);
     if (!out.read && !out.drafts.length && !(out.insights && out.insights.length)) throw new Error('no insights returned');
     send({ done: true, payload: out, billing: billingFor(req.userId) });
   } catch (e) {
     refundCharge(req, 'ai_unavailable');
-    log.error({ err: String(e?.message || e) }, 'agent AI failed');
-    send({ error: 'Both AI providers are unavailable right now.', billing: billingFor(req.userId) });
+    const why = String(e?.message || e).slice(0, 400);
+    log.error({ err: why }, 'agent AI failed');
+    send({ error: 'Both AI providers are unavailable right now.', detail: why, billing: billingFor(req.userId) });
   } finally {
     res.end();
   }
