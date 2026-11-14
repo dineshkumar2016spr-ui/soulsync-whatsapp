@@ -1777,9 +1777,17 @@ wss.on('connection', (ws0, req) => {
       }
       if (msg.type === 'pair') {
         const phone = String(msg.phone || '').replace(/\D/g, '');
-        if (phone.length < 8 || !sock || sock.authState.creds.registered) return;
-        try { send({ type: 'pairing_code', code: await sock.requestPairingCode(phone) }); }
-        catch { send({ type: 'error', message: 'Could not get a pairing code. Try the QR code instead.' }); }
+        if (phone.length < 8 || phone.length > 15) return send({ type: 'error', message: 'Enter the full number with the country code, digits only.' });
+        if (sock?.authState?.creds?.registered) return send({ type: 'error', message: 'This device is already linked. Use the QR code, or scan again to re-pair.' });
+        if (!sock) { attempts = 0; connect().catch(e => log.error(e)); }
+        // requestPairingCode only works once the socket is up, so retry briefly rather than
+        // answering "could not get a code" while WhatsApp is still connecting.
+        for (let i = 0; i < 6; i++) {
+          if (!sock) break;
+          try { return send({ type: 'pairing_code', code: await sock.requestPairingCode(phone) }); }
+          catch { await new Promise(r => setTimeout(r, 1500)); }
+        }
+        send({ type: 'error', message: 'Could not get a pairing code. Try the QR code instead.' });
       }
       if (msg.type === 'relink') {
         // A saved link that quietly stopped working looks like an empty chat list to the visitor.

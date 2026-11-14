@@ -512,7 +512,7 @@ function parse(text){
 function addThread(name,msgs){
  const names=[...new Set(msgs.map(m=>m.sender))];
  threads.push({name,msgs,me:names.includes('You')?'You':names[0]});
- cur=threads.length-1;render();
+ cur=threads.length-1;render();agentRestore();
 }
 function renderThreads(){
  const box=$('threads');box.textContent='';
@@ -526,7 +526,7 @@ function renderThreads(){
   b.append(n,s);b.onclick=()=>openThread(i);box.append(b)});
 }
 function openThread(i){
- cur=i;replyTo=null;reactFor=null;updateQuote();render();show('p2');
+ cur=i;replyTo=null;reactFor=null;updateQuote();render();agentRestore();show('p2');
  // Ask the server for the latest 50 messages of this chat (safe to repeat: ids dedupe them)
  const t=threads[i];
  if(LIVE&&t&&t.jid&&!t.loading)LIVE.ws.send(JSON.stringify({type:'open',jid:t.jid}));
@@ -709,6 +709,66 @@ function guruMood(m,line){
  if(a){const c=a.querySelector('.guru-char');c.dataset.mood=m||'happy';c.classList.remove('pop');void c.offsetWidth;c.classList.add('pop')}
  if(line){const l=$('agline');if(l){l.textContent=line;l.classList.remove('pop');void l.offsetWidth;l.classList.add('pop')}}
 }
+/* ---- the guru conversation belongs to one imported chat, and survives reloads ---- */
+let AGENT=null,agentSaveTimer=null;
+const agentStore=()=>{ if(AGENT) return AGENT; try{AGENT=JSON.parse(localStorage.getItem('ss_agent')||'{}')||{}}catch(e){AGENT={}} return AGENT };
+const agentKeyNow=()=>{const t=threads[cur];return t?('j:'+(t.jid||('n:'+t.name))):'none'};
+const agentRec=()=>{const s=agentStore(),k=agentKeyNow();s[k]=s[k]||{log:[]};return s[k]};
+function agentPersist(){
+ clearTimeout(agentSaveTimer);
+ agentSaveTimer=setTimeout(()=>{
+  try{
+   const s=agentStore(),keys=Object.keys(s);
+   while(keys.length>20) delete s[keys.shift()];
+   localStorage.setItem('ss_agent',JSON.stringify(s));
+  }catch(e){}
+ },350);
+}
+function agentLog(e){const r=agentRec();r.log.push(e);if(r.log.length>160)r.log=r.log.slice(-160);agentPersist()}
+function agentMeta(){const r=agentRec();r.flirts=(lastFlirts||[]).slice(0,6);r.scanned=!!guruScanned;agentPersist()}
+function paintAgent(e){
+ const box=$('agentmsgs'); if(!box||!e) return;
+ if(e.k==='bubble'){
+  const el=document.createElement('div'); el.className='msg'+(e.who==='user'?' me':'');
+  const txt=document.createElement('div'); txt.className='txt'; txt.textContent=e.text; el.append(txt);
+  const s=document.createElement('small'); s.textContent=e.who==='user'?'You':'Love guru'; el.append(s);
+  box.append(el);
+ }else if(e.k==='bullets'&&e.list&&e.list.length){
+  const el=document.createElement('div'); el.className='msg';
+  const txt=document.createElement('div'); txt.className='txt'; txt.textContent=e.title||'';
+  const ul=document.createElement('ul'); ul.style.margin='6px 0 0'; ul.style.paddingLeft='18px';
+  e.list.forEach(x=>{const li=document.createElement('li');li.textContent=x;li.style.marginBottom='4px';ul.append(li)});
+  el.append(txt,ul);
+  const s=document.createElement('small'); s.textContent='Love guru'; el.append(s); box.append(el);
+ }else if(e.k==='flirts'&&e.list&&e.list.length){
+  const el=document.createElement('div'); el.className='msg';
+  const t=document.createElement('div'); t.className='txt'; t.textContent=e.title||''; el.append(t);
+  const wrap=document.createElement('div'); wrap.style.cssText='display:flex;flex-direction:column;gap:6px;margin-top:6px';
+  e.list.forEach(x=>{const b=document.createElement('button');b.type='button';b.className='flirt';b.textContent=x;b.title='Use this line';
+   b.onclick=()=>{const o=$('out');if(o){o.value=x;o.focus()}hap('light');show('p2')};wrap.append(b)});
+  el.append(wrap);
+  const s=document.createElement('small'); s.textContent='Love guru'; el.append(s); box.append(el);
+ }else if(e.k==='drafts'&&e.list&&e.list.length){
+  const el=document.createElement('div'); el.className='msg';
+  const t=document.createElement('div'); t.className='txt'; t.textContent=e.list.length+' replies for this moment. Tap one to put it in the send box:'; el.append(t);
+  const wrap=document.createElement('div'); wrap.style.cssText='margin-top:6px';
+  e.list.forEach((d,i)=>{const b=document.createElement('button');b.type='button';b.className='draftopt';b.textContent=(i+1)+'. '+d.text;
+   if(d.why){const s=document.createElement('small');s.textContent=d.why;b.append(s)}
+   b.onclick=()=>{const o=$('out');if(o){o.value=d.text;o.focus()}hap('light');toast('Reply loaded in the send box.');show('p2')};wrap.append(b)});
+  el.append(wrap);
+  const s=document.createElement('small'); s.textContent='Love guru'; el.append(s); box.append(el);
+ }
+ box.scrollTop=box.scrollHeight;
+}
+function agentRestore(){
+ const box=$('agentmsgs'); if(!box) return;
+ const r=agentStore()[agentKeyNow()]||{log:[]};
+ box.textContent='';
+ (r.log||[]).forEach(paintAgent);
+ lastFlirts=Array.isArray(r.flirts)?r.flirts:[];
+ guruScanned=!!r.scanned;
+ box.scrollTop=box.scrollHeight;
+}
 function agentBubble(text, who='agent'){
  const box=$('agentmsgs'); if(!box) return;
  const el=document.createElement('div');
@@ -716,6 +776,7 @@ function agentBubble(text, who='agent'){
  const txt=document.createElement('div'); txt.className='txt'; txt.textContent=text; el.append(txt);
  const s=document.createElement('small'); s.textContent=who==='user'?'You':'Love guru'; el.append(s);
  box.append(el); box.scrollTop=box.scrollHeight;
+ agentLog({k:'bubble',who,text:String(text==null?'':text).slice(0,4000)});
 }
 function greetAgent(){ const box=$('agentmsgs'); if(box && box.children.length) return; agentBubble('Hi i am your love guru'); }
 // The guru runs on your own server. When that server is missing or unreachable, say what to do
@@ -770,6 +831,7 @@ function agentBullets(title, list){
  el.append(txt,ul);
  const s=document.createElement('small'); s.textContent='Love guru'; el.append(s);
  box.append(el); box.scrollTop=box.scrollHeight;
+ agentLog({k:'bullets',title:String(title||''),list:list.slice(0,8).map(String)});
 }
 function agentFlirts(title, list){
  const box=$('agentmsgs'); if(!box || !list || !list.length) return;
@@ -784,6 +846,7 @@ function agentFlirts(title, list){
  el.append(wrap);
  const s=document.createElement('small'); s.textContent='Love guru'; el.append(s);
  box.append(el); box.scrollTop=box.scrollHeight;
+ agentLog({k:'flirts',title:String(title||''),list:list.slice(0,6).map(String)});
 }
 const GURU_ASK="Now tell me your problem. What is going on between you two, what did they say or do, how does it make you feel, and what do you want to change? The more you tell me, the better I can explain their side and write your next message.";
 let guruMet=false, guruBusy=false, guruAsked=false, guruScanned=false, lastFlirts=[];
@@ -855,9 +918,11 @@ async function agentCall(situation, goal){
  finally{ guruBusy=false; }
 }
 async function guruStart(){
- greetAgent();
+ agentRestore();
  if(guruAsked) return;
  guruAsked=true;
+ if($('agentmsgs')&&$('agentmsgs').children.length){ guruMood('happy','Picking up our chat about this one.'); return; }
+ greetAgent();
  guruMood('happy','Hi! Tell me what you need.');
  if(!(LIVE&&LIVE.token)){
   agentBubble('Hi, I am your Love Guru. Link WhatsApp and import a chat so I can read it — tap Import chat in Threads.');
@@ -951,7 +1016,7 @@ async function guruReply(situation){
  if(list.length&&box){ box.value=list[0].text; box.focus(); }
  if(list.length) agentDrafts(list);
  if(list.length) agentBubble('Option 1 is already in your send box. Tap any option to switch.');
- lastFlirts=Array.isArray(d.flirts)?d.flirts:[];
+ lastFlirts=Array.isArray(d.flirts)?d.flirts:[];agentMeta();
  agentBubble('Do you want me to give cute lines? (say yes or no)');
  guruMood('wink','Try this one — it fits the moment.');
 }
@@ -961,7 +1026,7 @@ function agentSend(){
  const low=v.toLowerCase();
  if(!guruScanned){
   if(!confirm('Scan this chat and prepare a reply now?')) return;
-  guruScanned=true;
+  guruScanned=true;agentMeta();
   guruReply(v);
   return;
  }
@@ -1521,10 +1586,26 @@ function openLive(url, token, resumed){
  // The one place that draws the scan screen. A saved link that has quietly expired must land here
  // too, instead of dropping the visitor into an empty chat list with nothing to scan.
  function linkScreen(again){
-  gc.innerHTML='<h2>Link this device</h2>'+(again?'<p>Your saved WhatsApp link has expired, so this device has to be paired again.</p>':'')+'<p>In WhatsApp open Settings, Linked devices, Link a device, then scan. The code refreshes about every 20 seconds.</p><div id="qrbox" style="width:230px;margin:0 auto 12px;padding:8px;background:#fff;border-radius:8px;min-height:230px"></div><div class="code" id="pc"></div><input id="ph" placeholder="Phone with country code, e.g. 14155550123" style="width:100%;margin-bottom:8px;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)"><button class="btn" id="pairbtn" style="width:100%">Use a pairing code instead</button>';
+  LIVE.pairing=false;
+  gc.innerHTML='<h2>Link this device</h2>'+(again?'<p>Your saved WhatsApp link has expired, so this device has to be paired again.</p>':'')+'<p>In WhatsApp open Settings, Linked devices, Link a device, then scan. The code refreshes about every 20 seconds.</p><div id="qrbox" style="width:230px;margin:0 auto 12px;padding:8px;background:#fff;border-radius:8px;min-height:230px"></div><button class="btn" id="phbtn" style="width:100%;margin-top:6px">Link with phone number instead</button>';
   $('gate').hidden=false;
   guruEnter('Scan this code with your phone: Settings → Linked devices → Link a device.');
-  const pb=$('pairbtn');if(pb)pb.onclick=()=>{const p=$('ph').value.trim();if(p)ws.send(JSON.stringify({type:'pair',phone:p}))};
+  const pb=$('phbtn');if(pb)pb.onclick=()=>pairScreen();
+ }
+ // No camera? WhatsApp can show an 8-character code that you type into Linked devices instead.
+ function pairScreen(msg){
+  LIVE.pairing=true;
+  gc.innerHTML='<h2>Link with your phone number</h2><p>Type your WhatsApp number with the country code and no spaces. WhatsApp then gives you an 8-character code to type on your phone.</p><input id="ph" type="tel" inputmode="numeric" autocomplete="tel" placeholder="e.g. 919876543210" style="width:100%;margin-bottom:8px;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font-size:16px"><button class="btn primary" id="phgo" style="width:100%">Get my code</button><button class="btn" id="phback" style="width:100%;margin-top:6px">Use the QR code instead</button><div class="code" id="pc" hidden></div><p class="note" id="pcnote" role="status" style="margin:8px 0 0"></p>';
+  $('gate').hidden=false;
+  const back=$('phback');if(back)back.onclick=()=>linkScreen(false);
+  const note=(t,warn)=>{const n=$('pcnote');if(!n)return;n.textContent=t||'';n.style.color=warn?'var(--warn)':''};
+  note(msg||'');
+  const go=$('phgo');if(go)go.onclick=()=>{
+   const digits=String($('ph').value||'').replace(/\D/g,'');
+   if(digits.length<8||digits.length>15){note('Enter the full number with the country code, digits only.',true);return}
+   note('Asking WhatsApp for your code…');
+   ws.send(JSON.stringify({type:'pair',phone:digits}));
+  };
  }
  ws.onopen=()=>{
   refreshBilling();
@@ -1572,10 +1653,14 @@ function openLive(url, token, resumed){
   else if(m.type==='qr'){
    // A QR only arrives while this device is unpaired, so it always belongs on screen; otherwise
    // the visitor stares at "0 chats found" while the code that would fix it stays invisible.
-   if(!$('qrbox')){linkScreen(true);$('gate').hidden=false;}
+   if(!$('qrbox')&&!LIVE.pairing){linkScreen(true);$('gate').hidden=false;}
    const q=qrcode(0,'L');q.addData(m.qr);q.make();const b=$('qrbox');if(b){b.innerHTML=q.createSvgTag(4,0);const v=b.querySelector('svg');if(v){v.style.width='100%';v.style.height='auto'}}
   }
-  else if(m.type==='pairing_code'){$('pc').textContent=m.code}
+  else if(m.type==='pairing_code'){
+   if(!$('pc')||LIVE.pairing!==true)pairScreen();
+   const c=$('pc');if(c){c.hidden=false;c.textContent=String(m.code||'')}
+   const n=$('pcnote');if(n){n.style.color='';n.textContent='Type this code on your phone: WhatsApp → Settings → Linked devices → Link with phone number.'}
+  }
   else if(m.type==='ready'){
    if(resumed&&threads.some(t=>t.jid)){
     // Re-attach the saved chats on the server after a restart, so live messages keep flowing.
@@ -1617,8 +1702,8 @@ function openLive(url, token, resumed){
     (m.added&&m.added.length?m.added:m.jids).forEach(j=>{thread(j);cur=threads.findIndex(t=>t.jid===j)});
     LIVE.pickerOpen=false;$('gate').hidden=true;
     show('p2');
-    render();
-    guruScanned=false;guruAsked=false;guruLeave();
+    render();agentRestore();
+    guruAsked=false;guruLeave();
     if(guruMet)setTimeout(()=>guruStart(),1200);
     setTimeout(afterImportTeaser,1600);
   }
@@ -1648,7 +1733,7 @@ function openLive(url, token, resumed){
   }
   else if(m.type==='logged_out'){lsSet('ss_device','');liveErr('WhatsApp logged this device out. Link it again.')}
   else if(m.type==='deleted'){lsSet('ss_device','');lsSet(THREADS_KEY,'');location.reload()}
-  else if(m.type==='error'){const pc=$('pc');if(pc&&!$('gate').hidden)pc.textContent=m.message;else $('tone').textContent=m.message}
+  else if(m.type==='error'){const pn=$('pcnote');if(pn&&!$('gate').hidden){pn.style.color='var(--warn)';pn.textContent=m.message}else $('tone').textContent=m.message}
  };
  ws.onclose=()=>{syncGateCall();if(CALL||GROUP||INVITE){endCallLocal('ended',false);hideIncoming()}
   if(!$('gate').hidden&&resumed&&threads.length){
@@ -2389,6 +2474,7 @@ function agentDrafts(list, costLabel){
  el.append(wrap);
  const s=document.createElement('small'); s.textContent='Love guru · '+(costLabel||'1 credit'); el.append(s);
  box.append(el); box.scrollTop=box.scrollHeight;
+ agentLog({k:'drafts',list:list.map(d=>({text:String(d.text||''),why:String(d.why||'')}))});
 }
 async function afterImportTeaser(){
  if(!(LIVE&&LIVE.token)) return;
@@ -2441,7 +2527,7 @@ async function runDeep(btn){
  agentBullets('What to do about it:', d.insights||[]);
  const list=(Array.isArray(d.drafts)?d.drafts:[]).map(x=>typeof x==='string'?{text:x,why:''}:{text:String(x&&x.text||''),why:String(x&&x.why||'')}).filter(x=>x.text);
  if(list.length) agentDrafts(list, (d.cost||5)+' credits');
- lastFlirts=Array.isArray(d.flirts)?d.flirts:[];
+ lastFlirts=Array.isArray(d.flirts)?d.flirts:[];agentMeta();
  if(lastFlirts.length) agentBubble('Want the cute lines too? Say yes.');
  guruMood('wink','That is the full picture.');
 }
@@ -2463,6 +2549,7 @@ function init(){
  agentGuru();
  populateAgentOptions();
  loadThreads(); // chats and messages survive a reload, like a real messenger
+ agentRestore(); // and so does each chat's own conversation with the guru
  updateBell();
  startBillTick();
  swRegister().then(reg=>{if(reg&&notifyOn())subscribePush()}); // ready for push notifications
