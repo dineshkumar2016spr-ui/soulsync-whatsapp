@@ -27,6 +27,7 @@ Thumbs.db
 
 # session artifacts
 server/data/
+data/
 
 # Editor artifacts
 .vscode/
@@ -34,3 +35,5 @@ server/data/
 *.swp
 *.swo
 *~
+# Local Netlify folder
+.netlify
