@@ -8,10 +8,13 @@
     "check": "node --check index.js"
   },
   "dependencies": {
-    "@whiskeysockets/baileys": "^6.7.0",
+    "@whiskeysockets/baileys": "^7.0.0-rc14",
     "express": "^4.19.2",
     "pino": "^9.0.0",
+    "web-push": "^4.0.0",
     "ws": "^8.17.0"
   },
-  "engines": { "node": ">=20" }
+  "engines": {
+    "node": ">=22.5"
+  }
 }

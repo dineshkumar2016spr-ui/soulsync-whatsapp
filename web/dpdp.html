@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Data Protection &amp; GDPR Review — Soul Sync</title>
+  <style>
+    body {font-family: Arial, sans-serif; max-width: 900px; margin: 24px auto; padding: 18px; line-height: 1.65; color: #1d2147; background: #eceef6;}
+    h1 {font-family: Georgia, serif; color: #1d2147;}
+    .card {background: #f8f9fd; padding: 24px 30px; border-radius: 14px; margin: 18px 0; border: 1px solid #d9dcec;}
+    h2 {font-size: 20px; color: #1d2147;}
+    h3 {color: #1d2147;}
+    p, li {font-size: 15px; color: #33375a;}
+    table {border-collapse: collapse; width: 100%; font-size: 14px;}
+    th, td {border: 1px solid #d9dcec; padding: 8px 12px; text-align: left;}
+    th {background: #eef0f7;}
+    code {background: #f4f5fa; padding: 2px 6px; border-radius: 4px; font-size: 13px;}
+    .todo {border-left: 4px solid #b8405f; padding-left: 14px;}
+    .ok {border-left: 4px solid #2b7a74;}
+  </style>
+</head>
+<body>
+  <h1>Data Protection &amp; GDPR Review — Soul Sync</h1>
+  <p class="card" style="font-weight: 400; font-size: 13px; color: #666b8f;">Prepared for deployment readiness &middot; 2026-11-06</p>
+
+  <div class="card">
+    <h2>1. What Soul Sync does with personal data</h2>
+    <p>Soul Sync analyses WhatsApp chat exports for relationship communication patterns (tone, friction, reply drafts). When a user presses "Write drafts", chat text plus the user's name and goal are sent to an AI provider.</p>
+    <ul>
+      <li><strong>Chat text</strong> → held in the user's browser during chat selection, buffered server-side in memory while picking, and forwarded to the AI provider on demand.</li>
+      <li><strong>WhatsApp session data</strong> → auth credentials live in `./data/auth-${userId}/` while a browser tab is connected; wiped on disconnect or on server restart.</li>
+      <li><strong>Consents</strong> → stored as JSON files under `./data/consent-${userId}.json` with policy version timestamp.</li>
+      <li><strong>AI prompts/responses</strong> → ephemeral, only while processing a request on the server.</li>
+    </ul>
+
+    <h2>2. Where data crosses third-party boundaries</h2>
+    <table>
+      <thead><tr><th>Boundary crossed</th><th>Provider / system</th><th>What leaves Soul Sync's control</th></tr></thead>
+      <tbody>
+        <tr><td>Chat analysis</td><td>Google Gemini API (server calls `generativelanguage.googleapis.com`) or OpenAI API (`api.openai.com`)</td><td>User's selected chat text + name + goal</td></tr>
+        <tr><td>Chat export bridge</td><td>WhatsApp official client over Baileys WebSocket</td><td>No content crosses out of WhatsApp into Soul Sync</td></tr>
+        <tr><td>Frontend QR rendering</td><td>cdnjs QRCode library loaded from CDN</td><td>Nothing personal leaves the user's device beyond the rendered QR image</td></tr>
+      </tbody>
+    </table>
+
+    <h2>3. Consent requirements per controller boundary</h2>
+    <p>Under GDPR, consent is required before data crossing a controller boundary — especially where the controller's data is combined with the recipient's contact details. Here Soul Sync is technically the controller of chat text and AI outputs, so <strong>four explicit opt-ins</strong> are needed:</p>
+    <ul>
+      <li><strong>Terms of Service</strong> accepted by the user before any analysis runs</li>
+      <li><strong>Privacy Policy</strong> readable and linked before consenting</li>
+      <li><strong>Read chats consent</strong> — flagged when the user imports/analyses a chat</li>
+      <li><strong>AI analysis consent</strong> — separately flagged when sending messages to Gemini/OpenAI</li>
+    </ul>
+    <p>The frontend gate currently enforces all four boxes before any real connection proceeds, with each box tied back to a specific legal text. Good coverage so far. Watch out for:</p>
+    <ul>
+      <li><strong>Aggregate fallback</strong> — if the UI ever falls back to in-browser analysis without re-checking both boxes, ensure the fallback prompt still references the consent choices.</li>
+      <li><strong>Existing data export</strong> — users who already have analysed conversations may be prompted without fresh consent if they import a new chat. Consider checking `consent-*.json` on server startup.</li>
+    </ul>
+
+    <h2>4. Transfer obligations under Article 44–49 GDPR</h2>
+    <p>Demonstrating lawful basis and appropriate safeguards is the core checklist for deployments, not the full text:</p>
+    <ul>
+      <li><strong>Lawful basis (Art. 6)</strong> — consent covers chat analysis and AI output generation. The current four-box gate is sufficient.</li>
+      <li><strong>No further transfer</strong> — Soul Sync never collects WhatsApp user IDs, contact lists, phone numbers, or other data that could enable transfers to third parties under Art. 44.</li>
+      <li><strong>Recipient safeguards</strong> — obligations lie with Google/OpenAI, not Soul Sync, but Soul Sync should:<br>• Enforce rate limiting on `/api/analyze` (already present: 30 req / minute)<br>• Strip larger identifiers than what the user supplied (`me`, `goal` capped at 60 chars)<br>• Document in the Privacy Policy exactly what is sent where</li>
+      <li><strong>DPDPR</strong> if launching in the EU — requires a privacy notice, an access mechanism, and a deletion tool. Soul Sync already has a one-click "Disconnect and delete my data" flow which satisfies the deletion requirement at the application layer.</li>
+    </ul>
+
+    <h2>5. Data protection impact assessment</h2>
+    <p>This is effectively an Art. 35 DPIA trigger — analysing personal communications via AI is high-risk processing. Recommended follow-ups:</p>
+    <ul>
+      <li>Document the DPIA before first EU launch (or before any meaningful volume). Include:<br>
+        - What personal data is processed<br>
+        - Why AI analysis is necessary<br>
+        - Risk mitigation (rate limit, message cap, API key restrictions)<br>
+        - Assessment of automated decision-making</li>
+      <li>Note: currently no automatic "decision" is generated from analysis; the risk is low but worth documenting before scaling.</li>
+    </ul>
+
+    <h2>6. Access and logging controls</h2>
+    <ul>
+      <li>Access tokens are sha256-hashed in memory only; removed on TTL expiry or user logout. Good baseline.</li>
+      <li>WhatsApp auth files are wiped on disconnect and on restart.</li>
+      <li><strong>Watch out:</strong> server logs may capture partial HTTP headers or WS payloads depending on transports. Ensure `log.level = 'warn'` is enforced everywhere and reject `err` logs from console if persisting anywhere.</li>
+    </ul>
+
+    <h2>7. Recommendations before going live</h2>
+    <ol>
+      <li>Link Terms and Privacy pages in the connect gate (done) — verify they render with the right policy version text.</li>
+      <li>Confirm all four AI model defaults (`gemini-2.0-flash`, `gpt-4o-mini`) are still valid; update if newer flagships exist in your dashboards.</li>
+      <li>Encrypt the persistent volume at `DATA_DIR` before production deploy.</li>
+      <li>Set `ALLOWED_ORIGIN` to the exact Netlify URL and reject everything else with 4403.</li>
+      <li>Record the DPIA before meaningful scale or first EU launch.</li>
+      <li>Add a short cookie/session notice banner acknowledging local storage usage of chat selection memory.</li>
+    </ol>
+  </div>
+</body>
+</html>

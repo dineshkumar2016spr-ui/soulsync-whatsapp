@@ -1,12 +1,35 @@
 {
   "name": "soul-sync-server",
   "type": "module",
-  "scripts": { "start": "node index.js" },
-  "dependencies": {
-    "@whiskeysockets/baileys": "^6.7.0",
-    "express": "^4.19.2",
-    "ws": "^8.17.0",
-    "pino": "^9.0.0"
+  "scripts": {
+    "start": "node index.js",
+    "build": "node scripts/build-web.mjs",
+    "build:web": "node scripts/build-web.mjs",
+    "cap:sync": "npx cap sync"
   },
-  "engines": { "node": ">=20" }
+  "dependencies": {
+    "@capacitor/android": "^8.6.2",
+    "@capacitor/cli": "^8.6.2",
+    "@capacitor/core": "^8.6.2",
+    "@capacitor/filesystem": "^8.1.5",
+    "@capacitor/haptics": "^8.0.2",
+    "@capacitor/ios": "^8.6.2",
+    "@capacitor/keyboard": "^8.0.6",
+    "@capacitor/splash-screen": "^8.0.2",
+    "@capacitor/status-bar": "^8.0.4",
+    "@capgo/capacitor-share-target": "^8.0.68",
+    "@revenuecat/purchases-capacitor": "^14.1.0",
+    "@whiskeysockets/baileys": "^7.0.0-rc14",
+    "express": "^4.19.2",
+    "jszip": "^3.10.2",
+    "pino": "^9.0.0",
+    "web-push": "^4.0.0",
+    "ws": "^8.17.0"
+  },
+  "engines": {
+    "node": ">=22.5"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2"
+  }
 }

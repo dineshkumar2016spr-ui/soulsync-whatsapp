@@ -1,0 +1,4952 @@
+[
+  {
+    "category": "reply",
+    "trigger_context": "story_traditional_wear",
+    "vibe": "romantic",
+    "tenglish": "Ee saree/kurta lo chustunte traditional day ki brand ambassador la unnav.",
+    "english_meaning": "In that saree/kurta you look like the brand ambassador of tradition.",
+    "target_gender": "neutral",
+    "id": 1
+  },
+  {
+    "category": "reply",
+    "trigger_context": "story_selfie",
+    "vibe": "smooth",
+    "tenglish": "Phone screen kuda blush avtundi ee photo chusi.",
+    "english_meaning": "Even the phone screen blushes seeing this photo.",
+    "target_gender": "neutral",
+    "id": 2
+  },
+  {
+    "category": "reply",
+    "trigger_context": "story_smile",
+    "vibe": "smooth",
+    "tenglish": "Aa smile ki copyright teesko, lekapothe chaala mandi flat aipotaru.",
+    "english_meaning": "Take a copyright on that smile, or many will fall for it.",
+    "target_gender": "neutral",
+    "id": 3
+  },
+  {
+    "category": "reply",
+    "trigger_context": "story_travel",
+    "vibe": "poetic",
+    "tenglish": "Sunset baagundi kani, frame lo nuvvu undadam valla inka baagundi.",
+    "english_meaning": "The sunset is nice, but you in the frame makes it nicer.",
+    "target_gender": "neutral",
+    "id": 4
+  },
+  {
+    "category": "reply",
+    "trigger_context": "story_food",
+    "vibe": "playful",
+    "tenglish": "Food chala tasty ga undi... kani company nenu unte inka baagundedi.",
+    "english_meaning": "The food looks tasty... but it'd be better with me there.",
+    "target_gender": "neutral",
+    "id": 5
+  },
+  {
+    "category": "reply",
+    "trigger_context": "story_mirror",
+    "vibe": "smooth",
+    "tenglish": "Mirror kuda lucky feel avtundi roju ninnu chustunnanduku.",
+    "english_meaning": "Even the mirror feels lucky to see you every day.",
+    "target_gender": "neutral",
+    "id": 6
+  },
+  {
+    "category": "reply",
+    "trigger_context": "story_eyes",
+    "vibe": "bold",
+    "tenglish": "Aa kallatho chusthe evaraina surrender aipovalsinde.",
+    "english_meaning": "Looking into those eyes, anyone would surrender.",
+    "target_gender": "neutral",
+    "id": 7
+  },
+  {
+    "category": "reply",
+    "trigger_context": "story_outfit",
+    "vibe": "smooth",
+    "tenglish": "Black color neekosame invent chesinattu undi.",
+    "english_meaning": "Black looks like it was invented just for you.",
+    "target_gender": "neutral",
+    "id": 8
+  },
+  {
+    "category": "reply",
+    "trigger_context": "story_gym",
+    "vibe": "witty",
+    "tenglish": "Already itla unnav, inka workout chesthe maa paristhithi enti?",
+    "english_meaning": "You already look like this; if you work out more, what happens to us?",
+    "target_gender": "neutral",
+    "id": 9
+  },
+  {
+    "category": "reply",
+    "trigger_context": "story_candid",
+    "vibe": "soft",
+    "tenglish": "Poses kanna nee candid shots lo ne magic ekkuva untundi.",
+    "english_meaning": "There's more magic in your candid shots than in posed ones.",
+    "target_gender": "neutral",
+    "id": 10
+  },
+  {
+    "category": "reply",
+    "trigger_context": "tinava",
+    "vibe": "soft",
+    "tenglish": "Nuvvu adigav kada, ipudu aakali kuda marchipoya.",
+    "english_meaning": "You asked, so now I even forgot my hunger.",
+    "target_gender": "neutral",
+    "id": 11
+  },
+  {
+    "category": "reply",
+    "trigger_context": "tinava",
+    "vibe": "romantic",
+    "tenglish": "Tinna, kani dessert laaga nee message kosam wait chestunna.",
+    "english_meaning": "I ate, but I'm waiting for your message like dessert.",
+    "target_gender": "neutral",
+    "id": 12
+  },
+  {
+    "category": "reply",
+    "trigger_context": "tinava",
+    "vibe": "playful",
+    "tenglish": "Inka ledu, nuvvu tinipistava?",
+    "english_meaning": "Not yet; will you feed me?",
+    "target_gender": "neutral",
+    "id": 13
+  },
+  {
+    "category": "reply",
+    "trigger_context": "tinava",
+    "vibe": "soft",
+    "tenglish": "Nuvvu tintene naaku kadupu nindinatlu untundi.",
+    "english_meaning": "When you eat, I feel full too.",
+    "target_gender": "neutral",
+    "id": 14
+  },
+  {
+    "category": "reply",
+    "trigger_context": "tinava",
+    "vibe": "romantic",
+    "tenglish": "Tinesa, kani nee voice vinte kani full satisfaction raadu.",
+    "english_meaning": "I ate, but hearing your voice gives full satisfaction.",
+    "target_gender": "neutral",
+    "id": 15
+  },
+  {
+    "category": "reply",
+    "trigger_context": "late_reply",
+    "vibe": "witty",
+    "tenglish": "It's okay, pedda celebrities busy ga ne untaru le.",
+    "english_meaning": "It's okay, big celebrities are busy anyway.",
+    "target_gender": "neutral",
+    "id": 16
+  },
+  {
+    "category": "reply",
+    "trigger_context": "late_reply",
+    "vibe": "soft",
+    "tenglish": "Parledu, nee message kosam entha sepu aina wait cheyochu.",
+    "english_meaning": "No problem, I can wait as long as for your message.",
+    "target_gender": "neutral",
+    "id": 17
+  },
+  {
+    "category": "reply",
+    "trigger_context": "late_reply",
+    "vibe": "playful",
+    "tenglish": "Late ga vachav kani, mood motham set chesav.",
+    "english_meaning": "You came late but set my whole mood.",
+    "target_gender": "neutral",
+    "id": 18
+  },
+  {
+    "category": "reply",
+    "trigger_context": "late_reply",
+    "vibe": "witty",
+    "tenglish": "Fine vesesta next time late chesthe - oka coffee treat ivvali.",
+    "english_meaning": "I'll fine you next time you're late - a coffee treat.",
+    "target_gender": "neutral",
+    "id": 19
+  },
+  {
+    "category": "reply",
+    "trigger_context": "late_reply",
+    "vibe": "romantic",
+    "tenglish": "Nuvvu reply ivvadaniki late chesina, naa heart beat fast avvadaniki second kuda pattadu.",
+    "english_meaning": "You were late to reply, but my heart took a second to race.",
+    "target_gender": "neutral",
+    "id": 20
+  },
+  {
+    "category": "reply",
+    "trigger_context": "witty_teasing",
+    "vibe": "witty",
+    "tenglish": "Nuvvu doctor aa? Endukante ninnu chudagane naa BP perigipotundi.",
+    "english_meaning": "Are you a doctor? Because my BP rises seeing you.",
+    "target_gender": "neutral",
+    "id": 21
+  },
+  {
+    "category": "reply",
+    "trigger_context": "witty_teasing",
+    "vibe": "witty",
+    "tenglish": "Google Maps lo kuda nee heart ki route dorakatledu, koncham location share chestava?",
+    "english_meaning": "Even Google Maps can't find the route to your heart; share location?",
+    "target_gender": "neutral",
+    "id": 22
+  },
+  {
+    "category": "reply",
+    "trigger_context": "witty_teasing",
+    "vibe": "witty",
+    "tenglish": "Nuvvu Wi-Fi hotspot on chesava? Endukante automatic ga neeku attract aipotunna.",
+    "english_meaning": "Did you turn on Wi-Fi hotspot? Because I'm auto-attracted to you.",
+    "target_gender": "neutral",
+    "id": 23
+  },
+  {
+    "category": "reply",
+    "trigger_context": "witty_teasing",
+    "vibe": "witty",
+    "tenglish": "Naku swimming raadu, kani nee kallalo munigipovalani undi.",
+    "english_meaning": "I can't swim, but I want to drown in your eyes.",
+    "target_gender": "neutral",
+    "id": 24
+  },
+  {
+    "category": "reply",
+    "trigger_context": "witty_teasing",
+    "vibe": "witty",
+    "tenglish": "Police ki complaint ivvali ninnu... endukante naa nidra dongaatanam chesav.",
+    "english_meaning": "I should complain to police... you stole my sleep.",
+    "target_gender": "neutral",
+    "id": 25
+  },
+  {
+    "category": "reply",
+    "trigger_context": "witty_teasing",
+    "vibe": "witty",
+    "tenglish": "Nuvvu magnet aa? Nenu iron aa? Enduku ila lagutunnav?",
+    "english_meaning": "Are you a magnet and I iron? Why am I stuck to you?",
+    "target_gender": "neutral",
+    "id": 26
+  },
+  {
+    "category": "reply",
+    "trigger_context": "witty_teasing",
+    "vibe": "witty",
+    "tenglish": "Neeku Google pay chesta, koncham naa dream lo ki vastava?",
+    "english_meaning": "I'll Google Pay you; come into my dreams a bit?",
+    "target_gender": "neutral",
+    "id": 27
+  },
+  {
+    "category": "reply",
+    "trigger_context": "witty_teasing",
+    "vibe": "witty",
+    "tenglish": "Charging ledu phone lo, kani neetho matladutunte naaku full energy vastundi.",
+    "english_meaning": "Phone has no charge, but talking to you gives full energy.",
+    "target_gender": "neutral",
+    "id": 28
+  },
+  {
+    "category": "reply",
+    "trigger_context": "witty_teasing",
+    "vibe": "witty",
+    "tenglish": "Nuvvu magician aa? Ninnu chudagane naa problems anni disappear aipotunnai.",
+    "english_meaning": "Are you a magician? My problems disappear seeing you.",
+    "target_gender": "neutral",
+    "id": 29
+  },
+  {
+    "category": "reply",
+    "trigger_context": "witty_teasing",
+    "vibe": "witty",
+    "tenglish": "Exam lo kuda inni doubts raledu, kani nee gurinchi roju thoughts vastunnai.",
+    "english_meaning": "Even in exams I had no doubts, but thoughts of you come daily.",
+    "target_gender": "neutral",
+    "id": 30
+  },
+  {
+    "category": "reply",
+    "trigger_context": "soft_romantic",
+    "vibe": "soft",
+    "tenglish": "Roju lo best part enti ante, neetho matlade aa koncham time.",
+    "english_meaning": "The best part of the day is that little time talking to you.",
+    "target_gender": "neutral",
+    "id": 31
+  },
+  {
+    "category": "reply",
+    "trigger_context": "soft_romantic",
+    "vibe": "soft",
+    "tenglish": "Nuvvu navvithe chalu, aa roju motham worth anipistundi.",
+    "english_meaning": "Your smile alone makes the whole day worth it.",
+    "target_gender": "neutral",
+    "id": 32
+  },
+  {
+    "category": "reply",
+    "trigger_context": "soft_romantic",
+    "vibe": "soft",
+    "tenglish": "Chaala mandi parichayam ayyaru, kani neela evaru anipinchaledu.",
+    "english_meaning": "I've met many, but no one feels like you.",
+    "target_gender": "neutral",
+    "id": 33
+  },
+  {
+    "category": "reply",
+    "trigger_context": "soft_romantic",
+    "vibe": "soft",
+    "tenglish": "Nuvvu pakkana unte silence kuda music la vinipistundi.",
+    "english_meaning": "With you beside me, silence sounds like music.",
+    "target_gender": "neutral",
+    "id": 34
+  },
+  {
+    "category": "reply",
+    "trigger_context": "soft_romantic",
+    "vibe": "soft",
+    "tenglish": "Naa playlist lo favourite song kanna nee voice eh ekkuva istam.",
+    "english_meaning": "I like your voice more than my favourite song.",
+    "target_gender": "neutral",
+    "id": 35
+  },
+  {
+    "category": "reply",
+    "trigger_context": "soft_romantic",
+    "vibe": "soft",
+    "tenglish": "Ninnu kalisaka ardam ayyindi, perfection ante ento.",
+    "english_meaning": "After meeting you I understood what perfection is.",
+    "target_gender": "neutral",
+    "id": 36
+  },
+  {
+    "category": "reply",
+    "trigger_context": "soft_romantic",
+    "vibe": "soft",
+    "tenglish": "Enni messages vachina, nee notification kosame wait chestunta.",
+    "english_meaning": "No matter how many messages, I wait for your notification.",
+    "target_gender": "neutral",
+    "id": 37
+  },
+  {
+    "category": "reply",
+    "trigger_context": "soft_romantic",
+    "vibe": "soft",
+    "tenglish": "Nuvvu naa life lo ki vachaka, normal days kuda special ga maripoyai.",
+    "english_meaning": "After you entered my life, even normal days became special.",
+    "target_gender": "neutral",
+    "id": 38
+  },
+  {
+    "category": "reply",
+    "trigger_context": "soft_romantic",
+    "vibe": "soft",
+    "tenglish": "Ninnu chustunte time agipothe baagundu anipistundi.",
+    "english_meaning": "I wish time would stop when I look at you.",
+    "target_gender": "neutral",
+    "id": 39
+  },
+  {
+    "category": "reply",
+    "trigger_context": "soft_romantic",
+    "vibe": "soft",
+    "tenglish": "Simple ga cheppalante, naa happiness ki shortcut nuvve.",
+    "english_meaning": "Simply put, you're the shortcut to my happiness.",
+    "target_gender": "neutral",
+    "id": 40
+  },
+  {
+    "category": "reply",
+    "trigger_context": "asking_out",
+    "vibe": "bold",
+    "tenglish": "Chatting lo ne inta vibe unte, direct ga kalisthe ela untundo?",
+    "english_meaning": "If the chat vibe is this good, how would meeting be?",
+    "target_gender": "neutral",
+    "id": 41
+  },
+  {
+    "category": "reply",
+    "trigger_context": "asking_out",
+    "vibe": "playful",
+    "tenglish": "Ee weekend free na? Oka manchi coffee spot telusu, veldama?",
+    "english_meaning": "Free this weekend? I know a good coffee spot; shall we go?",
+    "target_gender": "neutral",
+    "id": 42
+  },
+  {
+    "category": "reply",
+    "trigger_context": "asking_out",
+    "vibe": "playful",
+    "tenglish": "Typing chesi chesi fingers noppi pudutunnai, call cheymantava?",
+    "english_meaning": "My fingers hurt from typing; will you call?",
+    "target_gender": "neutral",
+    "id": 43
+  },
+  {
+    "category": "reply",
+    "trigger_context": "asking_out",
+    "vibe": "playful",
+    "tenglish": "Long drive ki veldama? Music nenu pedatha, company nuvvu ivvu.",
+    "english_meaning": "Shall we go on a long drive? I'll bring music, you bring company.",
+    "target_gender": "neutral",
+    "id": 44
+  },
+  {
+    "category": "reply",
+    "trigger_context": "asking_out",
+    "vibe": "bold",
+    "tenglish": "Ninnu direct ga chudakunda ee week gadichela ledu, eppudu kaludham?",
+    "english_meaning": "I couldn't get through this week without seeing you; when shall we meet?",
+    "target_gender": "neutral",
+    "id": 45
+  },
+  {
+    "category": "reply",
+    "trigger_context": "asking_out",
+    "vibe": "playful",
+    "tenglish": "Ice cream treat naadi, time needi. Deal aa?",
+    "english_meaning": "Ice cream treat is mine, time is yours. Deal?",
+    "target_gender": "neutral",
+    "id": 46
+  },
+  {
+    "category": "reply",
+    "trigger_context": "asking_out",
+    "vibe": "soft",
+    "tenglish": "Oka 10 minutes kaludham ani start chesthe, 2 hours ela gadichipothayo teliyadu neetho.",
+    "english_meaning": "If we meet for 10 minutes, 2 hours pass with you, I don't know how.",
+    "target_gender": "neutral",
+    "id": 47
+  },
+  {
+    "category": "reply",
+    "trigger_context": "asking_out",
+    "vibe": "bold",
+    "tenglish": "Mana conversation ki next level ki teesukeldama? Dinner?",
+    "english_meaning": "Shall we take our conversation to the next level? Dinner?",
+    "target_gender": "neutral",
+    "id": 48
+  },
+  {
+    "category": "reply",
+    "trigger_context": "asking_out",
+    "vibe": "playful",
+    "tenglish": "Neeku bore kodithe cheppu, 15 minutes lo nee inti mundu unta.",
+    "english_meaning": "If you're bored, tell me; I'll be at your door in 15 minutes.",
+    "target_gender": "neutral",
+    "id": 49
+  },
+  {
+    "category": "reply",
+    "trigger_context": "asking_out",
+    "vibe": "playful",
+    "tenglish": "Phone screen meeda chusi chusi bore kottindi, real ga eppudu kanipistav?",
+    "english_meaning": "I'm bored of seeing you on screen; when will you appear in real?",
+    "target_gender": "neutral",
+    "id": 50
+  },
+  {
+    "id": 51,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nee smile chusthe world lo vere em gurthuku raadu. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 52,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nuvvu message chesthe nenu flat aipotunna.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 53,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nuvvu matladutunte naa heart beat fast aipotundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 54,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nee kallalo chusthe day motham bright aipotundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 55,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, ninnu chusinappudu time assalu teliyadu.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 56,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nuvvu pakkana unte time assalu teliyadu. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 57,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nee voice vinte tension motham mayam aipotundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 58,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nee kallalo chusthe naa heart beat fast aipotundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 59,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nee voice vinte time assalu teliyadu. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 60,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nee smile chusthe nenu flat aipotunna. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 61,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nee smile chusthe tension motham mayam aipotundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 62,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nee smile chusthe time assalu teliyadu. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 63,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nee kallalo chusthe naa heart beat fast aipotundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 64,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nee smile chusthe magic jariginattu anipistundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 65,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nuvvu message chesthe day motham bright aipotundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 66,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nee smile chusthe naa heart beat fast aipotundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 67,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nee navvu chusthe world lo vere em gurthuku raadu. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 68,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nuvvu matladutunte nenu flat aipotunna. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 69,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nuvvu message chesthe naa heart beat fast aipotundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 70,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nuvvu matladutunte day motham bright aipotundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 71,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nee smile chusthe magic jariginattu anipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 72,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nee voice vinte naa heart beat fast aipotundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 73,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nee kallalo chusthe naa heart beat fast aipotundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 74,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nee smile chusthe tension motham mayam aipotundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 75,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nuvvu message chesthe automatic ga face lo smile vachestundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 76,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nuvvu message chesthe magic jariginattu anipistundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 77,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nuvvu matladutunte world lo vere em gurthuku raadu. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 78,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nuvvu message chesthe magic jariginattu anipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 79,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nee kallalo chusthe time assalu teliyadu. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 80,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nee kallalo chusthe time assalu teliyadu. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 81,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nee kallalo chusthe magic jariginattu anipistundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 82,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nee kallalo chusthe tension motham mayam aipotundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 83,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, ninnu chusinappudu magic jariginattu anipistundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 84,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nuvvu matladutunte time assalu teliyadu. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 85,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nee smile chusthe time assalu teliyadu. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 86,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, ninnu chusinappudu tension motham mayam aipotundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 87,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nee kallalo chusthe naa heart beat fast aipotundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 88,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nuvvu matladutunte tension motham mayam aipotundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 89,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nuvvu message chesthe automatic ga face lo smile vachestundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 90,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nee voice vinte naa heart beat fast aipotundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 91,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nuvvu pakkana unte naa heart beat fast aipotundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 92,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nuvvu pakkana unte world lo vere em gurthuku raadu. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 93,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nee navvu chusthe naa heart beat fast aipotundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 94,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nuvvu matladutunte day motham bright aipotundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 95,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, ninnu chusinappudu magic jariginattu anipistundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 96,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nuvvu message chesthe magic jariginattu anipistundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 97,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nuvvu matladutunte day motham bright aipotundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 98,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nee navvu chusthe nenu flat aipotunna. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 99,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nuvvu matladutunte magic jariginattu anipistundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 100,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nuvvu matladutunte magic jariginattu anipistundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 101,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nee smile chusthe naa heart beat fast aipotundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 102,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nee smile chusthe world lo vere em gurthuku raadu.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 103,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nee smile chusthe tension motham mayam aipotundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 104,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nuvvu message chesthe day motham bright aipotundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 105,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nee navvu chusthe tension motham mayam aipotundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 106,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, ninnu chusinappudu nenu flat aipotunna. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 107,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nee smile chusthe time assalu teliyadu.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 108,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nee kallalo chusthe tension motham mayam aipotundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 109,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nuvvu pakkana unte naa heart beat fast aipotundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 110,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, ninnu chusinappudu world lo vere em gurthuku raadu.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 111,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nuvvu message chesthe world lo vere em gurthuku raadu. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 112,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nuvvu message chesthe naa heart beat fast aipotundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 113,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nee kallalo chusthe nenu flat aipotunna.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 114,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nee voice vinte time assalu teliyadu. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 115,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nee navvu chusthe automatic ga face lo smile vachestundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 116,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nee smile chusthe world lo vere em gurthuku raadu. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 117,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nee voice vinte nenu flat aipotunna.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 118,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nee kallalo chusthe world lo vere em gurthuku raadu. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 119,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nuvvu message chesthe magic jariginattu anipistundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 120,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nee navvu chusthe time assalu teliyadu. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 121,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nuvvu message chesthe naa heart beat fast aipotundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 122,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nee smile chusthe automatic ga face lo smile vachestundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 123,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nee smile chusthe naa heart beat fast aipotundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 124,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nuvvu matladutunte world lo vere em gurthuku raadu.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 125,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nee navvu chusthe magic jariginattu anipistundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 126,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nee smile chusthe magic jariginattu anipistundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 127,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nuvvu matladutunte magic jariginattu anipistundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 128,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nee voice vinte world lo vere em gurthuku raadu. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 129,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nee smile chusthe naa heart beat fast aipotundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 130,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nuvvu pakkana unte day motham bright aipotundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 131,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nee smile chusthe tension motham mayam aipotundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 132,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nee navvu chusthe magic jariginattu anipistundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 133,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nuvvu matladutunte day motham bright aipotundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 134,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, ninnu chusinappudu automatic ga face lo smile vachestundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 135,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nee kallalo chusthe day motham bright aipotundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 136,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nuvvu pakkana unte magic jariginattu anipistundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 137,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nee voice vinte day motham bright aipotundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 138,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nuvvu message chesthe time assalu teliyadu. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 139,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nuvvu pakkana unte naa heart beat fast aipotundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 140,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nee navvu chusthe nenu flat aipotunna. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 141,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nee navvu chusthe world lo vere em gurthuku raadu. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 142,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nee smile chusthe automatic ga face lo smile vachestundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 143,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nuvvu message chesthe time assalu teliyadu. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 144,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nee smile chusthe nenu flat aipotunna. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 145,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, ninnu chusinappudu day motham bright aipotundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 146,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nee kallalo chusthe nenu flat aipotunna.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 147,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nee voice vinte nenu flat aipotunna. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 148,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, ninnu chusinappudu automatic ga face lo smile vachestundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 149,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, ninnu chusinappudu nenu flat aipotunna.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 150,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nee kallalo chusthe naa heart beat fast aipotundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 151,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nuvvu message chesthe magic jariginattu anipistundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 152,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nee kallalo chusthe tension motham mayam aipotundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 153,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nuvvu pakkana unte nenu flat aipotunna. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 154,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, ninnu chusinappudu naa heart beat fast aipotundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 155,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nee kallalo chusthe world lo vere em gurthuku raadu. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 156,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nee navvu chusthe tension motham mayam aipotundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 157,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nee kallalo chusthe time assalu teliyadu. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 158,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nuvvu message chesthe world lo vere em gurthuku raadu. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 159,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nee kallalo chusthe naa heart beat fast aipotundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 160,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nuvvu message chesthe time assalu teliyadu.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 161,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nuvvu message chesthe automatic ga face lo smile vachestundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 162,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nee smile chusthe time assalu teliyadu. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 163,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, ninnu chusinappudu time assalu teliyadu. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 164,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nee navvu chusthe world lo vere em gurthuku raadu. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 165,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nuvvu message chesthe world lo vere em gurthuku raadu. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 166,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nuvvu pakkana unte tension motham mayam aipotundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 167,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nuvvu pakkana unte day motham bright aipotundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 168,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nuvvu matladutunte world lo vere em gurthuku raadu. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 169,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nuvvu pakkana unte world lo vere em gurthuku raadu. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 170,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nuvvu message chesthe magic jariginattu anipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 171,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, ninnu chusinappudu magic jariginattu anipistundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 172,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nee kallalo chusthe automatic ga face lo smile vachestundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 173,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nee smile chusthe tension motham mayam aipotundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 174,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nee smile chusthe automatic ga face lo smile vachestundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 175,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nuvvu message chesthe world lo vere em gurthuku raadu. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 176,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nuvvu matladutunte day motham bright aipotundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 177,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nuvvu message chesthe world lo vere em gurthuku raadu. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 178,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nee kallalo chusthe tension motham mayam aipotundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 179,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nee kallalo chusthe nenu flat aipotunna. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 180,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, ninnu chusinappudu tension motham mayam aipotundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 181,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, ninnu chusinappudu nenu flat aipotunna. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 182,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, ninnu chusinappudu world lo vere em gurthuku raadu. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 183,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nee navvu chusthe time assalu teliyadu.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 184,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nee voice vinte tension motham mayam aipotundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 185,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nuvvu message chesthe world lo vere em gurthuku raadu.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 186,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nuvvu matladutunte world lo vere em gurthuku raadu. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 187,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nuvvu pakkana unte day motham bright aipotundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 188,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nuvvu pakkana unte world lo vere em gurthuku raadu. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 189,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, ninnu chusinappudu world lo vere em gurthuku raadu.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 190,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nuvvu pakkana unte magic jariginattu anipistundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 191,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nee kallalo chusthe time assalu teliyadu. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 192,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nee smile chusthe nenu flat aipotunna. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 193,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nuvvu matladutunte naa heart beat fast aipotundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 194,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nee kallalo chusthe time assalu teliyadu. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 195,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nuvvu matladutunte nenu flat aipotunna. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 196,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nuvvu pakkana unte naa heart beat fast aipotundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 197,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nee voice vinte naa heart beat fast aipotundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 198,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nee navvu chusthe world lo vere em gurthuku raadu.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 199,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nuvvu pakkana unte tension motham mayam aipotundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 200,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nee kallalo chusthe nenu flat aipotunna. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 201,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nee voice vinte time assalu teliyadu. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 202,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, ninnu chusinappudu nenu flat aipotunna. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 203,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nee navvu chusthe world lo vere em gurthuku raadu. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 204,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nee smile chusthe magic jariginattu anipistundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 205,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nee kallalo chusthe magic jariginattu anipistundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 206,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nee smile chusthe automatic ga face lo smile vachestundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 207,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nuvvu pakkana unte naa heart beat fast aipotundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 208,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nee kallalo chusthe day motham bright aipotundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 209,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nee smile chusthe automatic ga face lo smile vachestundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 210,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nuvvu matladutunte world lo vere em gurthuku raadu.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 211,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nee voice vinte nenu flat aipotunna. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 212,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nee voice vinte tension motham mayam aipotundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 213,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nee smile chusthe time assalu teliyadu. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 214,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nee kallalo chusthe tension motham mayam aipotundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 215,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, ninnu chusinappudu magic jariginattu anipistundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 216,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, ninnu chusinappudu nenu flat aipotunna. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 217,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nee kallalo chusthe magic jariginattu anipistundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 218,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nee kallalo chusthe world lo vere em gurthuku raadu. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 219,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nee voice vinte time assalu teliyadu. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 220,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nee navvu chusthe automatic ga face lo smile vachestundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 221,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, ninnu chusinappudu magic jariginattu anipistundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 222,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nuvvu message chesthe magic jariginattu anipistundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 223,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nuvvu matladutunte time assalu teliyadu. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 224,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, ninnu chusinappudu magic jariginattu anipistundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 225,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nee voice vinte automatic ga face lo smile vachestundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 226,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nuvvu message chesthe tension motham mayam aipotundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 227,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nuvvu matladutunte naa heart beat fast aipotundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 228,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, ninnu chusinappudu magic jariginattu anipistundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 229,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nee voice vinte automatic ga face lo smile vachestundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 230,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nuvvu pakkana unte day motham bright aipotundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 231,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nuvvu message chesthe day motham bright aipotundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 232,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nee smile chusthe day motham bright aipotundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 233,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, ninnu chusinappudu automatic ga face lo smile vachestundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 234,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nuvvu matladutunte tension motham mayam aipotundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 235,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nee voice vinte day motham bright aipotundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 236,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nuvvu message chesthe automatic ga face lo smile vachestundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 237,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nuvvu message chesthe day motham bright aipotundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 238,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, ninnu chusinappudu time assalu teliyadu. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 239,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nee navvu chusthe day motham bright aipotundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 240,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, ninnu chusinappudu world lo vere em gurthuku raadu. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 241,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nee navvu chusthe time assalu teliyadu.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 242,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nuvvu matladutunte tension motham mayam aipotundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 243,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nuvvu matladutunte tension motham mayam aipotundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 244,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, ninnu chusinappudu tension motham mayam aipotundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 245,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nee navvu chusthe automatic ga face lo smile vachestundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 246,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nee kallalo chusthe magic jariginattu anipistundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 247,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, ninnu chusinappudu day motham bright aipotundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 248,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nuvvu pakkana unte naa heart beat fast aipotundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 249,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nuvvu pakkana unte naa heart beat fast aipotundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 250,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nuvvu message chesthe tension motham mayam aipotundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 251,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nuvvu pakkana unte day motham bright aipotundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 252,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nee navvu chusthe world lo vere em gurthuku raadu. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 253,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nuvvu pakkana unte tension motham mayam aipotundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 254,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nuvvu matladutunte magic jariginattu anipistundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 255,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nuvvu message chesthe nenu flat aipotunna. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 256,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nuvvu pakkana unte day motham bright aipotundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 257,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nee navvu chusthe time assalu teliyadu. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 258,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nee smile chusthe magic jariginattu anipistundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 259,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nuvvu message chesthe naa heart beat fast aipotundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 260,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, ninnu chusinappudu world lo vere em gurthuku raadu. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 261,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, ninnu chusinappudu tension motham mayam aipotundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 262,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, ninnu chusinappudu time assalu teliyadu. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 263,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nuvvu message chesthe tension motham mayam aipotundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 264,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, ninnu chusinappudu naa heart beat fast aipotundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 265,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nee navvu chusthe world lo vere em gurthuku raadu. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 266,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nee navvu chusthe magic jariginattu anipistundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 267,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nee voice vinte time assalu teliyadu. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 268,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, ninnu chusinappudu tension motham mayam aipotundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 269,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nee kallalo chusthe nenu flat aipotunna. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 270,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nee voice vinte naa heart beat fast aipotundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 271,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nuvvu pakkana unte day motham bright aipotundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 272,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nuvvu message chesthe nenu flat aipotunna. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 273,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nee smile chusthe naa heart beat fast aipotundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 274,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nee kallalo chusthe time assalu teliyadu. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 275,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nuvvu message chesthe time assalu teliyadu. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 276,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nuvvu pakkana unte day motham bright aipotundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 277,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nuvvu pakkana unte world lo vere em gurthuku raadu. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 278,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nuvvu pakkana unte automatic ga face lo smile vachestundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 279,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nee navvu chusthe day motham bright aipotundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 280,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nuvvu message chesthe world lo vere em gurthuku raadu.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 281,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nuvvu message chesthe tension motham mayam aipotundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 282,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, ninnu chusinappudu tension motham mayam aipotundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 283,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nee voice vinte automatic ga face lo smile vachestundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 284,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, ninnu chusinappudu time assalu teliyadu. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 285,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nee smile chusthe time assalu teliyadu. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 286,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nuvvu message chesthe nenu flat aipotunna. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 287,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nuvvu message chesthe naa heart beat fast aipotundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 288,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nuvvu pakkana unte day motham bright aipotundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 289,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nee smile chusthe automatic ga face lo smile vachestundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 290,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nuvvu message chesthe naa heart beat fast aipotundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 291,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nuvvu pakkana unte world lo vere em gurthuku raadu. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 292,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nee voice vinte magic jariginattu anipistundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 293,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nee kallalo chusthe time assalu teliyadu.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 294,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nuvvu matladutunte tension motham mayam aipotundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 295,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nee navvu chusthe world lo vere em gurthuku raadu. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 296,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, ninnu chusinappudu time assalu teliyadu. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 297,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nee navvu chusthe naa heart beat fast aipotundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 298,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, ninnu chusinappudu tension motham mayam aipotundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 299,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nuvvu pakkana unte world lo vere em gurthuku raadu. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 300,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nuvvu matladutunte time assalu teliyadu. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 301,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nee voice vinte magic jariginattu anipistundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 302,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nee smile chusthe time assalu teliyadu.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 303,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nee navvu chusthe naa heart beat fast aipotundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 304,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, ninnu chusinappudu day motham bright aipotundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 305,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nee kallalo chusthe tension motham mayam aipotundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 306,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nee navvu chusthe world lo vere em gurthuku raadu. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 307,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nee kallalo chusthe world lo vere em gurthuku raadu.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 308,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nee kallalo chusthe day motham bright aipotundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 309,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nuvvu message chesthe day motham bright aipotundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 310,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nee voice vinte time assalu teliyadu.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 311,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nee smile chusthe day motham bright aipotundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 312,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nee kallalo chusthe nenu flat aipotunna. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 313,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nee smile chusthe magic jariginattu anipistundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 314,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nuvvu matladutunte automatic ga face lo smile vachestundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 315,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nuvvu message chesthe day motham bright aipotundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 316,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nee voice vinte automatic ga face lo smile vachestundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 317,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nee smile chusthe magic jariginattu anipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 318,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nuvvu message chesthe naa heart beat fast aipotundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 319,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nee smile chusthe nenu flat aipotunna. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 320,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nee navvu chusthe magic jariginattu anipistundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 321,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nee navvu chusthe tension motham mayam aipotundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 322,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nuvvu matladutunte time assalu teliyadu. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 323,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nuvvu pakkana unte tension motham mayam aipotundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 324,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nuvvu pakkana unte naa heart beat fast aipotundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 325,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nee smile chusthe day motham bright aipotundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 326,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nee voice vinte naa heart beat fast aipotundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 327,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nee kallalo chusthe tension motham mayam aipotundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 328,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nuvvu pakkana unte tension motham mayam aipotundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 329,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nee smile chusthe magic jariginattu anipistundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 330,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nee smile chusthe time assalu teliyadu. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 331,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nuvvu pakkana unte naa heart beat fast aipotundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 332,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nee smile chusthe magic jariginattu anipistundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 333,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nee smile chusthe automatic ga face lo smile vachestundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 334,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nee smile chusthe automatic ga face lo smile vachestundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 335,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nee voice vinte magic jariginattu anipistundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 336,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nuvvu message chesthe naa heart beat fast aipotundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 337,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nee voice vinte automatic ga face lo smile vachestundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 338,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nuvvu message chesthe time assalu teliyadu.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 339,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nuvvu message chesthe nenu flat aipotunna. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 340,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nee voice vinte time assalu teliyadu. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 341,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, ninnu chusinappudu automatic ga face lo smile vachestundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 342,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nee smile chusthe nenu flat aipotunna. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 343,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nee navvu chusthe magic jariginattu anipistundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 344,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nee voice vinte day motham bright aipotundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 345,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nee smile chusthe tension motham mayam aipotundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 346,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, ninnu chusinappudu time assalu teliyadu.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 347,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nuvvu matladutunte time assalu teliyadu. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 348,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nee smile chusthe naa heart beat fast aipotundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 349,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nuvvu matladutunte naa heart beat fast aipotundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 350,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nee smile chusthe day motham bright aipotundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 351,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nuvvu matladutunte nenu flat aipotunna. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 352,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nuvvu matladutunte automatic ga face lo smile vachestundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 353,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, ninnu chusinappudu magic jariginattu anipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 354,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nuvvu message chesthe automatic ga face lo smile vachestundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 355,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nee smile chusthe time assalu teliyadu. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 356,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nuvvu pakkana unte magic jariginattu anipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 357,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nuvvu message chesthe magic jariginattu anipistundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 358,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nee navvu chusthe tension motham mayam aipotundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 359,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nuvvu matladutunte tension motham mayam aipotundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 360,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, ninnu chusinappudu nenu flat aipotunna. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 361,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nee smile chusthe day motham bright aipotundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 362,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nuvvu pakkana unte automatic ga face lo smile vachestundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 363,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nee navvu chusthe naa heart beat fast aipotundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 364,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, ninnu chusinappudu nenu flat aipotunna. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 365,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nee voice vinte world lo vere em gurthuku raadu. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 366,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nuvvu pakkana unte time assalu teliyadu. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 367,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nee navvu chusthe magic jariginattu anipistundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 368,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nuvvu pakkana unte tension motham mayam aipotundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 369,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nee navvu chusthe nenu flat aipotunna.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 370,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nee kallalo chusthe magic jariginattu anipistundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 371,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, ninnu chusinappudu tension motham mayam aipotundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 372,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nuvvu message chesthe world lo vere em gurthuku raadu.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 373,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nee kallalo chusthe tension motham mayam aipotundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 374,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nee kallalo chusthe time assalu teliyadu. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 375,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nuvvu message chesthe world lo vere em gurthuku raadu. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 376,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, ninnu chusinappudu automatic ga face lo smile vachestundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 377,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nuvvu message chesthe magic jariginattu anipistundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 378,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nee kallalo chusthe nenu flat aipotunna. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 379,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nee voice vinte time assalu teliyadu. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 380,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nuvvu pakkana unte world lo vere em gurthuku raadu. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 381,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nuvvu message chesthe automatic ga face lo smile vachestundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 382,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nee navvu chusthe time assalu teliyadu. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 383,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nee smile chusthe day motham bright aipotundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 384,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, ninnu chusinappudu magic jariginattu anipistundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 385,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nee voice vinte automatic ga face lo smile vachestundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 386,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nuvvu pakkana unte magic jariginattu anipistundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 387,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nee kallalo chusthe naa heart beat fast aipotundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 388,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nee navvu chusthe tension motham mayam aipotundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 389,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nee voice vinte nenu flat aipotunna. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 390,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nuvvu matladutunte tension motham mayam aipotundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 391,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nuvvu pakkana unte nenu flat aipotunna.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 392,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nuvvu message chesthe automatic ga face lo smile vachestundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 393,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nee voice vinte nenu flat aipotunna. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 394,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nee kallalo chusthe tension motham mayam aipotundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 395,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nee kallalo chusthe time assalu teliyadu. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 396,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nee kallalo chusthe nenu flat aipotunna.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 397,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, ninnu chusinappudu magic jariginattu anipistundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 398,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, ninnu chusinappudu nenu flat aipotunna. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 399,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nee smile chusthe magic jariginattu anipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 400,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nee smile chusthe naa heart beat fast aipotundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 401,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nee voice vinte automatic ga face lo smile vachestundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 402,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, ninnu chusinappudu nenu flat aipotunna. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 403,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nee kallalo chusthe time assalu teliyadu. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 404,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nee navvu chusthe time assalu teliyadu.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 405,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, ninnu chusinappudu naa heart beat fast aipotundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 406,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nee voice vinte world lo vere em gurthuku raadu. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 407,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nuvvu matladutunte magic jariginattu anipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 408,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nee navvu chusthe nenu flat aipotunna.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 409,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, ninnu chusinappudu automatic ga face lo smile vachestundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 410,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nee voice vinte tension motham mayam aipotundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 411,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nee navvu chusthe nenu flat aipotunna. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 412,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nee kallalo chusthe day motham bright aipotundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 413,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nee smile chusthe world lo vere em gurthuku raadu. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 414,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nee navvu chusthe nenu flat aipotunna. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 415,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nee voice vinte tension motham mayam aipotundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 416,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, ninnu chusinappudu magic jariginattu anipistundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 417,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nee kallalo chusthe automatic ga face lo smile vachestundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 418,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nuvvu message chesthe automatic ga face lo smile vachestundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 419,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nuvvu pakkana unte magic jariginattu anipistundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 420,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nuvvu matladutunte naa heart beat fast aipotundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 421,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nuvvu pakkana unte tension motham mayam aipotundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 422,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nuvvu matladutunte automatic ga face lo smile vachestundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 423,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, ninnu chusinappudu magic jariginattu anipistundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 424,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nuvvu pakkana unte world lo vere em gurthuku raadu.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 425,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nuvvu message chesthe day motham bright aipotundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 426,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nuvvu matladutunte magic jariginattu anipistundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 427,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nee kallalo chusthe world lo vere em gurthuku raadu. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 428,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nee kallalo chusthe automatic ga face lo smile vachestundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 429,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, ninnu chusinappudu time assalu teliyadu.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 430,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, ninnu chusinappudu world lo vere em gurthuku raadu. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 431,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nuvvu message chesthe tension motham mayam aipotundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 432,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nuvvu message chesthe nenu flat aipotunna. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 433,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nee smile chusthe tension motham mayam aipotundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 434,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nee voice vinte day motham bright aipotundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 435,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, ninnu chusinappudu naa heart beat fast aipotundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 436,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nee smile chusthe world lo vere em gurthuku raadu. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 437,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nuvvu pakkana unte nenu flat aipotunna. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 438,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nee smile chusthe time assalu teliyadu. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 439,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nuvvu pakkana unte time assalu teliyadu. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 440,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nee voice vinte automatic ga face lo smile vachestundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 441,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, ninnu chusinappudu time assalu teliyadu.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 442,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nuvvu pakkana unte naa heart beat fast aipotundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 443,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nee navvu chusthe world lo vere em gurthuku raadu. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 444,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nee voice vinte naa heart beat fast aipotundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 445,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nee kallalo chusthe magic jariginattu anipistundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 446,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nee smile chusthe world lo vere em gurthuku raadu. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 447,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nee smile chusthe magic jariginattu anipistundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 448,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, ninnu chusinappudu naa heart beat fast aipotundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 449,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nee navvu chusthe magic jariginattu anipistundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 450,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nee navvu chusthe magic jariginattu anipistundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 451,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nee kallalo chusthe naa heart beat fast aipotundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 452,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nuvvu message chesthe tension motham mayam aipotundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 453,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nuvvu matladutunte naa heart beat fast aipotundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 454,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nee navvu chusthe time assalu teliyadu. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 455,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nuvvu matladutunte automatic ga face lo smile vachestundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 456,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nee kallalo chusthe day motham bright aipotundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 457,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nuvvu matladutunte naa heart beat fast aipotundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 458,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nuvvu pakkana unte nenu flat aipotunna. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 459,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nee voice vinte tension motham mayam aipotundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 460,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nuvvu pakkana unte automatic ga face lo smile vachestundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 461,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nee kallalo chusthe time assalu teliyadu.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 462,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nee kallalo chusthe automatic ga face lo smile vachestundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 463,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nee smile chusthe world lo vere em gurthuku raadu. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 464,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nee kallalo chusthe day motham bright aipotundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 465,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nuvvu pakkana unte automatic ga face lo smile vachestundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 466,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nuvvu pakkana unte time assalu teliyadu. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 467,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nee smile chusthe day motham bright aipotundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 468,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nuvvu message chesthe naa heart beat fast aipotundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 469,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nee kallalo chusthe time assalu teliyadu. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 470,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nuvvu matladutunte nenu flat aipotunna. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 471,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nee voice vinte automatic ga face lo smile vachestundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 472,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nee smile chusthe world lo vere em gurthuku raadu.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 473,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nee kallalo chusthe day motham bright aipotundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 474,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nee smile chusthe day motham bright aipotundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 475,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nee navvu chusthe naa heart beat fast aipotundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 476,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nuvvu matladutunte automatic ga face lo smile vachestundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 477,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, ninnu chusinappudu automatic ga face lo smile vachestundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 478,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nuvvu pakkana unte automatic ga face lo smile vachestundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 479,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nee smile chusthe world lo vere em gurthuku raadu. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 480,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nee smile chusthe world lo vere em gurthuku raadu. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 481,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nuvvu message chesthe nenu flat aipotunna. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 482,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nuvvu matladutunte tension motham mayam aipotundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 483,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, ninnu chusinappudu automatic ga face lo smile vachestundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 484,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nuvvu message chesthe nenu flat aipotunna. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 485,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nee navvu chusthe tension motham mayam aipotundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 486,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nee voice vinte magic jariginattu anipistundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 487,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nuvvu pakkana unte naa heart beat fast aipotundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 488,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nee kallalo chusthe time assalu teliyadu. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 489,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, ninnu chusinappudu magic jariginattu anipistundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 490,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nee navvu chusthe time assalu teliyadu. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 491,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nee navvu chusthe automatic ga face lo smile vachestundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 492,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nee voice vinte tension motham mayam aipotundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 493,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nuvvu message chesthe magic jariginattu anipistundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 494,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nuvvu matladutunte day motham bright aipotundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 495,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nee smile chusthe tension motham mayam aipotundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 496,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nuvvu pakkana unte day motham bright aipotundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 497,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nuvvu message chesthe world lo vere em gurthuku raadu. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 498,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nee voice vinte automatic ga face lo smile vachestundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 499,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nee kallalo chusthe day motham bright aipotundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 500,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nee navvu chusthe tension motham mayam aipotundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 501,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nee voice vinte tension motham mayam aipotundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 502,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, ninnu chusinappudu magic jariginattu anipistundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 503,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nee smile chusthe world lo vere em gurthuku raadu. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 504,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, ninnu chusinappudu day motham bright aipotundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 505,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nee kallalo chusthe day motham bright aipotundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 506,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nuvvu matladutunte automatic ga face lo smile vachestundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 507,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nuvvu message chesthe nenu flat aipotunna. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 508,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nuvvu pakkana unte day motham bright aipotundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 509,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nuvvu matladutunte world lo vere em gurthuku raadu. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 510,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nee smile chusthe world lo vere em gurthuku raadu. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 511,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nee voice vinte magic jariginattu anipistundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 512,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nuvvu pakkana unte day motham bright aipotundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 513,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nuvvu matladutunte time assalu teliyadu. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 514,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nuvvu message chesthe world lo vere em gurthuku raadu. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 515,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nuvvu message chesthe day motham bright aipotundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 516,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nee kallalo chusthe automatic ga face lo smile vachestundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 517,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nee kallalo chusthe magic jariginattu anipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 518,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, ninnu chusinappudu time assalu teliyadu.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 519,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, ninnu chusinappudu world lo vere em gurthuku raadu. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 520,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nuvvu matladutunte nenu flat aipotunna. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 521,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nee kallalo chusthe magic jariginattu anipistundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 522,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nuvvu matladutunte time assalu teliyadu. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 523,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nee smile chusthe nenu flat aipotunna. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 524,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nuvvu matladutunte world lo vere em gurthuku raadu. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 525,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nee kallalo chusthe world lo vere em gurthuku raadu. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 526,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nuvvu pakkana unte automatic ga face lo smile vachestundi. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 527,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nee kallalo chusthe world lo vere em gurthuku raadu. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 528,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nee smile chusthe naa heart beat fast aipotundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 529,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nuvvu message chesthe day motham bright aipotundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 530,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nuvvu message chesthe world lo vere em gurthuku raadu. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 531,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nee voice vinte naa heart beat fast aipotundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 532,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nuvvu message chesthe automatic ga face lo smile vachestundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 533,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nuvvu message chesthe tension motham mayam aipotundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 534,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, nuvvu message chesthe nenu flat aipotunna. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 535,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nuvvu message chesthe day motham bright aipotundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 536,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nuvvu matladutunte automatic ga face lo smile vachestundi. Koncham care teesko naa gurinchi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 537,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nuvvu pakkana unte automatic ga face lo smile vachestundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 538,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nee voice vinte naa heart beat fast aipotundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 539,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Listen, nee smile chusthe magic jariginattu anipistundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 540,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nee voice vinte tension motham mayam aipotundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 541,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Seriously, nuvvu pakkana unte tension motham mayam aipotundi. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 542,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Naku oka doubt, nuvvu pakkana unte world lo vere em gurthuku raadu. Malli malli chudalanipistundi.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 543,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nee smile chusthe day motham bright aipotundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 544,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nee voice vinte magic jariginattu anipistundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 545,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nuvvu matladutunte automatic ga face lo smile vachestundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 546,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "By the way, nuvvu pakkana unte tension motham mayam aipotundi. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 547,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Honest ga cheptunna, nuvvu message chesthe automatic ga face lo smile vachestundi. Deeniki solution enti mari?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 548,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Nijam cheppalante, ninnu chusinappudu world lo vere em gurthuku raadu.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 549,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Okati cheppana, nee smile chusthe time assalu teliyadu. Nuvve cheppu em cheyalo.",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  },
+  {
+    "id": 550,
+    "category": "flirt_line",
+    "trigger_context": "combinatorial",
+    "vibe": "smooth",
+    "tenglish": "Oka chinna vishayam, nee kallalo chusthe nenu flat aipotunna. Idi normal aa leka love aa?",
+    "english_meaning": "",
+    "target_gender": "neutral"
+  }
+]

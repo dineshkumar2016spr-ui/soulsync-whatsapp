@@ -1,0 +1,25 @@
+{
+  "name": "Soul Sync — Love Guru",
+  "short_name": "Soul Sync",
+  "description": "Read your WhatsApp chats and get loving, timely replies from your Love Guru.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#fffafc",
+  "theme_color": "#ff2d95",
+  "icons": [
+    {
+      "src": "agent.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "agent.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

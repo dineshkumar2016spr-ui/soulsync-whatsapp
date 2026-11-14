@@ -4,26 +4,49 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Soul Sync</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#ff2d95">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Soul Sync">
+<link rel="apple-touch-icon" href="agent.png">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#eceef6;--panel:#f8f9fd;--ink:#1d2147;--mute:#666b8f;--line:#d9dcec;--me:#2b7a74;--me-ink:#fff;--them:#fff;--warn:#b8405f;--ok:#2b7a74;--accent:#4a45b8;--accent-ink:#fff;
+:root{--bg:#fdf4f9;--panel:rgba(255,255,255,.78);--ink:#2b2340;--mute:#8a7e9c;--line:#f3e2ee;--me:#e0629c;--me-ink:#fff;--them:#fff;--warn:#cf3f74;--ok:#3f9a8b;--accent:#7c5cd6;--accent-ink:#fff;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14162b;--panel:#1c1f3a;--ink:#e9eaf8;--mute:#9a9fc6;--line:#2e3260;--me:#3a9a92;--me-ink:#06201e;--them:#2a2e55;--warn:#ee7f9c;--ok:#6fd0c6;--accent:#8e89f0;--accent-ink:#14162b;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#14162b;--panel:#1c1f3a;--ink:#e9eaf8;--mute:#9a9fc6;--line:#2e3260;--me:#3a9a92;--me-ink:#06201e;--them:#2a2e55;--warn:#ee7f9c;--ok:#6fd0c6;--accent:#8e89f0;--accent-ink:#14162b;color-scheme:dark}
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{background:var(--bg);color:var(--ink);font:15px/1.45 Figtree,system-ui,sans-serif;overflow:hidden}
+body{background:linear-gradient(180deg,#fffafc 0%,var(--bg) 42%,#f5eeff 100%);color:var(--ink);font:16px/1.5 Figtree,system-ui,sans-serif;overflow:hidden;overscroll-behavior:none;-webkit-tap-highlight-color:transparent;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+/* Capacitor native shell: no bounce, no accidental text selection on controls */
+html,body{height:100%;margin:0;-webkit-user-select:none;user-select:none}
+input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text}
+button,label,.chk{touch-action:manipulation}
+/* 60fps tactile feel: transform/opacity only */
+.btn,button,.draftopt,.thread,.flirt,.creditpill{transition:transform .15s ease-out,opacity .2s ease-out,background-color .15s ease-out}
+.btn:active,button:active,.draftopt:active,.thread:active,.flirt:active,.creditpill:active{transform:scale(.98)}
+.draftopt{will-change:transform}
+.panel{will-change:opacity,transform}
+.msg{animation:msgIn .2s ease-out both}
+@keyframes msgIn{from{opacity:0;transform:translate3d(0,6px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+.draftopt.live{opacity:.85}
+/* Zero-CLS skeletons: same height/spacing as final draft cards */
+.skel{display:block;height:66px;margin:0 0 6px;border-radius:12px;border:1px solid #eed7e6;background:linear-gradient(90deg,#f6f1fb 25%,#eae1f7 37%,#f6f1fb 63%);background-size:400% 100%;animation:shimmer 1.2s ease-in-out infinite}
+@keyframes shimmer{0%{background-position:100% 0}100%{background-position:0 0}}
+.vspacer{width:100%}
+@media (prefers-reduced-motion:reduce){.msg{animation:none}.btn:active,button:active,.draftopt:active{transform:none}}
+.hearts{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.hearts i{position:absolute;bottom:-20vh;display:block;background:no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23ffffff' stop-opacity='.94'/%3E%3Cstop offset='.42' stop-color='%23ffd8ea' stop-opacity='.56'/%3E%3Cstop offset='1' stop-color='%23f2a6cb' stop-opacity='.26'/%3E%3C/linearGradient%3E%3CradialGradient id='h' cx='.34' cy='.26' r='.42'%3E%3Cstop offset='0' stop-color='%23ffffff' stop-opacity='.95'/%3E%3Cstop offset='1' stop-color='%23ffffff' stop-opacity='0'/%3E%3C/radialGradient%3E%3C/defs%3E%3Cpath d='M50 86C50 86 10 63 10 38A22 22 0 0 1 50 24A22 22 0 0 1 90 38C90 63 50 86 50 86Z' fill='url(%23g)' stroke='%23ffffff' stroke-opacity='.9' stroke-width='1.7'/%3E%3Cellipse cx='35' cy='33' rx='13' ry='9' fill='url(%23h)' transform='rotate(-22 35 33)'/%3E%3C/svg%3E");filter:drop-shadow(0 10px 16px rgba(226,150,190,.22));animation:drift var(--d,18s) linear var(--delay,0s) infinite;will-change:transform,opacity}
+@keyframes drift{0%{transform:translate3d(0,8vh,0) rotate(-6deg) scale(.8);opacity:0}12%{opacity:.85}50%{transform:translate3d(var(--x,20px),-58vh,0) rotate(9deg) scale(1.08)}88%{opacity:.6}100%{transform:translate3d(calc(var(--x,20px) * -1),-130vh,0) rotate(-7deg) scale(.92);opacity:0}}
 h1,h2{font-family:Fraunces,Georgia,serif;font-weight:600;margin:0}
 button,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.app{height:100%;display:grid;grid-template-columns:270px minmax(0,1fr) 350px;grid-template-rows:minmax(0,1fr)}
+.app{position:relative;z-index:1;height:100%;display:grid;grid-template-columns:270px minmax(0,1fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr)}
 .panel{background:var(--panel);min-height:0;display:flex;flex-direction:column;border-right:1px solid var(--line)}
-.panel.center{background:var(--bg)}
+.panel.center{background:rgba(255,255,255,.5)}
 .head{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:8px}
-.head h1{font-size:21px}.head h2{font-size:17px}
-.scroll{overflow:auto;min-height:0;flex:1;padding:12px}
+.head h1{font-size:21px;background:linear-gradient(100deg,#e0629c,#7c5cd6);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}.head h2{font-size:17px}
+.scroll{overflow:auto;min-height:0;flex:1;padding:12px;overscroll-behavior:contain;overflow-anchor:none}
 .btn{border:1px solid var(--line);background:transparent;border-radius:8px;padding:7px 12px}
 .btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
 .thread{display:block;width:100%;text-align:left;border:0;background:transparent;padding:10px 12px;border-radius:10px;margin-bottom:2px}
@@ -32,8 +55,8 @@ button{cursor:pointer}
 .drop{margin:12px;padding:12px;border:1.5px dashed var(--line);border-radius:10px;color:var(--mute);font-size:13px}
 .msgs{display:flex;flex-direction:column;gap:6px}
 .day{align-self:center;color:var(--mute);font-size:12px;margin:10px 0 2px}
-.msg{max-width:78%;padding:8px 12px;border-radius:14px;background:var(--them);overflow-wrap:anywhere}
-.msg.me{align-self:flex-end;background:var(--me);color:var(--me-ink)}
+.msg{max-width:78%;padding:8px 12px;border-radius:14px;background:var(--them);overflow-wrap:anywhere;box-shadow:0 2px 10px rgba(196,132,170,.12)}
+.msg.me{align-self:flex-end;background:linear-gradient(135deg,#f2a0c6,#e0629c);color:var(--me-ink);box-shadow:0 3px 12px rgba(224,98,156,.24)}
 .msg small{display:block;font-size:11px;opacity:.65;margin-top:2px}
 .msg.flag{box-shadow:0 0 0 2px var(--warn)}
 .msg .txt{white-space:pre-wrap}
@@ -110,36 +133,202 @@ select{background:var(--bg);border:1px solid var(--line);border-radius:8px;paddi
 .peer b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
 .peer button{padding:5px 9px;font-size:13px;white-space:nowrap}
 #incoming{z-index:60}
-.callfab{position:fixed;right:16px;bottom:16px;z-index:55;background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,.25)}
-.callfab[hidden]{display:none}
-@media (max-width:1000px){.callfab{bottom:72px}}
+ .callfab{position:fixed;right:16px;bottom:16px;z-index:55;background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+ .callfab[hidden]{display:none}
+ @media (max-width:1000px){.callfab{bottom:72px}}
+ .gurufab{position:fixed;right:16px;bottom:64px;z-index:54;display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:99px;background:var(--me);color:var(--me-ink);border-color:var(--me);font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+ .gurufab span{font-size:13px}
+ .gurufab[hidden]{display:none}
+ @media (max-width:1000px){.gurufab{bottom:124px}.gurufab span{display:none}.gurufab{padding:12px 14px;font-size:18px}}
+ .guru{display:flex;align-items:center;gap:12px;margin:4px 0 14px}
+ .guru i{width:56px;height:56px;border-radius:50%;background:var(--me);color:var(--me-ink);display:flex;align-items:center;justify-content:center;font-size:26px;font-style:normal;flex:none}
+ .guru b{font:600 17px Fraunces,Georgia,serif}
+.mascot{position:fixed;left:max(12px,calc(50% - 468px));bottom:4vh;width:clamp(140px,17vw,205px);z-index:60;pointer-events:none;filter:drop-shadow(0 18px 26px rgba(190,110,150,.28))}
+.mascot[hidden]{display:none}
+.mascot.in{animation:walkIn 1.6s cubic-bezier(.2,.9,.3,1) both}
+@keyframes walkIn{0%{opacity:0;transform:translateX(-170%) rotate(-4deg)}30%{opacity:1}62%{transform:translateX(5%) rotate(3deg)}80%{transform:translateX(-2%) rotate(-2deg)}100%{opacity:1;transform:none}}
+.mascot .say{position:absolute;bottom:100%;left:0;margin-bottom:8px;background:#fff;border:1px solid var(--line);border-radius:16px 16px 16px 4px;padding:10px 12px;font-size:13px;line-height:1.35;width:min(220px,74vw);box-shadow:0 10px 26px rgba(190,120,165,.18);color:var(--ink)}
+.mascot .say[hidden]{display:none}
+.guru-char{display:block;width:100%;height:auto;overflow:visible}
+.guru-char .body{transform-box:fill-box;transform-origin:50% 92%;animation:bob 2.8s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-7px) rotate(-1deg)}}
+.mascot.walking .legL{animation:stepA .42s ease-in-out infinite}
+.mascot.walking .legR{animation:stepB .42s ease-in-out infinite}
+@keyframes stepA{0%,100%{transform:rotate(9deg)}50%{transform:rotate(-11deg)}}
+@keyframes stepB{0%,100%{transform:rotate(-9deg)}50%{transform:rotate(11deg)}}
+.guru-char .legL,.guru-char .legR{transform-box:fill-box;transform-origin:50% 0}
+.guru-char .eye{transform-box:fill-box;transform-origin:center;animation:blink 5s ease-in-out infinite}
+@keyframes blink{0%,93%,100%{transform:scaleY(1)}96%{transform:scaleY(.12)}}
+.guru-char .armL{transform-box:fill-box;transform-origin:90% 50%;animation:wave 3.4s ease-in-out infinite}
+.guru-char .armR{transform-box:fill-box;transform-origin:10% 50%;animation:waveR 4.6s ease-in-out infinite}
+@keyframes waveR{0%,64%,100%{transform:rotate(0)}70%{transform:rotate(14deg)}76%{transform:rotate(2deg)}82%{transform:rotate(12deg)}}
+@keyframes wave{0%,70%,100%{transform:rotate(0)}78%{transform:rotate(-18deg)}86%{transform:rotate(-4deg)}94%{transform:rotate(-16deg)}}
+.guru-char.pop{animation:pop .55s cubic-bezier(.2,1.6,.35,1)}
+@keyframes pop{0%{transform:scale(.7) rotate(-6deg)}60%{transform:scale(1.06) rotate(2deg)}100%{transform:none}}
+.guru-char[data-mood="think"] .body{animation-duration:4.2s}
+.guru-char[data-mood="care"] .body{animation-duration:3.6s}
+.gurustrip{display:flex;align-items:center;gap:6px;padding:6px 16px;border-bottom:1px solid var(--line);font-size:12.5px;color:var(--mute);background:linear-gradient(90deg,#fff5fb,#f6f1ff)}
+.gurustrip #agline.pop{animation:sayPop .45s ease;color:var(--ink)}
+.gurustrip .gdot{font-size:11px;opacity:.8}
+.chatstage{position:relative;flex:1;min-height:260px;display:flex;overflow:hidden;background:rgba(255,255,255,.55);border:1px solid var(--line);border-radius:12px}
+.chatstage .chatguru{position:relative;flex:none;align-self:flex-end;order:2;width:clamp(78px,26%,106px);padding:0 6px 6px 0;pointer-events:none;z-index:2;animation:sway 6.5s ease-in-out infinite}
+.chatstage .chatguru .guru-char{width:100%}
+@keyframes sway{0%,100%{transform:rotate(-2deg) translateY(0)}50%{transform:rotate(2deg) translateY(-3px)}}
+#agentmsgs{position:relative;z-index:1;flex:1;overflow:auto;padding:12px}
+@keyframes sayPop{0%{opacity:0;transform:translateY(4px)}100%{opacity:1;transform:none}}
+@media (max-width:900px){.mascot{display:none}}
+ #agentmsgs ul{list-style:disc}
+ #agentmsgs .msg{max-width:92%}
+ #agentmsgs .flirt{display:block;width:100%;text-align:left;border:1px solid var(--line);background:#fff;border-radius:12px;padding:8px 10px;font-size:13px;line-height:1.35;color:var(--ink)}
+ #agentmsgs .flirt:hover{border-color:var(--accent);background:#fbf7ff}
 .calltoast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#1d2147;color:#fff;padding:10px 16px;border-radius:10px;z-index:90;font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,.3)}
 @media (max-width:600px){#local{width:32%}.callctl button{min-width:64px;padding:9px 12px;font-size:13px}.calltop{padding:12px}.callctl{padding:12px;gap:6px}}
-.gate{position:fixed;inset:0;z-index:50;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto}
+.gate{position:fixed;inset:0;z-index:50;background:rgba(253,246,250,.97);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto}
+.gate .hearts{position:absolute;inset:0;z-index:0}
+.gate .card{position:relative;z-index:1}
 .gate[hidden]{display:none}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px;width:100%;max-width:440px}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px;width:100%;max-width:440px;box-shadow:0 18px 50px rgba(190,120,165,.16),0 2px 6px rgba(190,120,165,.08)}
 .card h2{font-size:22px;margin-bottom:6px}.card p{color:var(--mute);margin:0 0 14px}
 .chk{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px}.chk input{margin-top:4px;width:18px;height:18px;accent-color:var(--accent)}
 .card .btn.primary{width:100%;padding:11px;margin-top:6px}.card .btn.primary:disabled{opacity:.45;cursor:not-allowed}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.gdiv{display:flex;align-items:center;gap:8px;color:var(--mute);font-size:13px;margin:10px 0}.gdiv::before,.gdiv::after{content:'';flex:1;height:1px;background:var(--line)}
+.fld{display:block;font-weight:600;font-size:13px;margin-bottom:10px}
+.fld input{display:block;width:100%;margin-top:4px;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font-weight:400}
+.genders{display:flex;gap:14px;margin:2px 0 14px}
+.genders .chk{margin:0}
+#whoami{cursor:pointer;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.intro{position:fixed;inset:0;z-index:100;display:grid;place-items:center;overflow:hidden;background:radial-gradient(120% 90% at 50% 40%,#2c1142 0%,#180827 40%,#08020f 78%,#04010a 100%);transition:opacity .6s ease,visibility .6s}
+.intro.gone{opacity:0;visibility:hidden}
+.intro .neb{position:absolute;border-radius:50%;opacity:0;filter:blur(70px);pointer-events:none}
+.intro .neb.p{width:58vmax;height:58vmax;left:-18vmax;bottom:-24vmax;background:radial-gradient(circle at 40% 40%,rgba(255,45,149,.9),rgba(255,45,149,0) 62%);animation:neb 3.4s .2s ease forwards}
+.intro .neb.v{width:52vmax;height:52vmax;right:-16vmax;top:-18vmax;background:radial-gradient(circle at 60% 40%,rgba(88,66,255,.85),rgba(88,66,255,0) 64%);animation:neb 3.4s .35s ease forwards}
+@keyframes neb{from{opacity:0;transform:scale(.75)}60%{opacity:.55}to{opacity:.42;transform:scale(1.05)}}
+.intro .in{position:relative;display:flex;flex-direction:column;align-items:center;transition:transform .7s ease,filter .7s ease}
+.intro.gone .in{transform:scale(1.05);filter:blur(4px)}
+.intro .stage{position:relative;display:grid;place-items:center}
+.intro .bloom{position:absolute;width:10px;height:10px;border-radius:50%;background:#fff;box-shadow:0 0 40px 18px rgba(255,120,190,.9),0 0 120px 52px rgba(120,70,255,.55);opacity:0;animation:bloom 3.6s .05s ease-out forwards}
+@keyframes bloom{0%{transform:scale(0);opacity:0}14%{transform:scale(1);opacity:1}50%{transform:scale(4.5);opacity:.85}100%{transform:scale(22);opacity:0}}
+.intro .shock{position:absolute;width:140px;height:140px;border-radius:50%;border:3px solid rgba(255,140,205,.9);opacity:0;animation:shock 1.4s 1.55s cubic-bezier(.2,.7,.3,1) forwards}
+@keyframes shock{0%{transform:scale(.15);opacity:1;border-width:8px}70%{opacity:.32}100%{transform:scale(5.4);opacity:0;border-width:1px}}
+.intro .mark{width:clamp(196px,38vw,290px);height:auto;overflow:visible;filter:drop-shadow(0 16px 44px rgba(130,20,120,.45))}
+.intro .half{opacity:0;transform-box:fill-box;transform-origin:center;will-change:transform,opacity}
+.intro .half.l{animation:flyL 1.2s .55s cubic-bezier(.16,.9,.24,1) forwards}
+.intro .half.r{animation:flyR 1.2s .55s cubic-bezier(.16,.9,.24,1) forwards}
+@keyframes flyL{0%{opacity:0;transform:translate(-28%,36%) rotate(-28deg) scale(.6)}55%{opacity:1}78%{transform:translate(2%,-2%) rotate(3deg) scale(1.03)}100%{opacity:1;transform:none}}
+@keyframes flyR{0%{opacity:0;transform:translate(28%,36%) rotate(28deg) scale(.6)}55%{opacity:1}78%{transform:translate(-2%,-2%) rotate(-3deg) scale(1.03)}100%{opacity:1;transform:none}}
+.intro .head{opacity:0;transform-box:fill-box;transform-origin:center;animation:headIn .75s 1.2s cubic-bezier(.2,1.5,.4,1) forwards}
+@keyframes headIn{0%{opacity:0;transform:scale(.15) translateY(20px)}100%{opacity:1;transform:none}}
+.intro .sheen{transform:translateX(-420px);animation:sheen 1.6s 1.85s ease-in-out forwards}
+@keyframes sheen{to{transform:translateX(300px)}}
+.intro .word{margin-top:clamp(16px,2.6vw,30px);display:flex;gap:clamp(8px,1.5vw,18px);overflow:hidden;padding:0 .12em .06em}
+.intro .word span{display:inline-block;font:800 clamp(34px,6.4vw,64px)/1.04 Figtree,system-ui,sans-serif;letter-spacing:-.025em;opacity:0;filter:blur(12px);transform:translateY(115%)}
+.intro .w1{color:#fff;animation:wordUp .95s 2.15s cubic-bezier(.16,.9,.24,1) forwards}
+.intro .w2{background:linear-gradient(100deg,#ff7ab0,#ff3d9a 34%,#a45cff 74%,#6f5bff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;animation:wordUp .95s 2.3s cubic-bezier(.16,.9,.24,1) forwards}
+@keyframes wordUp{0%{opacity:0;transform:translateY(115%);filter:blur(12px)}55%{opacity:1}100%{opacity:1;transform:none;filter:blur(0)}}
+.intro .rule{display:flex;align-items:center;gap:10px;width:min(76vw,400px);margin-top:12px;opacity:0;animation:fadeIn .5s 2.95s ease forwards}
+.intro .rule i{flex:1;height:1px;transform:scaleX(0);background:linear-gradient(90deg,transparent,rgba(255,110,175,.8),rgba(160,100,255,.8),transparent)}
+.intro .rule i:first-child{transform-origin:right;animation:grow .85s 3s ease forwards}
+.intro .rule i:last-child{transform-origin:left;animation:grow .85s 3s ease forwards}
+.intro .rule svg{width:19px;height:19px;color:#ff5fa2;flex:none}
+@keyframes grow{to{transform:scaleX(1)}}
+.intro .tag{margin-top:13px;font:500 clamp(10px,1.4vw,13px)/1.4 Figtree,system-ui,sans-serif;letter-spacing:.34em;text-transform:uppercase;color:#d6cdea;opacity:0;animation:tagIn .9s 3.2s ease forwards}
+.intro .tag b{color:#ff6aa8;font-weight:500;padding:0 .45em}
+@keyframes tagIn{from{opacity:0;transform:translateY(8px);letter-spacing:.44em}to{opacity:.95;transform:none;letter-spacing:.34em}}
+@keyframes fadeIn{to{opacity:1}}
+@media (max-width:600px){.intro .tag{letter-spacing:.2em}.intro .tag b{padding:0 .3em}}
+@media (prefers-reduced-motion:reduce){.intro{display:none}}
 .qr{display:grid;grid-template-columns:repeat(21,1fr);width:210px;height:210px;margin:0 auto 12px;padding:8px;background:#fff;border-radius:8px}
 .qr i{background:#000}.qr i.o{background:#fff}
 .code{text-align:center;font:600 22px Fraunces,Georgia,serif;letter-spacing:.12em;margin-bottom:12px}
-.send{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--line);background:var(--panel)}
+.send{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--line);background:rgba(255,255,255,.85)}
 .send textarea{flex:1;resize:none;border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:8px 10px;min-height:40px;max-height:120px}
 @media (max-width:1000px){
  .app{grid-template-columns:minmax(0,1fr);padding-bottom:56px}
  .panel{display:none;border:0}.panel.on{display:flex}
- .tabs{display:grid;grid-template-columns:repeat(3,1fr);position:fixed;left:0;right:0;bottom:0;background:var(--panel);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+ .tabs{display:grid;grid-template-columns:repeat(3,1fr);position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.94);backdrop-filter:blur(6px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
  .tabs button{border:0;background:transparent;padding:14px 4px;font-weight:600;color:var(--mute)}
  .tabs button[aria-selected="true"]{color:var(--accent);box-shadow:inset 0 3px 0 var(--accent)}
- .msg{max-width:88%}
+ .msg{max-width:92%;font-size:16px}
+ .send textarea{font-size:16px}
+ .head h2{font-size:20px}
+ .tabs button{font-size:15px;padding:16px 4px}
 }
+/* ---- credits, paywall and billing ---- */
+.creditpill{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:13px;padding:5px 10px;border-radius:999px;border:1px solid #f0d7e6;background:linear-gradient(180deg,#fff,#ffeef7);color:#7a3d5c;cursor:pointer;white-space:nowrap}
+.creditpill b{font-size:14px;font-variant-numeric:tabular-nums}
+.creditpill.low{border-color:#f3c3d8;box-shadow:0 0 0 3px rgba(224,98,156,.10)}
+.cooldown{margin:10px 0 0;padding:10px 12px;border-radius:12px;background:#fff5fa;border:1px dashed #edc7dc;font-size:14px;color:#6d4a60;line-height:1.45}
+.cooldown b{font-variant-numeric:tabular-nums;letter-spacing:.05em;color:#c02f6d;font-size:16px}
+.plans{display:grid;gap:10px;margin-top:12px}
+.plan{border:1px solid var(--line);border-radius:14px;padding:14px;background:#fff}
+.plan.hot{border-color:#e7b8d2;background:linear-gradient(180deg,#fffafd,#fff2f8)}
+.plan h3{font:700 16px/1.2 Figtree,system-ui,sans-serif;margin:0 0 2px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.plan .price{font:700 19px Fraunces,Georgia,serif;color:#b52c6b}
+.plan ul{margin:8px 0 10px;padding-left:18px;font-size:13px;color:#6d6278}
+.plan li{margin:2px 0}
+.plan .btn{width:100%;margin-top:2px}
+.plan .tag{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#b0698c;font-weight:700;margin-bottom:4px}
+.balrow{display:flex;justify-content:space-between;gap:10px;font-size:14px;padding:6px 0;border-bottom:1px solid var(--line)}
+.balrow:last-child{border-bottom:0}
+.balrow b{font-variant-numeric:tabular-nums}
+.lockedbox{margin-top:4px;border:1px solid #f0d7e6;border-radius:14px;padding:12px;background:linear-gradient(180deg,#fffdfe,#fff4f9)}
+.lockedbox h4{margin:0 0 6px;font-size:14px}
+.lockedbox ul{margin:6px 0 10px;padding-left:18px;font-size:13px;color:#7c6b79}
+.lockedbox li{margin:3px 0}
+.toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);z-index:90;background:#2b2340;color:#fff;padding:10px 16px;border-radius:999px;font-size:14px;opacity:0;transition:.25s;pointer-events:none;max-width:90vw;text-align:center}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.draftopt{display:block;width:100%;text-align:left;margin:0 0 6px;padding:10px 12px;border:1px solid #eed7e6;border-radius:12px;background:#fff;font:inherit;font-size:14px;line-height:1.4;cursor:pointer}
+.draftopt:hover{border-color:#e3b3cf;background:#fff8fc}
+.draftopt small{display:block;color:#8a7e9c;font-size:12px;margin-top:4px}
+@media (max-width:600px){.creditpill{font-size:12px;padding:5px 8px}.plan h3{font-size:15px}}
 </style>
+<script>window.GOOGLE_CLIENT_ID='641869822892-nj5jnaq42a03a87v9ecersc9qg4i4ppm.apps.googleusercontent.com';</script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
+<div class="intro" id="intro" aria-hidden="true">
+ <div class="neb p"></div><div class="neb v"></div>
+ <div class="in">
+  <div class="stage">
+   <div class="bloom"></div><div class="shock"></div>
+   <svg class="mark" viewBox="0 0 240 240" aria-hidden="true">
+    <defs>
+     <linearGradient id="gp" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#ffb37a"/><stop offset=".45" stop-color="#ff4d8d"/><stop offset="1" stop-color="#dd1a9c"/></linearGradient>
+     <linearGradient id="gv" x1="1" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#8f7bff"/><stop offset=".5" stop-color="#6a5bff"/><stop offset="1" stop-color="#3f2ada"/></linearGradient>
+     <radialGradient id="hp" cx=".34" cy=".26" r=".85"><stop offset="0" stop-color="#fff4ec"/><stop offset=".34" stop-color="#ff9a86"/><stop offset="1" stop-color="#ff2d6f"/></radialGradient>
+     <radialGradient id="hv" cx=".34" cy=".26" r=".85"><stop offset="0" stop-color="#f1ecff"/><stop offset=".38" stop-color="#a99bff"/><stop offset="1" stop-color="#4b2de0"/></radialGradient>
+     <linearGradient id="gs" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".6"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+     <filter id="soft" x="-45%" y="-45%" width="190%" height="190%"><feGaussianBlur stdDeviation="8"/></filter>
+     <mask id="mmask">
+      <rect width="240" height="240" fill="#000"/>
+      <path d="M120 96C126 80 140 66 158 62C186 56 202 78 200 106C198 148 160 178 120 202" fill="none" stroke="#fff" stroke-width="30" stroke-linecap="round"/>
+      <path d="M120 96C114 80 100 66 82 62C54 56 38 78 40 106C42 148 80 178 120 202C150 218 180 212 188 186" fill="none" stroke="#fff" stroke-width="30" stroke-linecap="round"/>
+     </mask>
+    </defs>
+    <g filter="url(#soft)" opacity=".6">
+     <path d="M120 96C126 80 140 66 158 62C186 56 202 78 200 106C198 148 160 178 120 202" fill="none" stroke="#5b3bff" stroke-width="22" stroke-linecap="round"/>
+     <path d="M120 96C114 80 100 66 82 62C54 56 38 78 40 106C42 148 80 178 120 202C150 218 180 212 188 186" fill="none" stroke="#ff2d8f" stroke-width="22" stroke-linecap="round"/>
+    </g>
+    <g class="half r">
+     <path d="M120 96C126 80 140 66 158 62C186 56 202 78 200 106C198 148 160 178 120 202" fill="none" stroke="url(#gv)" stroke-width="27" stroke-linecap="round"/>
+    </g>
+    <g class="half l">
+     <path d="M120 96C114 80 100 66 82 62C54 56 38 78 40 106C42 148 80 178 120 202C150 218 180 212 188 186" fill="none" stroke="url(#gp)" stroke-width="27" stroke-linecap="round"/>
+    </g>
+    <g class="head h1"><circle cx="80" cy="34" r="17" fill="url(#hp)"/></g>
+    <g class="head h2"><circle cx="161" cy="34" r="17" fill="url(#hv)"/></g>
+    <g mask="url(#mmask)"><rect class="sheen" x="-60" y="0" width="70" height="240" fill="url(#gs)"/></g>
+   </svg>
+  </div>
+  <div class="word"><span class="w1">Soul</span><span class="w2">Sync</span></div>
+  <div class="rule"><i></i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-8-4.9-8-10.4A4.6 4.6 0 0 1 12 7a4.6 4.6 0 0 1 8 3.6C20 16.1 12 21 12 21Z" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><i></i></div>
+  <div class="tag">Connect<b>•</b>Chat<b>•</b>Fall in Love</div>
+ </div>
+</div>
 <div class="app">
  <section class="panel on" id="p1" aria-label="Threads">
-  <div class="head"><h1>Soul Sync</h1><button class="btn callbtn" id="callbtn" aria-label="Soul Sync calls" title="Call another Soul Sync user">📞<span class="badge" id="callcount" hidden>0</span></button></div>
+  <div class="head"><h1>Soul Sync</h1><span class="note" id="whoami" hidden title="Change profile"></span><button class="btn creditpill" id="creditpill1" type="button" title="Credits — tap to top up" aria-label="Credits and plans">⚡ <b id="credits1">—</b></button><button class="btn callbtn" id="bell" aria-label="Message notifications" title="Message notifications">🔕</button><button class="btn callbtn" id="callbtn" aria-label="Soul Sync calls" title="Call another Soul Sync user">📞<span class="badge" id="callcount" hidden>0</span></button></div>
   <div class="note" id="conn" style="padding:0 16px 8px;display:none"></div>
   <div class="drop">
    <input type="file" id="file" accept=".txt" hidden>
@@ -169,23 +358,67 @@ select{background:var(--bg);border:1px solid var(--line);border-radius:8px;paddi
   <div class="send"><input type="file" id="imgfile" accept="image/*" hidden><button class="btn icon" id="imgbtn" aria-label="Send photo" title="Send photo">📷</button><button class="btn icon" id="micbtn" aria-label="Record voice message" title="Record voice message">🎤</button><button class="btn icon" id="emojibtn" aria-label="Insert emoji" title="Emoji">😊</button><textarea id="out" rows="1" aria-label="Message to send" placeholder="Write a message"></textarea><button class="btn primary" id="sendbtn">Send</button><div class="emojipop" id="emojipop" role="group" aria-label="Emoji picker"></div></div>
  </section>
 
- <section class="panel" id="p3" aria-label="Insights and drafts" style="border-right:0">
-  <div class="head"><h2>Insights</h2><span id="tone"></span></div>
-  <div class="scroll">
-   <div class="sec"><h3>Who talks</h3><div id="share"></div><div class="stat" id="stats"></div></div>
-   <div class="sec"><h3>What stands out</h3><ul id="notes"></ul></div>
-   <div class="sec"><h3>Reply draft</h3>
-    <label class="note" for="goal">Goal</label>
-    <select id="goal"><option value="reconnect">Reconnect warmly</option><option value="repair">Repair after friction</option><option value="boundary">Set a boundary kindly</option><option value="light">Keep it light</option></select>
-    <button class="btn primary" id="gen" style="margin-left:6px">Write drafts</button>
-    <div id="drafts" style="margin-top:12px"></div>
-    <p class="note">Drafts and insights are built on your device from simple word and timing patterns. Connecting Gemini or OpenAI needs a server route that holds your API keys.</p>
+ <section class="panel" id="p3" aria-label="Agent" style="border-right:0">
+  <div class="head"><h2>Agent</h2><span id="tone"></span><button class="btn creditpill" id="creditpill2" type="button" title="Credits — tap to top up" aria-label="Credits and plans">⚡ <b id="credits2">—</b></button></div>
+  <div class="gurustrip"><span class="gdot">💘</span><span id="agline">Hi i am your love guru</span></div>
+  <div class="scroll" style="display:flex;flex-direction:column;gap:8px">
+   <div class="sec" style="display:flex;gap:8px;flex-wrap:wrap">
+    <div style="flex:1;min-width:140px"><label class="note" for="gender">Gender</label>
+     <select id="gender" style="width:100%"></select></div>
+    <div style="flex:1;min-width:180px"><label class="note" for="rel">Relationship type</label>
+     <select id="rel" style="width:100%"></select></div>
+    <div style="flex:1;min-width:160px"><label class="note" for="psy">Their psychology</label>
+     <select id="psy" style="width:100%"></select></div>
+         <div style="flex:1;min-width:150px"><label class="note" for="lang">Reply language</label>
+      <select id="lang" style="width:100%">
+       <option value="english">English</option>
+       <option value="telugu">Telugu (తెలుగు)</option>
+       <option value="tenglish">Tenglish</option>
+       <option value="hinglish">Hinglish</option>
+      </select></div>
+    <div style="flex:1;min-width:150px"><label class="note" for="agentTone">Tone <span style="color:#b52c6b;font-weight:700;font-size:11px">PRO</span></label>
+     <select id="agentTone" style="width:100%" disabled title="Custom tone is part of Pro">
+      <option value="">Default</option>
+      <option value="warm">Warm</option>
+      <option value="playful">Playful</option>
+      <option value="direct">Direct</option>
+      <option value="caring">Caring</option>
+     </select></div>
    </div>
+   <div class="chatstage"><div class="chatguru" id="agentGuru"></div><div class="msgs" id="agentmsgs"></div></div>
   </div>
+  <div class="send"><input type="file" id="agentimgfile" accept="image/*" hidden><button class="btn icon" id="agentimgbtn" aria-label="Send photo" title="Send photo">📷</button><button class="btn icon" id="agentmicbtn" aria-label="Record voice message" title="Record voice message">🎤</button><textarea id="agentout" rows="1" aria-label="Message to agent" placeholder="Tell your love guru what is going on..."></textarea><button class="btn primary" id="agentsend">Send</button></div>
  </section>
 </div>
+<div class="mascot" id="guruStage" hidden><div class="say" id="guruSay" hidden></div></div>
+<button class="btn gurufab" id="gurufab" type="button" aria-label="Meet your love guru" title="Meet your love guru">💘<span>Meet your love guru</span></button>
 <button class="btn callfab" id="gatecall" hidden>📞 Soul Sync calls</button>
-<div class="gate" id="gate" role="dialog" aria-modal="true" aria-label="Connect WhatsApp"><div class="card" id="gcard"></div></div>
+<div class="gate" id="guruintro" role="dialog" aria-modal="true" aria-label="Meet your love guru" hidden><div class="card">
+ <div class="guru"><i>💘</i><b>Meet your love guru</b></div>
+ <p>I read the chat you import, explain what is really going on between you two, and tell you exactly what to say next.</p>
+ <p class="note">I use psychology notes for men, women, gay, lesbian and transgender relationships, so the advice fits your situation. Nothing leaves your server except the chat you choose to analyse.</p>
+ <button class="btn primary" id="gurustart">Meet your love guru</button>
+ <button class="btn" id="guruclose" style="width:100%;margin-top:8px">Not now</button>
+</div></div>
+<div class="gate" id="signup" role="dialog" aria-modal="true" aria-label="Connect with us"><div class="card">
+ <h2>Connect with us</h2>
+ <p>Make your profile so your love guru knows who he is talking to.</p>
+ <div class="row2">
+  <label class="fld" for="su_first">First name<input id="su_first" autocomplete="given-name" maxlength="40" placeholder="Dinesh"></label>
+  <label class="fld" for="su_last">Last name<input id="su_last" autocomplete="family-name" maxlength="40" placeholder="Kumar"></label>
+ </div>
+ <label class="fld" for="su_email">Email address<input id="su_email" type="email" autocomplete="email" maxlength="120" placeholder="you@example.com"></label>
+ <div class="fld" style="margin-bottom:2px">Gender</div>
+ <div class="genders">
+  <label class="chk"><input type="radio" name="su_gender" value="male"><span>Male</span></label>
+  <label class="chk"><input type="radio" name="su_gender" value="female"><span>Female</span></label>
+ </div>
+ <div class="gdiv">or</div>
+ <button class="btn" id="su_google" type="button" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;font-weight:600"><img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18" height="18" alt="">Sign in with Google</button>
+ <button class="btn primary" id="su_go" disabled>Sign up</button>
+ <p class="note" id="su_err" role="alert" hidden style="margin:8px 0 0;color:var(--warn)"></p>
+</div></div>
+<div class="gate" id="gate" role="dialog" aria-modal="true" aria-label="Connect WhatsApp" hidden><div class="card" id="gcard"></div></div>
 <div class="gate" id="frwd" role="dialog" aria-modal="true" aria-label="Forward message" hidden><div class="card"><h2>Forward to</h2><p>Choose an imported chat.</p><div id="flist"></div><button class="btn" id="fcancel" style="width:100%;margin-top:6px">Cancel</button></div></div>
 <div class="gate" id="calldlg" role="dialog" aria-modal="true" aria-label="Soul Sync calls" hidden><div class="card">
  <h2>Soul Sync calls</h2><p>Call someone who has Soul Sync open in another tab or device. Audio and video travel straight between your browsers; the server only introduces you.</p>
@@ -197,6 +430,17 @@ select{background:var(--bg);border:1px solid var(--line);border-radius:8px;paddi
  <p class="note" id="callnote">No one else is online yet. Open Soul Sync in another tab, or share this page with someone.</p>
  <button class="btn" id="callclose" style="width:100%;margin-top:10px">Close</button>
 </div></div>
+<div class="gate" id="billing" role="dialog" aria-modal="true" aria-label="Credits and plans" hidden><div class="card">
+ <h2>Your credits</h2>
+ <p id="billnote">Credits power every reply (1) and every deep chat analysis (5).</p>
+ <div id="billbal"></div>
+ <div id="billcd"></div>
+ <div class="plans" id="billplans"></div>
+ <p class="note" id="billtest" hidden></p>
+ <p class="note" style="margin:8px 0 0">Pay with UPI, cards or netbanking. Credits are added the moment payment succeeds.</p>
+ <button class="btn" id="billclose" style="width:100%;margin-top:10px">Close</button>
+</div></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div class="gate" id="incoming" role="dialog" aria-modal="true" aria-label="Incoming call" hidden><div class="card">
  <h2 id="incname">Incoming call</h2><p id="inctype">Audio call</p>
  <button class="btn primary" id="incaccept">Accept</button>
@@ -228,7 +472,7 @@ select{background:var(--bg);border:1px solid var(--line);border-radius:8px;paddi
 <nav class="tabs" role="tablist" aria-label="Panels">
  <button role="tab" data-p="p1" aria-selected="false">Threads</button>
  <button role="tab" data-p="p2" aria-selected="true">Chat</button>
- <button role="tab" data-p="p3" aria-selected="false">Insights</button>
+ <button role="tab" data-p="p3" aria-selected="false">Agent</button>
 </nav>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
@@ -242,6 +486,8 @@ const SAMPLE=`14/10/2026, 19:02 - Maya: Hey, are we still on for Saturday?
 16/10/2026, 12:10 - You: That’s not fair, I do care
 16/10/2026, 12:11 - You: I just forgot to reply last night
 16/10/2026, 17:45 - Maya: Whatever. Are we still doing Saturday or not?`;
+const GENDERS=['Straight','Gay','Lesbian','Bisexual','Pansexual','Asexual','Queer','Questioning','Prefer not to say','Omnisexual','Polysexual','Demisexual','Graysexual','Aromantic','Bicurious','Heteroflexible','Homoflexible','Androsexual','Gynesexual','Fluid / Abrosexual','Self-describe (Custom text field)'];
+const RELS=['Serious Relationship','Life Partnership / Marriage','Exclusive Dating','Long-Distance Relationship (LDR)','Situationship','Pen-relationship (or Textationship)','Sneaky Link','Cuffing Season Relationship','Friends with Benefits (FWB)','Entanglement','Fling','Micro-romance / Nano-ship','Throuple / Triad','Work Spouse','Breadcrumbing','Benching','Ghosting','Zombieing','Orbiting','Love Bombing','Slow Fade','Cushioning','Submarining','Pocketing','Stashing','Kittenfishing','Catfishing','Roaching','Haunting','Paperclipping'];
 let threads=[],cur=0;
 let replyTo=null,reactFor=null,forwarding=null;
 let globalPickerFn = null; // Global reference for re-opening chat selector
@@ -283,31 +529,114 @@ function openThread(i){
  const t=threads[i];
  if(LIVE&&t&&t.jid&&!t.loading)LIVE.ws.send(JSON.stringify({type:'open',jid:t.jid}));
 }
+const VWIN={start:0,end:0,n:0,rendered:false,hH:[],hP:[0],hDirty:true};
+const VGAP=6;
+function vinEnsure(n){
+ if(VWIN.hH.length===n) return;
+ const old=VWIN.hH, arr=new Array(n).fill(76), m=Math.min(n,old.length);
+ for(let i=0;i<m;i++) arr[i]=old[i];
+ VWIN.hH=arr; VWIN.hDirty=true; VWIN.n=n;
+}
+function vinPrefix(){
+ if(!VWIN.hDirty) return VWIN.hP;
+ const h=VWIN.hH, p=new Array(h.length+1); p[0]=0;
+ for(let i=0;i<h.length;i++) p[i+1]=p[i]+h[i];
+ VWIN.hP=p; VWIN.hDirty=false; return p;
+}
+function vinOffset(i){
+ const p=vinPrefix(); i=Math.max(0,Math.min(i,p.length-1)); return p[i];
+}
+function vinIndexAt(y){
+ const p=vinPrefix(); let lo=0,hi=p.length-1;
+ while(lo<hi){const mid=(lo+hi)>>1; if(p[mid]<y) lo=mid+1; else hi=mid}
+ return Math.max(0,Math.min(VWIN.hH.length-1,lo-1));
+}
+// Measures the rows that are actually in the DOM and caches their real heights.
+// Returns the scroll correction needed to keep the first visible row pinned.
+function vinMeasure(box,start,end,prevTop){
+ if(!VWIN.hH.length) return 0;
+ // Anchor on the row under the old scroll offset: its own movement is the drift to cancel.
+ // (The list is rebuilt while the container is scrolled to 0, so viewport hit-testing would miss.)
+ const firstIdx=Math.max(start,Math.min(end-1,vinIndexAt(prevTop)));
+ const anchor=box.querySelector('[data-i="'+firstIdx+'"]');
+ const aTop=anchor?anchor.offsetTop:0;
+ let pend=0, changed=false;
+ for(const child of box.children){
+  if(child.classList.contains('vspacer')){ pend=0; continue }
+  if(child.classList.contains('day')){ const dh=child.getBoundingClientRect().height; if(dh>0) pend+=dh+VGAP; continue }
+  const i=+child.dataset.i;
+  if(!Number.isFinite(i)) continue;
+  // Only learn rows at or below the viewport: rows above must keep their cached
+  // height, otherwise the content under the finger shifts while it is being measured.
+  if(i<firstIdx){ pend=0; continue }
+  const h=child.getBoundingClientRect().height+pend+VGAP; pend=0;
+  if(h>0&&Math.abs(h-(VWIN.hH[i]||76))>0.5){ VWIN.hH[i]=h; changed=true }
+ }
+ if(!changed) return 0;
+ VWIN.hDirty=true;
+ const topSp=box.querySelector('.vspacer[data-v="top"]');
+ const botSp=box.querySelector('.vspacer[data-v="bot"]');
+ if(topSp) topSp.style.height=vinOffset(start)+'px';
+ if(botSp) botSp.style.height=(vinOffset(VWIN.n)-vinOffset(end))+'px';
+ const a2=box.querySelector('[data-i="'+firstIdx+'"]');
+ return a2?a2.offsetTop-aTop:0;
+}
+let winTick=null;
+function scheduleWindowRender(){
+ if(winTick) return;
+ winTick=requestAnimationFrame(function(){
+  winTick=null;
+  var t=threads[cur]; if(!t||t.msgs.length<=240) return;
+  var sc=$('msgs')&&$('msgs').parentElement; if(!sc) return;
+  var top=sc.scrollTop;
+  if(top<vinOffset(VWIN.start)-240 || top>vinOffset(VWIN.end)-460) renderChat();
+ });
+}
 function renderChat(){
  const t=threads[cur],box=$('msgs'),sc=box.parentElement;
  const keep=renderChat.cur===cur&&sc.scrollHeight-sc.scrollTop-sc.clientHeight>80,fb=sc.scrollHeight-sc.scrollTop;
+ const prevTop=sc.scrollTop, prevCur=renderChat.cur;
  box.textContent='';
+ // Lightweight windowing: only the visible slice (±50) is in the DOM for huge chats.
+ const n=t.msgs.length, AVG=76;
+ let start=0,end=n;
+ if(n>240){
+  const viewH=sc.clientHeight||600;
+  const span=Math.ceil(viewH/AVG)+100;
+  vinEnsure(n);
+  if(prevCur===cur){
+   // prevTop is captured before the list is cleared (clearing collapses scrollTop to 0).
+   start=Math.max(0,vinIndexAt(prevTop)-50);
+   end=Math.min(n,start+span);
+  }else{
+   // Switching chats: open at the newest messages.
+   end=n; start=Math.max(0,n-span);
+  }
+ }
+ VWIN.start=start;VWIN.end=end;VWIN.n=n;
  $('title').textContent=t.name;
  const sel=$('me');sel.textContent='';
  [...new Set(t.msgs.map(m=>m.sender))].forEach(n=>{const o=document.createElement('option');o.textContent=n;o.value=n;o.selected=n===t.me;sel.append(o)});
+ if(start>0){const sp=document.createElement('div');sp.className='vspacer';sp.dataset.v='top';sp.style.height=vinOffset(start)+'px';box.append(sp)}
  let last='';
- t.msgs.forEach(m=>{
+ t.msgs.slice(start,end).forEach((m,off)=>{
+  const vidx=start+off;
   const day=m.t.toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'});
   if(day!==last){const d=document.createElement('div');d.className='day';d.textContent=day;box.append(d);last=day}
   const el=document.createElement('div');
   el.className='msg'+(m.sender===t.me?' me':'')+(m.sender!==t.me&&FR.test(m.text||'')?' flag':'');
   if(m.replyTo){const q=document.createElement('div');q.className='quote';q.textContent=m.replyTo.text||'Message';el.append(q)}
-  if(m.type==='image'&&m.mediaId&&LIVE){
+  if(m.kind==='image'&&m.mediaId&&LIVE){
    const img=document.createElement('img');img.loading='lazy';img.alt=m.text||'Photo';
    img.src=mediaURL(m.mediaId);
    img.onclick=()=>window.open(img.src,'_blank','noopener');
    img.onerror=()=>{img.remove();const n=document.createElement('div');n.className='note';n.textContent='Photo unavailable';el.prepend(n)};
    el.append(img);
-  }else if(m.type==='audio'&&m.mediaId&&LIVE){
+  }else if(m.kind==='audio'&&m.mediaId&&LIVE){
    const a=document.createElement('audio');a.controls=true;a.preload='none';a.src=mediaURL(m.mediaId);
    a.onerror=()=>{a.remove();const n=document.createElement('div');n.className='note';n.textContent='Voice message unavailable';el.prepend(n)};
    el.append(a);
-  }else if((m.type==='image'||m.type==='audio')&&!m.text){const n=document.createElement('div');n.className='note';n.textContent=m.type==='audio'?'[voice message]':'[photo]';el.append(n)}
+  }else if((m.kind==='image'||m.kind==='audio')&&!m.text){const n=document.createElement('div');n.className='note';n.textContent=m.kind==='audio'?'[voice message]':'[photo]';el.append(n)}
   if(m.text){const txt=document.createElement('div');txt.className='txt';txt.textContent=m.text;el.append(txt)}
   const counts={};Object.values(m.reacts||{}).forEach(e=>{if(e)counts[e]=(counts[e]||0)+1});
   if(Object.keys(counts).length){const r=document.createElement('div');r.className='reacts';
@@ -315,19 +644,284 @@ function renderChat(){
   const acts=document.createElement('div');acts.className='acts';
   const mk=(label,title,fn)=>{const b=document.createElement('button');b.type='button';b.textContent=label;b.title=title;b.onclick=fn;acts.append(b)};
   mk('😊','React',()=>{reactFor=reactFor===m?null:m;renderChat()});
-  mk('↩','Reply',()=>{replyTo={id:m.id,text:m.text||(m.type==='image'?'[photo]':'…'),sender:m.sender};updateQuote();$('out').focus()});
+  mk('↩','Reply',()=>{replyTo={id:m.id,text:m.text||(m.kind==='image'?'[photo]':'…'),sender:m.sender};updateQuote();$('out').focus()});
   mk('➦','Forward',()=>openForward(m));
   el.append(acts);
   if(reactFor===m){const row=document.createElement('div');row.className='emojirow';
    ['❤️','😂','😮','😢','👍','🙏','🔥','👏'].forEach(e=>{const b=document.createElement('button');b.type='button';b.textContent=e;b.title='React '+e;b.onclick=()=>sendReaction(m,e);row.append(b)});el.append(row)}
   const s=document.createElement('small');
   s.textContent=(m.sender===t.me?'':m.sender+' · ')+m.t.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-  el.append(s);box.append(el);
+  el.append(s);el.dataset.i=vidx;box.append(el);
  });
- if(!t.msgs.length){const n=document.createElement('div');n.className='note';
-  n.textContent=t.jid?'No messages on this device yet. Tap “Sync older messages”, then keep WhatsApp open on your phone.':'No messages in this chat.';
-  box.append(n)}
- sc.scrollTop=keep?sc.scrollHeight-fb:sc.scrollHeight;renderChat.cur=cur;
+ if(end<n){const sp=document.createElement('div');sp.className='vspacer';sp.dataset.v='bot';sp.style.height=(vinOffset(n)-vinOffset(end))+'px';box.append(sp)}
+ if(!t.msgs.length){const nm=document.createElement('div');nm.className='note';
+  nm.textContent=t.jid?'No messages on this device yet. Tap “Sync older messages”, then keep WhatsApp open on your phone.':'No messages in this chat.';
+  box.append(nm)}
+ // Measure the rendered rows, then keep the exact scroll anchor so nothing jumps.
+ let adj=0;
+ if(n>240){const corr=vinMeasure(box,start,end,prevCur===cur?prevTop:vinOffset(start)); adj=prevCur===cur?corr:0}
+ if(prevCur===cur&&n>240&&VWIN.rendered) sc.scrollTop=prevTop+adj;
+ else sc.scrollTop=keep?sc.scrollHeight-fb:sc.scrollHeight;
+ VWIN.rendered=true;renderChat.cur=cur;
+}
+const PSY_PROFILES=[['male','Man / men'],['female','Woman / women'],['gay','Gay couple'],['lesbian','Lesbian couple'],['transgender','Transgender / non-binary']];
+function populateAgentOptions(){
+ const g=$('gender'), r=$('rel'), p=$('psy');
+ if(g){g.textContent='';GENDERS.forEach(x=>{const o=document.createElement('option');o.value=x;o.textContent=x;g.append(o)})}
+ if(r){r.textContent='';RELS.forEach(x=>{const o=document.createElement('option');o.value=x;o.textContent=x;r.append(o)})}
+ if(p){p.textContent='';PSY_PROFILES.forEach(([v,l])=>{const o=document.createElement('option');o.value=v;o.textContent=l;p.append(o)})}
+}
+/* ---- Love Guru mascot: a glossy heart character drawn in SVG ---- */
+const GURU_DEFS='<svg class="gurudefs" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden"><defs>'+
+ '<radialGradient id="gh" cx=".35" cy=".18" r="1"><stop offset="0" stop-color="#ff9a9a"/><stop offset=".45" stop-color="#f4202f"/><stop offset="1" stop-color="#a30012"/></radialGradient>'+
+ '<linearGradient id="shoe" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff4444"/><stop offset="1" stop-color="#b80f1c"/></linearGradient>'+
+ '</defs></svg>';
+function ensureGuruDefs(){if(!document.querySelector('.gurudefs'))document.body.insertAdjacentHTML('afterbegin',GURU_DEFS)}
+const GURU_SVG='<svg class="guru-char" viewBox="0 0 240 330" aria-hidden="true">'+
+ '<ellipse cx="120" cy="314" rx="74" ry="9" fill="#e7a8c4" opacity=".3"/>'+
+ '<path class="legL" d="M108 246c-8 18-14 30-20 44" fill="none" stroke="#232330" stroke-width="11" stroke-linecap="round"/>'+
+ '<path class="legR" d="M132 246c8 18 14 30 20 44" fill="none" stroke="#232330" stroke-width="11" stroke-linecap="round"/>'+
+ '<g><ellipse cx="78" cy="298" rx="27" ry="15" fill="url(#shoe)"/><ellipse cx="78" cy="305" rx="27" ry="9" fill="#fff"/><rect x="66" y="286" width="26" height="6" rx="3" fill="#fff" opacity=".85"/></g>'+
+ '<g><ellipse cx="162" cy="298" rx="27" ry="15" fill="url(#shoe)"/><ellipse cx="162" cy="305" rx="27" ry="9" fill="#fff"/><rect x="148" y="286" width="26" height="6" rx="3" fill="#fff" opacity=".85"/></g>'+
+ '<g class="body">'+
+ '<path d="M120 252C120 252 36 198 36 126a46 46 0 0 1 84-30 46 46 0 0 1 84 30c0 72-84 126-84 126Z" fill="url(#gh)" stroke="#8d0010" stroke-width="3" stroke-opacity=".5"/>'+
+ '<ellipse cx="84" cy="94" rx="25" ry="14" fill="#fff" opacity=".45" transform="rotate(-24 84 94)"/>'+
+ '<path d="M74 104q18-12 36-2" fill="none" stroke="#3a0b12" stroke-width="5" stroke-linecap="round"/>'+
+ '<path d="M134 102q18-10 34 4" fill="none" stroke="#3a0b12" stroke-width="5" stroke-linecap="round"/>'+
+ '<path d="M74 128q16-15 32 0" fill="none" stroke="#3a0b12" stroke-width="6" stroke-linecap="round"/>'+
+ '<g class="eye"><ellipse cx="153" cy="128" rx="17" ry="19" fill="#fff"/><circle cx="153" cy="130" r="10" fill="#3a1a10"/><circle cx="149" cy="126" r="3.4" fill="#fff"/></g>'+
+ '<path d="M92 160q28 30 58 0q-28 11-58 0Z" fill="#3a0d14"/>'+
+ '<path d="M104 170q16 12 34 0q-17 8-34 0Z" fill="#ff7d97"/>'+
+ '<ellipse cx="76" cy="152" rx="9" ry="6" fill="#ff8fa8" opacity=".5"/>'+
+ '<ellipse cx="168" cy="152" rx="9" ry="6" fill="#ff8fa8" opacity=".5"/>'+
+ '<g class="armL"><path d="M62 170q-26 4-34-16" fill="none" stroke="#232330" stroke-width="9" stroke-linecap="round"/><circle cx="26" cy="146" r="15" fill="#fff"/><path d="M22 132q0-12 8-12t8 12" fill="#fff"/></g>'+
+ '<g class="armR"><path d="M178 170q26 6 34-12" fill="none" stroke="#232330" stroke-width="9" stroke-linecap="round"/><circle cx="214" cy="150" r="15" fill="#fff"/></g>'+
+ '</g></svg>';
+function guruStageEl(){const s=$('guruStage');if(!s)return null;ensureGuruDefs();if(!s.querySelector('.guru-char'))s.insertAdjacentHTML('afterbegin',GURU_SVG);return s}
+function guruSay(t){const b=$('guruSay');if(!b)return;b.hidden=!t;b.textContent=t||''}
+function guruEnter(t){const s=guruStageEl();if(!s)return;guruSay(t);s.hidden=false;s.classList.remove('in','walking');void s.offsetWidth;s.classList.add('in','walking');setTimeout(()=>s.classList.remove('walking'),1700)}
+function guruLeave(){const s=$('guruStage');if(!s)return;s.classList.remove('in','walking');s.hidden=true;guruSay('')}
+function agentGuru(){const a=$('agentGuru');if(!a)return null;ensureGuruDefs();if(!a.querySelector('.guru-char'))a.insertAdjacentHTML('beforeend',GURU_SVG);return a}
+function guruMood(m,line){
+ const a=agentGuru();
+ if(a){const c=a.querySelector('.guru-char');c.dataset.mood=m||'happy';c.classList.remove('pop');void c.offsetWidth;c.classList.add('pop')}
+ if(line){const l=$('agline');if(l){l.textContent=line;l.classList.remove('pop');void l.offsetWidth;l.classList.add('pop')}}
+}
+function agentBubble(text, who='agent'){
+ const box=$('agentmsgs'); if(!box) return;
+ const el=document.createElement('div');
+ el.className='msg'+(who==='user'?' me':'');
+ const txt=document.createElement('div'); txt.className='txt'; txt.textContent=text; el.append(txt);
+ const s=document.createElement('small'); s.textContent=who==='user'?'You':'Love guru'; el.append(s);
+ box.append(el); box.scrollTop=box.scrollHeight;
+}
+function greetAgent(){ const box=$('agentmsgs'); if(box && box.children.length) return; agentBubble('Hi i am your love guru'); }
+function agentBullets(title, list){
+ const box=$('agentmsgs'); if(!box || !list || !list.length) return;
+ const el=document.createElement('div'); el.className='msg';
+ const txt=document.createElement('div'); txt.className='txt'; txt.textContent=title;
+ const ul=document.createElement('ul'); ul.style.margin='6px 0 0'; ul.style.paddingLeft='18px';
+ list.forEach(x=>{const li=document.createElement('li');li.textContent=x;li.style.marginBottom='4px';ul.append(li)});
+ el.append(txt,ul);
+ const s=document.createElement('small'); s.textContent='Love guru'; el.append(s);
+ box.append(el); box.scrollTop=box.scrollHeight;
+}
+function agentFlirts(title, list){
+ const box=$('agentmsgs'); if(!box || !list || !list.length) return;
+ const el=document.createElement('div'); el.className='msg';
+ const t=document.createElement('div'); t.className='txt'; t.textContent=title; el.append(t);
+ const wrap=document.createElement('div'); wrap.style.cssText='display:flex;flex-direction:column;gap:6px;margin-top:6px';
+ list.forEach(x=>{
+  const b=document.createElement('button'); b.type='button'; b.className='flirt'; b.textContent=x; b.title='Use this line';
+  b.onclick=()=>{const o=$('out'); if(o){o.value=x; o.focus()} hap('light'); show('p2')};
+  wrap.append(b);
+ });
+ el.append(wrap);
+ const s=document.createElement('small'); s.textContent='Love guru'; el.append(s);
+ box.append(el); box.scrollTop=box.scrollHeight;
+}
+const GURU_ASK="Now tell me your problem. What is going on between you two, what did they say or do, how does it make you feel, and what do you want to change? The more you tell me, the better I can explain their side and write your next message.";
+let guruMet=false, guruBusy=false, guruAsked=false, guruScanned=false, lastFlirts=[];
+function openGuruPanel(){ guruMet=true; $('guruintro').hidden=true; show('p3'); guruMood('happy','I am here to guide you. Let me look at this chat.'); guruStart(); }
+function agentAsk(){ if(guruAsked) return; guruAsked=true; agentBubble(GURU_ASK); }
+function agentMessages(){
+ const t=threads[cur];
+ return t && t.msgs ? t.msgs.slice(-80).map(m=>({sender:m.sender,time:m.t instanceof Date?m.t.toISOString():'',text:m.text||(m.kind==='image'?'[photo]':m.kind==='audio'?'[voice note]':'')})) : [];
+}
+function hap(kind){
+ try{
+  var C=window.Capacitor, H=C&&C.Plugins&&C.Plugins.Haptics;
+  if(!H) return;
+  if(kind==='success') H.notification({type:'SUCCESS'}).catch(function(){});
+  else H.impact({style:'LIGHT'}).catch(function(){});
+ }catch(_){}
+}
+function parseAsync(text){
+ return new Promise(function(resolve){
+  try{
+   var w=new Worker('parse-worker.js');
+   var done=false;
+   w.onmessage=function(ev){done=true;w.terminate();var m=(ev.data&&ev.data.msgs)||[];resolve(m.map(function(x){return {sender:x.sender,t:new Date(x.t),text:x.text}}))};
+   w.onerror=function(){if(!done){w.terminate();resolve(parse(text))}};
+   w.postMessage({text:text});
+   setTimeout(function(){if(!done){try{w.terminate()}catch(_){}resolve(parse(text))}},8000);
+  }catch(_){ resolve(parse(text)) }
+ });
+}
+function hashStr(s){let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h)^s.charCodeAt(i);return (h>>>0).toString(36)}
+function replyCacheKey(situation,goal){
+ const t=threads[cur];
+ const base=(t?t.name:'')+'|'+(t?t.msgs.map(m=>m.sender+':'+m.text).join('|'):'')+'|'+goal+'|'+situation+'|'+($('agentTone')?$('agentTone').value:'')+'|'+($('lang')?$('lang').value:'');
+ return 'ss_reply_'+hashStr(base);
+}
+async function agentCall(situation, goal){
+ const t=threads[cur];
+ if(!(LIVE&&LIVE.token)) return null;
+ const ck=replyCacheKey(situation,goal);
+ const cached=cacheGet(ck);
+ if(cached&&Array.isArray(cached.drafts)&&cached.drafts.length){ return cached; }
+ guruBusy=true;
+ try{
+  const r=await fetch(LIVE.url+'/api/agent',{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+LIVE.token},body:JSON.stringify({me:t?t.me:'You',gender:$('gender').value,relationshipType:$('rel').value,psychologyProfile:$('psy').value,psychology:'',language:$('lang')?$('lang').value:'english',tone:($('agentTone')?$('agentTone').value:''),situation:situation||'',goal:goal||'analyze',messages:agentMessages()})});
+  if(r.status===402){ const d=await r.json().catch(()=>null); paywall(d||{required:1}); return null; }
+  if(!r.ok) return null;
+  const out=await r.json();
+  if(out&&out.billing){BILL=out.billing;paintCredits()}
+  try{ if(out&&out.drafts&&out.drafts.length) cachePut(ck,out); }catch(_){}
+  return out;
+ }catch(e){ return null; }
+ finally{ guruBusy=false; }
+}
+async function guruStart(){
+ greetAgent();
+ if(guruAsked) return;
+ guruAsked=true;
+ guruMood('happy','Hi! Tell me what you need.');
+ if(!(LIVE&&LIVE.token)){
+  agentBubble('Hi, I am your Love Guru. Link WhatsApp and import a chat so I can read it — tap Import chat in Threads.');
+  agentBubble('While you do that: what do you need from me? Fix a fight, get them to reply, make them set on you, or understand what they really mean?');
+  return;
+ }
+ agentBubble('Hi, I am your Love Guru. I read the chat and tell you exactly what to say next.');
+ agentBubble('Before I scan it: what do you need from me? Fix a fight, get them to reply, make them set on you, or understand what they really mean?');
+}
+function cacheGet(k){try{const v=localStorage.getItem(k);return v?JSON.parse(v):null}catch(_){return null}}
+function cachePut(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(_){try{localStorage.removeItem(k)}catch(__){}}}
+function extractDrafts(raw){
+ const out=[];const re=/"text"\s*:\s*"((?:[^"\\]|\\.)*)"/g;let m;
+ while((m=re.exec(raw))&&out.length<3){try{out.push(JSON.parse('"'+m[1]+'"'))}catch(_){out.push(m[1])}}
+ return out.map(t=>({text:String(t),why:''})).filter(x=>x.text.trim());
+}
+function showSkeletons(){
+ const old=document.getElementById('streamdrafts'); if(old) old.remove();
+ const el=document.createElement('div'); el.id='streamdrafts'; el.className='msg';
+ const t=document.createElement('div'); t.className='txt'; t.textContent='Writing your options…'; el.append(t);
+ // 216px = three 66px cards plus their 6px gaps: the reserved box matches the final stack.
+ const wrap=document.createElement('div'); wrap.style.cssText='margin-top:6px;min-height:216px';
+ for(let i=0;i<3;i++){const s=document.createElement('div');s.className='skel';wrap.append(s)}
+ el.append(wrap);
+ $('agentmsgs').append(el);
+ $('agentmsgs').scrollTop=$('agentmsgs').scrollHeight;
+}
+function streamDraftBox(list){
+ let el=document.getElementById('streamdrafts');
+ if(!el){
+  el=document.createElement('div');el.id='streamdrafts';el.className='msg';
+  const t=document.createElement('div');t.className='txt';t.textContent='Writing your options…';el.append(t);
+  const wrap=document.createElement('div');wrap.style.cssText='margin-top:6px;min-height:216px';el.append(wrap);
+  $('agentmsgs').append(el);
+ }
+ const wrap=el.querySelector('div:last-child');wrap.textContent='';
+ list.forEach((d,i)=>{
+  const b=document.createElement('div');b.className='draftopt live';
+  b.textContent=(i+1)+'. '+d.text;
+  b.onclick=()=>{const o=$('out');if(o){o.value=d.text;o.focus()}toast('Reply loaded in the send box.');show('p2')};
+  wrap.append(b);
+ });
+ $('agentmsgs').scrollTop=$('agentmsgs').scrollHeight;
+}
+function clearStreamDrafts(){const el=document.getElementById('streamdrafts');if(el)el.remove()}
+async function agentCallStream(situation, goal, onProgress){
+ if(!(LIVE&&LIVE.token)) return null;
+ const ck=replyCacheKey(situation,goal);
+ const cached=cacheGet(ck);
+ if(cached&&Array.isArray(cached.drafts)&&cached.drafts.length) return cached;
+ guruBusy=true;
+ try{
+  const t=threads[cur];
+  const r=await fetch(LIVE.url+'/api/agent/stream',{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+LIVE.token},body:JSON.stringify({me:t?t.me:'You',gender:$('gender').value,relationshipType:$('rel').value,psychologyProfile:$('psy').value,psychology:'',language:$('lang')?$('lang').value:'english',tone:($('agentTone')?$('agentTone').value:''),situation:situation||'',goal:goal||'reply',messages:agentMessages()})});
+  if(r.status===402){const d=await r.json().catch(()=>null);paywall(d||{required:1});return null}
+  if(!r.ok||!r.body) return null;
+  const reader=r.body.getReader(),dec=new TextDecoder();let buf='',raw='';
+  for(;;){
+   const {done,value}=await reader.read();if(done)break;
+   buf+=dec.decode(value,{stream:true});
+   let i;
+   while((i=buf.indexOf('\n\n'))>=0){
+    const frame=buf.slice(0,i);buf=buf.slice(i+2);
+    const line=frame.split('\n').find(l=>l.startsWith('data:'));
+    if(!line)continue;
+    let ev;try{ev=JSON.parse(line.slice(5))}catch(_){continue}
+    if(ev.delta){raw+=ev.delta;const ds=extractDrafts(raw);if(ds.length&&onProgress)onProgress(ds)}
+    else if(ev.done){if(ev.billing){BILL=ev.billing;paintCredits()}const out={...(ev.payload||{})};cachePut(ck,out);return out}
+    else if(ev.error){if(ev.billing){BILL=ev.billing;paintCredits()}return null}
+   }
+  }
+  return null;
+ }catch(e){return null}
+ finally{guruBusy=false}
+}
+async function guruReply(situation){
+ guruMood('think','Thinking about what to say…');
+ agentBubble('Scanning your chat...');
+ showSkeletons();
+ const d=await agentCallStream(situation,'reply',list=>{if(list.length)streamDraftBox(list)});
+ if(!d){ clearStreamDrafts(); agentBubble('I could not reach my brain just now. Check the server is running, then send that again.'); return; }
+ clearStreamDrafts();
+ if(d.read) agentBubble(d.read);
+ agentBullets('What is really going on:', d.friction||[]);
+ agentBullets('What to do about it:', d.insights||[]);
+ const list=(Array.isArray(d.drafts)?d.drafts:[]).map(x=>typeof x==='string'?{text:x,why:''}:{text:String(x&&x.text||''),why:String(x&&x.why||'')}).filter(x=>x.text);
+ const box=$('out');
+ if(list.length&&box){ box.value=list[0].text; box.focus(); }
+ if(list.length) agentDrafts(list);
+ if(list.length) agentBubble('Option 1 is already in your send box. Tap any option to switch.');
+ lastFlirts=Array.isArray(d.flirts)?d.flirts:[];
+ agentBubble('Do you want me to give cute lines? (say yes or no)');
+ guruMood('wink','Try this one — it fits the moment.');
+}
+function agentSend(){
+ const v=$('agentout').value.trim(); if(!v) return;
+ agentBubble(v,'user'); $('agentout').value='';
+ const low=v.toLowerCase();
+ if(!guruScanned){
+  if(!confirm('Scan this chat and prepare a reply now?')) return;
+  guruScanned=true;
+  guruReply(v);
+  return;
+ }
+ if(/\b(yes|yeah|yep|sure|ok|okay)\b/.test(low) && lastFlirts.length){
+  agentFlirts('Cute lines that fit right now (tap one to use it):', lastFlirts);
+  agentBubble('Want me to suggest another reply instead? Just tell me what happened.');
+  return;
+ }
+ if(/\b(no|nope|nah)\b/.test(low) && lastFlirts.length){
+  agentBubble('Okay, no cute lines. I will be here. Tell me when they reply and I will suggest your next move.');
+  return;
+ }
+ if(v.includes('?')){
+  guruMood('think','Let me think...');
+  agentBubble('Scanning your chat...');
+  agentCall(v,'analyze').then(d=>{
+   if(!d){ agentBubble('I could not reach my brain just now. Check the server is running, then send that again.'); return; }
+   if(d.read) agentBubble(d.read);
+   agentBullets('What is really going on:', d.friction||[]);
+   agentBullets('What to do about it:', d.insights||[]);
+   guruMood('happy','Anything else you want to know?');
+  });
+  return;
+ }
+ guruReply(v);
 }
 function analyze(){
  const t=threads[cur],me=t.me,ms=t.msgs;
@@ -428,18 +1022,23 @@ function doForward(target){
  const m=forwarding;forwarding=null;$('frwd').hidden=true;
  if(!m||!target)return;
  if(LIVE&&m.id&&target.jid){LIVE.ws.send(JSON.stringify({type:'forward',id:m.id,toJid:target.jid}));return}
- target.msgs.push({sender:target.me,t:new Date(),text:m.text||(m.type==='image'?'[photo]':''),type:'text',replyTo:null,reacts:{}});
+ target.msgs.push({sender:target.me,t:new Date(),text:m.text||(m.kind==='image'?'[photo]':''),kind:'text',replyTo:null,reacts:{}});
  target.msgs.sort((a,b)=>a.t-b.t);renderThreads();
 }
-function render(){renderThreads();renderChat();analyze();updateOlder();$('drafts').textContent=''}
+function render(){renderThreads();renderChat();updateOlder();saveSoon()}
 function show(id){document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('on',p.id===id));
  document.querySelectorAll('.tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.p===id))}
-document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>show(b.dataset.p));
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{
+ if(b.dataset.p==='p3'&&!guruMet){$('guruintro').hidden=false;return}
+ show(b.dataset.p);
+ if(b.dataset.p==='p3')guruStart();
+});
 $('pick').onclick=()=>$('file').click();
 $('file').onchange=async e=>{const f=e.target.files[0];if(!f)return;
- const msgs=parse(await f.text());
+ const msgs=await parseAsync(await f.text());
  if(!msgs.length){alert('No messages found. Use an exported WhatsApp .txt file.');return}
- addThread(f.name.replace(/^WhatsApp Chat with /i,'').replace(/\.txt$/i,''),msgs);show('p2');e.target.value=''};
+ addThread(f.name.replace(/^WhatsApp Chat with /i,'').replace(/\.txt$/i,''),msgs);show('p2');e.target.value='';
+ setTimeout(afterImportTeaser,700)};
 $('me').onchange=e=>{threads[cur].me=e.target.value;render()};
 
 // Open live chat picker button handler
@@ -449,6 +1048,114 @@ $('import-more').onclick=()=>{
     globalPickerFn();
   }
 };
+
+/* ---- Profile: the first screen. Kept in this browser and sent with consent. ---- */
+const PROFILE_KEY='ss_profile';
+function readProfile(){try{return JSON.parse(localStorage.getItem(PROFILE_KEY)||'null')}catch(e){return null}}
+function showProfile(p){
+ const w=$('whoami');if(!w||!p)return;
+ w.hidden=false;w.textContent='Hi, '+p.firstName;
+ w.title='Signed in as '+p.email+' — tap to change profile';
+ w.onclick=()=>{try{localStorage.removeItem(PROFILE_KEY)}catch(e){}location.reload()};
+}
+function step0(){
+ // A remembered profile skips sign-up: closing the tab or the browser no longer signs anyone out.
+ const saved=readProfile();
+ $('signup').hidden=false;$('gate').hidden=true;$('gurufab').hidden=true;
+ if(saved){return signedIn(saved)}
+ const first=$('su_first'),last=$('su_last'),email=$('su_email'),go=$('su_go'),err=$('su_err');
+ const gender=()=>{const g=document.querySelector('input[name="su_gender"]:checked');return g?g.value:''};
+ const ok=()=>!!(first.value.trim()&&last.value.trim()&&/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.value.trim())&&gender());
+ const refresh=()=>{go.disabled=!ok();if(err)err.hidden=true};
+ [first,last,email].forEach(i=>i.oninput=refresh);
+ document.querySelectorAll('input[name="su_gender"]').forEach(i=>i.onchange=refresh);
+ refresh();
+ go.onclick=()=>{
+  if(!again())return;
+  const p={firstName:first.value.trim().slice(0,40),lastName:last.value.trim().slice(0,40),email:email.value.trim().slice(0,120),gender:gender(),at:new Date().toISOString()};
+  try{localStorage.setItem(PROFILE_KEY,JSON.stringify(p));if(!localStorage.getItem('ss_callname'))localStorage.setItem('ss_callname',p.firstName)}catch(e){}
+  showProfile(p);
+  $('signup').hidden=true;$('gate').hidden=false;$('gurufab').hidden=false;
+  step1();
+ };
+ const gbtn=$('su_google');
+ const finishGoogleProfile=(name,email)=>{
+  const parts=(name||'').trim().split(' ');
+  const p={firstName:(parts[0]||'').slice(0,40),lastName:(parts.slice(1).join(' ')||'').slice(0,40),email:(email||'').trim().slice(0,120),gender:gender()||'male',at:new Date().toISOString()};
+  try{localStorage.setItem(PROFILE_KEY,JSON.stringify(p));if(!localStorage.getItem('ss_callname'))localStorage.setItem('ss_callname',p.firstName)}catch(e){}
+  showProfile(p);$('signup').hidden=true;$('gate').hidden=false;$('gurufab').hidden=false;step1();
+ };
+ const manualGoogle=()=>{
+  // In-page fallback (no native dialogs): works on mobile browsers and in embedded previews where window.prompt is disabled.
+  const wrap=document.createElement('div');
+  wrap.style.cssText='position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:16px';
+  const card=document.createElement('div');
+  card.style.cssText='background:#fff;border-radius:14px;padding:18px;width:100%;max-width:360px;box-shadow:0 10px 40px rgba(0,0,0,.25);font-family:inherit';
+  card.innerHTML='<h3 style="margin:0 0 10px;font-size:18px">Sign in with Google</h3>'+
+   '<p style="margin:0 0 12px;font-size:13px;color:#555">Google sign-in is not available on this device/browser (or this origin is not authorized). Enter your details to continue.</p>'+
+   '<label style="display:block;font-size:13px;margin-bottom:4px">Display name</label>'+
+   '<input id="mg_name" type="text" style="width:100%;padding:8px 10px;border:1px solid #ccc;border-radius:8px;margin-bottom:10px;font-size:15px" autocomplete="name">'+
+   '<label style="display:block;font-size:13px;margin-bottom:4px">Email address</label>'+
+   '<input id="mg_email" type="email" style="width:100%;padding:8px 10px;border:1px solid #ccc;border-radius:8px;margin-bottom:14px;font-size:15px" autocomplete="email">'+
+   '<div style="display:flex;gap:8px;justify-content:flex-end">'+
+   '<button id="mg_cancel" type="button" style="padding:8px 14px;border:1px solid #ccc;background:#f5f5f5;border-radius:8px;cursor:pointer">Cancel</button>'+
+   '<button id="mg_ok" type="button" style="padding:8px 14px;border:none;background:#4285f4;color:#fff;border-radius:8px;cursor:pointer;font-weight:600">Continue</button></div>';
+  wrap.append(card); document.body.append(wrap);
+  const nameI=card.querySelector('#mg_name'), emailI=card.querySelector('#mg_email');
+  const close=()=>wrap.remove();
+  card.querySelector('#mg_cancel').onclick=close;
+  const submit=()=>{ const n=nameI.value.trim(), e=emailI.value.trim(); if(!n||!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e)){ alert('Enter a valid name and email.'); return; } close(); finishGoogleProfile(n,e); };
+  card.querySelector('#mg_ok').onclick=submit;
+  [nameI,emailI].forEach(i=>i.addEventListener('keydown',ev=>{ if(ev.key==='Enter'){ev.preventDefault();submit()} }));
+  setTimeout(()=>nameI.focus(),50);
+ };
+ if(gbtn) gbtn.onclick=()=>{
+  const cid=window.GOOGLE_CLIENT_ID||'';
+  if(cid && window.google && google.accounts && google.accounts.id){
+   let done=false;
+   google.accounts.id.initialize({client_id:cid,callback:(resp)=>{
+    if(done) return; done=true;
+    try{
+     const payload=JSON.parse(atob(resp.credential.split('.')[1].replace(/-/g,'+').replace(/_/g,'/')));
+     finishGoogleProfile(payload.name||'',payload.email||'');
+    }catch(e){alert('Google sign-in failed: '+e.message); manualGoogle();}
+   }});
+   try{
+    google.accounts.id.prompt((n)=>{
+     if(done) return;
+     const notShown = !n || (typeof n.isNotDisplayed==='function' && n.isNotDisplayed()) || (typeof n.isSkippedMoment==='function' && n.isSkippedMoment()) || (typeof n.isDismissedMoment==='function' && n.isDismissedMoment());
+     if(notShown){ done=true; manualGoogle(); }
+    });
+   }catch(e){ done=true; manualGoogle(); }
+   // Safety net for mobile browsers where the prompt callback never fires.
+   setTimeout(()=>{ if(!done){ done=true; manualGoogle(); } }, 6000);
+   return;
+  }
+  manualGoogle();
+ };
+ if(window.GOOGLE_CLIENT_ID){
+  const s=document.createElement('script');s.src='https://accounts.google.com/gsi/client';s.async=true;s.defer=true;document.head.append(s);
+ }
+ function again(){if(ok())return true;if(err){err.hidden=false;err.textContent='Add your first name, last name, a valid email and your gender.'}return false}
+}
+
+// Already signed in on this device: go straight to the app, or pick up the saved WhatsApp link.
+function signedIn(p){
+ showProfile(p);
+ $('signup').hidden=true;$('gate').hidden=false;$('gurufab').hidden=false;
+ const url=serverUrl();
+ if(!url)return step1();
+ // Consent and the server were accepted before: reconnect silently, no screens in the way.
+ if(lsGet('ss_consent')){
+  guruSay('Welcome back. Picking up where we left off.');
+  gc.innerHTML='<h2>Welcome back</h2><p>Reconnecting to your WhatsApp session…</p>';
+  return live(url);
+ }
+ if(!lsGet('ss_device'))return step1();
+ gc.innerHTML='<h2>Welcome back</h2><p>Restoring your saved WhatsApp session…</p>';
+ guruSay('Welcome back. Picking up where we left off.');
+ resumeSession(url).then(ok=>{if(!ok)step1()});
+}
 
 /* ---- Connect flow (simulated; see server/ for the real Baileys bridge) ---- */
 const CHATS=[{name:'Maya',text:SAMPLE},
@@ -462,7 +1169,7 @@ function step1(){
   const saved=localStorage.getItem('ss_server')||'';
   const local=/^(localhost|127\.0\.0\.1|\[::1\])$/i.test(location.hostname);
   const savedIsLocal=/^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(:|\/|$)/i.test(saved);
-  $('srv').value=local?(savedIsLocal?saved:'http://localhost:8080'):saved;
+  $('srv').value=local?(savedIsLocal?saved:'http://localhost:8080'):(saved||configBase());
   if(local&&saved&&!savedIsLocal){
    const n=document.createElement('p');n.className='note';n.style.margin='0 0 8px';
    n.textContent='This page is running locally, so it will use the local server. Saved server: '+saved;
@@ -476,9 +1183,11 @@ function step1(){
 function step2(){
  let cells='';for(let i=0;i<441;i++)cells+='<i class="'+(Math.random()<.5?'o':'')+'"></i>';
  gc.innerHTML='<h2>Link this device</h2><p>In WhatsApp, open Settings, then Linked devices, then Link a device, and scan this code or enter the pairing code.</p><div class="qr" aria-label="Demo QR code">'+cells+'</div><div class="code">SYNC-4821</div><button class="btn primary" id="g2">Simulate scan</button>';
+ guruEnter('Scan this code with your phone: Settings → Linked devices → Link a device.');
  $('g2').onclick=step3;
 }
 function step3(){
+ guruSay('Pick the chats you want me to read.');
  gc.innerHTML='<h2>Choose chats to import</h2><p>Only the chats you pick are kept and analysed. Everything else is dropped when you import.</p>'+CHATS.map((c,i)=>'<label class="chk"><input type="checkbox" class="pick" data-i="'+i+'"'+(i===0?' checked':'')+'><span>'+c.name+'</span></label>').join('')+'<button class="btn primary" id="g3">Import selected</button>';
  $('g3').onclick=()=>{
   const sel=[...gc.querySelectorAll('.pick')].filter(x=>x.checked).map(x=>CHATS[+x.dataset.i]);
@@ -520,6 +1229,8 @@ function blobB64(blob){
  return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(String(r.result).split(',')[1]||'');r.onerror=reject;r.readAsDataURL(blob)});
 }
 $('imgbtn').onclick=()=>$('imgfile').click();
+$('agentimgbtn').onclick=()=>$('imgfile').click();
+$('agentmicbtn').onclick=()=>$('micbtn').click();
 $('imgfile').onchange=async e=>{
  const f=e.target.files&&e.target.files[0];e.target.value='';
  if(!f)return;
@@ -566,21 +1277,143 @@ $('micbtn').onclick=async()=>{
  recTimer=setInterval(()=>{bar.textContent='Recording '+Math.floor((Date.now()-recStarted)/1000)+'s — tap ⏹ to send'},500);
 };
 let LIVE=null;
-function liveErr(m){gc.innerHTML='<h2>Could not connect</h2><p></p><button class="btn primary" id="gr">Try again</button>';gc.querySelector('p').textContent=m;$('gate').hidden=false;$('gr').onclick=step1}
+/* ---- staying signed in: the tab, the browser and the phone can all be closed and reopened ---- */
+const lsGet=k=>{try{return localStorage.getItem(k)||''}catch(e){return ''}};
+const lsSet=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
+const THREADS_KEY='ss_threads';
+let saveTimer=null;
+function saveThreads(){
+ try{
+  const slim=threads.slice(0,40).map(t=>({name:t.name,me:t.me,jid:t.jid||'',msgs:t.msgs.slice(-400).map(m=>({id:m.id||'',sender:m.sender,dm:!!m.dm,t:+new Date(m.t),text:m.text||'',kind:m.kind||'text',mediaId:m.mediaId,replyTo:m.replyTo||null,reacts:m.reacts||{}}))}));
+  lsSet(THREADS_KEY,JSON.stringify(slim));
+ }catch(e){}
+}
+function saveSoon(){clearTimeout(saveTimer);saveTimer=setTimeout(saveThreads,900)}
+function loadThreads(){
+ try{
+  const raw=JSON.parse(lsGet(THREADS_KEY)||'[]');
+  if(!Array.isArray(raw)||!raw.length)return false;
+  threads=raw.map(t=>({name:t.name||'Chat',me:t.me||'You',jid:t.jid||'',msgs:(t.msgs||[]).map(m=>({...m,t:new Date(m.t)})),ids:new Set((t.msgs||[]).map(m=>m.id).filter(Boolean))}));
+  cur=0;return true;
+ }catch(e){return false}
+}
+function configBase(){
+ const b=(window.SOULSYNC_CONFIG&&window.SOULSYNC_CONFIG.apiBaseUrl)||'';
+ return String(b).trim().replace(/\/+$/,'');
+}
+function serverUrl(){
+ const cfg=configBase();
+ if(cfg)return cfg;
+ const saved=lsGet('ss_server');
+ if(saved)return saved.replace(/\/$/,'');
+ const h=location.hostname;
+ if(/^(localhost|127\.0\.0\.1|\[::1\])$/i.test(h))return 'http://localhost:8080';
+ // On a phone or another computer, the bridge is usually on the same host, port 8080.
+ if(h)return 'http://'+h+':8080';
+ return '';
+}
+async function resumeSession(url){
+ const dev=lsGet('ss_device');
+ if(!dev)return false;
+ let j;
+ try{
+  const r=await fetch(url+'/api/resume',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({device:dev})});
+  if(!r.ok)return false;
+  j=await r.json();
+ }catch(e){return false}
+ if(!j||!j.token||!j.linked)return false;
+ openLive(url,j.token,true);
+ return true;
+}
+
+/* ---- notifications (in the page, and as push when the app is closed or installed) ---- */
+function pushKey(b64){
+ const pad='='.repeat((4-b64.length%4)%4),raw=atob((b64+pad).replace(/-/g,'+').replace(/_/g,'/'));
+ const out=new Uint8Array(raw.length);
+ for(let i=0;i<raw.length;i++)out[i]=raw.charCodeAt(i);
+ return out;
+}
+async function swRegister(){
+ if(!('serviceWorker' in navigator))return null;
+ try{return await navigator.serviceWorker.register('sw.js')}catch(e){return null}
+}
+async function subscribePush(){
+ const reg=await swRegister();
+ if(!reg||!('PushManager' in window))return false;
+ const url=serverUrl(),token=LIVE&&LIVE.token;
+ if(!url||!token)return false;
+ try{
+  let key='';
+  try{key=(await (await fetch(url+'/api/push/key')).json()).key}catch(e){}
+  if(!key)return false;
+  const sub=await reg.pushManager.getSubscription()||await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:pushKey(key)});
+  await fetch(url+'/api/push/subscribe',{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+token},body:JSON.stringify({subscription:sub})});
+  return true;
+ }catch(e){return false}
+}
+const notifyOn=()=>'Notification' in window&&Notification.permission==='granted';
+const notifiedAt=new Map();
+function notifyNow(title,body,tag){
+ const opts={body:body||'New message',tag:tag||'soulsync',icon:'agent.png',badge:'agent.png',data:{jid:tag||''}};
+ if(navigator.serviceWorker&&navigator.serviceWorker.controller)navigator.serviceWorker.ready.then(r=>r.showNotification(title,opts)).catch(()=>{});
+ else try{new Notification(title,opts)}catch(e){}
+}
+function notify(title,body,tag){
+ if(!notifyOn()||!title)return;
+ // Stay quiet while the person is already looking at that chat.
+ if(document.visibilityState==='visible'&&(!tag||threads[cur]?.jid===tag))return;
+ const now=Date.now();
+ if(tag&&now-(notifiedAt.get(tag)||0)<4000)return;
+ if(tag)notifiedAt.set(tag,now);
+ notifyNow(title,body,tag);
+}
+async function enableAlerts(){
+ if(!('Notification' in window)){alert('This browser cannot show notifications.');return}
+ const p=await Notification.requestPermission();
+ if(p!=='granted'){alert('Notifications stay off until you allow them for this site in your browser settings.');return}
+ await subscribePush();
+ updateBell();
+ notifyNow('Soul Sync','Notifications are on. New WhatsApp messages will show up here.','intro');
+}
+function updateBell(){
+ const b=$('bell');if(!b)return;
+ b.textContent=notifyOn()?'🔔':'🔕';
+ b.title=notifyOn()?'Notifications on — tap to send a test':'Turn on message notifications';
+}
+function liveErr(m){gc.innerHTML='<h2>Could not connect</h2><p></p><button class="btn primary" id="gr">Try again</button>';gc.querySelector('p').textContent=m;$('gate').hidden=false;$('gr').onclick=()=>step1()}
 async function live(url){
  gc.innerHTML='<h2>Connecting</h2><p>Contacting your server.</p>';
- let token;
- try{const r=await fetch(url+'/api/consent',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({terms:true,privacy:true,readChats:true,aiAnalysis:true})});
-  if(!r.ok)throw new Error('Server answered '+r.status);token=(await r.json()).token}
+ let j;
+ try{
+  // The device secret keeps this browser on the same saved WhatsApp session, so closing the tab
+  // never means scanning a QR code again.
+  const r=await fetch(url+'/api/consent',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({terms:true,privacy:true,readChats:true,aiAnalysis:true,profile:readProfile()||undefined,device:lsGet('ss_device')||undefined})});
+  if(!r.ok)throw new Error('Server answered '+r.status);j=await r.json()}
  catch(e){return liveErr('Check the server URL, and that ALLOWED_ORIGIN on the server matches this site’s address. '+e.message)}
- const ws=new WebSocket(url.replace(/^http/,'ws')+'/ws?token='+encodeURIComponent(token));  LIVE={ws,url,token};
+ if(j.device)lsSet('ss_device',j.device);
+ lsSet('ss_server',url);
+ lsSet('ss_consent','1'); // agreed once on this device: no need to ask again on every visit
+ openLive(url,j.token,false);
+}
+function openLive(url, token, resumed){
+ const ws=new WebSocket(url.replace(/^http/,'ws')+'/ws?token='+encodeURIComponent(token));  LIVE={ws,url,token,resumed};
   const cn=$('conn');cn.style.display='block';cn.textContent='Server: '+url.replace(/^https?:\/\//,'');
   $('wipe').hidden=false;
  $('import-more').hidden=false; // Show live import more button when connected
 
  const chats=new Map(),sel=new Set();
+ refreshBilling();
  ws.onopen=()=>{
+  refreshBilling();
+  if(resumed){
+   // Same saved WhatsApp link: no QR code, just wait for the session to replay the chats.
+   gc.innerHTML='<h2>Welcome back</h2><p>Restoring your saved chats…</p>';
+   sendCall({type:'hello',name:myCallName()});
+   syncGateCall();
+   return;
+  }
   gc.innerHTML='<h2>Link this device</h2><p>In WhatsApp open Settings, Linked devices, Link a device, then scan. The code refreshes about every 20 seconds.</p><div id="qrbox" style="width:230px;margin:0 auto 12px;padding:8px;background:#fff;border-radius:8px;min-height:230px"></div><div class="code" id="pc"></div><input id="ph" placeholder="Phone with country code, e.g. 14155550123" style="width:100%;margin-bottom:8px;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)"><button class="btn" id="pairbtn" style="width:100%">Use a pairing code instead</button>';
+  guruEnter('Scan this code with your phone: Settings → Linked devices → Link a device.');
   $('pairbtn').onclick=()=>{const p=$('ph').value.trim();if(p)ws.send(JSON.stringify({type:'pair',phone:p}))};
   sendCall({type:'hello',name:myCallName()});
   syncGateCall();
@@ -604,6 +1437,7 @@ async function live(url){
  function picker(){
   LIVE.pickerOpen=true;
   gc.innerHTML='<h2>Choose chats to import</h2><p>Pick the chats to add. You can come back and add more at any time. Chats you do not pick are held in server memory only, never analysed, and wiped when you disconnect.</p><input id="cq" placeholder="Search chats" style="width:100%;margin-bottom:6px;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)"><p class="note" id="cc" style="margin:0 0 6px"></p><div id="cl" style="max-height:42vh;overflow:auto;margin-bottom:8px"></div><button class="btn primary" id="gi">Import selected</button>'+(threads.some(t=>t.jid)?'<button class="btn" id="gx" style="margin-left:6px">Close</button>':'');
+  guruSay('Pick the chats you want me to read.');
   $('cq').oninput=drawList;drawList();
   $('gi').onclick=()=>{if(sel.size){ws.send(JSON.stringify({type:'import',jids:[...sel]}));sel.clear()}};
   if($('gx'))$('gx').onclick=()=>{LIVE.pickerOpen=false;$('gate').hidden=true};
@@ -615,10 +1449,16 @@ async function live(url){
  ws.onmessage=ev=>{
   const m=JSON.parse(ev.data);
   try{if(handleCallMessage(m))return}catch(e){console.warn('call',e)}
-  if(m.type==='qr'){const q=qrcode(0,'L');q.addData(m.qr);q.make();const b=$('qrbox');if(b){b.innerHTML=q.createSvgTag(4,0);const v=b.querySelector('svg');if(v){v.style.width='100%';v.style.height='auto'}}}
+  if(m.type==='notify'){notify(m.title,m.body,m.jid)}
+  else if(m.type==='qr'){const q=qrcode(0,'L');q.addData(m.qr);q.make();const b=$('qrbox');if(b){b.innerHTML=q.createSvgTag(4,0);const v=b.querySelector('svg');if(v){v.style.width='100%';v.style.height='auto'}}}
   else if(m.type==='pairing_code'){$('pc').textContent=m.code}
   else if(m.type==='ready'){
+   if(resumed&&threads.some(t=>t.jid)){
+    // Re-attach the saved chats on the server after a restart, so live messages keep flowing.
+    ws.send(JSON.stringify({type:'import',jids:threads.map(t=>t.jid).filter(Boolean)}));
+   }
    gc.innerHTML='<h2>Linked</h2><p>Loading your chats. This can take a moment.</p>';
+   if(notifyOn())subscribePush();
    // The chat list often arrives before this message; don't wait for another one
    clearTimeout(LIVE.ready);
    LIVE.ready=setTimeout(()=>{
@@ -642,10 +1482,13 @@ async function live(url){
     LIVE.pickerOpen=false;$('gate').hidden=true;
     show('p2');
     render();
+    guruScanned=false;guruAsked=false;guruLeave();
+    if(guruMet)setTimeout(()=>guruStart(),1200);
+    setTimeout(afterImportTeaser,1600);
   }
   else if(m.type==='message'){const t=thread(m.jid);
    if(m.id){if(!t.ids)t.ids=new Set();if(t.ids.has(m.id))return;t.ids.add(m.id)}
-   const dm=!m.jid.endsWith('@g.us');t.msgs.push({id:m.id,sender:m.fromMe?'You':(dm?t.name:(m.sender||t.name)),dm:dm&&!m.fromMe,t:new Date(m.ts),text:m.text||'',type:m.type||'text',mediaId:m.mediaId,replyTo:m.replyTo||null,reacts:m.reacts||{}});
+   const dm=!m.jid.endsWith('@g.us');t.msgs.push({id:m.id,sender:m.fromMe?'You':(dm?t.name:(m.sender||t.name)),dm:dm&&!m.fromMe,t:new Date(m.ts),text:m.text||'',kind:m.kind||'text',mediaId:m.mediaId,replyTo:m.replyTo||null,reacts:m.reacts||{}});
    clearTimeout(LIVE.r);LIVE.r=setTimeout(()=>{threads.forEach(x=>x.msgs.sort((a,b)=>a.t-b.t));render()},150)}
   else if(m.type==='reaction'){
    const t=thread(m.jid),target=t.msgs.find(x=>x.id===m.targetId);
@@ -667,25 +1510,20 @@ async function live(url){
     error:'Could not ask your phone for older messages. Try again.'}[m.status]||'';
    updateOlder();
   }
-  else if(m.type==='logged_out'){liveErr('WhatsApp logged this device out. Link it again.')}
-  else if(m.type==='deleted'){location.reload()}
+  else if(m.type==='logged_out'){lsSet('ss_device','');liveErr('WhatsApp logged this device out. Link it again.')}
+  else if(m.type==='deleted'){lsSet('ss_device','');lsSet(THREADS_KEY,'');location.reload()}
   else if(m.type==='error'){const pc=$('pc');if(pc&&!$('gate').hidden)pc.textContent=m.message;else $('tone').textContent=m.message}
  };
- ws.onclose=()=>{syncGateCall();if(CALL||GROUP||INVITE){endCallLocal('ended',false);hideIncoming()}if(!$('gate').hidden)liveErr('The connection closed before linking finished.');else $('tone').textContent='Disconnected'};
+ ws.onclose=()=>{syncGateCall();if(CALL||GROUP||INVITE){endCallLocal('ended',false);hideIncoming()}
+  if(!$('gate').hidden&&resumed&&threads.length){
+   // A saved session that drops takes itself back to the chats and quietly reattaches.
+   $('gate').hidden=true;show('p2');render();$('tone').textContent='Reconnecting…';
+   if(resumeTries++<4)setTimeout(()=>signedIn(readProfile()||{}),1500*resumeTries);
+   return;
+  }
+  if(!$('gate').hidden)liveErr('The connection closed before linking finished.');else $('tone').textContent='Disconnected'};
+ let resumeTries=0;
 }
-$('gen').onclick=async()=>{
- const t=threads[cur];
- if(!(LIVE&&t))return drafts();
- const b=$('gen');b.disabled=true;b.textContent='Writing';
- try{
-  const r=await fetch(LIVE.url+'/api/analyze',{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+LIVE.token},body:JSON.stringify({me:t.me,goal:$('goal').value,messages:t.msgs.slice(-200).map(m=>({sender:m.sender,time:m.t.toISOString(),text:m.text}))})});
-  if(!r.ok)throw new Error('ai');
-  const d=await r.json(),ul=$('notes');ul.textContent='';
-  (d.insights||[]).concat(d.friction||[]).forEach(n=>{const li=document.createElement('li');li.textContent=n;ul.append(li)});
-  drafts(d.drafts);
- }catch(e){drafts()}
- b.disabled=false;b.textContent='Write drafts';
-};
 $('wipe').onclick=()=>{if(LIVE&&confirm('Disconnect WhatsApp and delete your data from the server?'))LIVE.ws.send(JSON.stringify({type:'disconnect'}))};
 function askOlder(all){
  const t=threads[cur];if(!(LIVE&&t&&t.jid)||t.loading)return;
@@ -1279,9 +2117,342 @@ function handleCallMessage(m){
  }
  return false;
 }
-function init(){if(innerWidth<=1000)show('p2');step1()}
+/* ===== Credits, paywall and billing ===== */
+let BILL=null, BILL_TICK=null, RZP_PENDING=false;
+const money=n=>'₹'+Number(n||0);
+function toast(msg){
+ const el=$('toast'); if(!el) return;
+ el.textContent=msg; el.classList.add('on');
+ clearTimeout(toast.t); toast.t=setTimeout(()=>el.classList.remove('on'),3200);
+}
+function billFetch(path,opts={}){
+ if(!(LIVE&&LIVE.token)) return Promise.resolve(null);
+ return fetch(LIVE.url+path,{...opts,headers:{'content-type':'application/json',authorization:'Bearer '+LIVE.token}})
+  .then(async r=>({status:r.status,body:await r.json().catch(()=>null)}))
+  .catch(()=>null);
+}
+async function refreshBilling(){
+ const r=await billFetch('/api/billing/me');
+ if(r&&r.body&&typeof r.body.total==='number'){BILL=r.body;paintCredits();if($('billing')&&!$('billing').hidden)renderBilling()}
+ return BILL;
+}
+function paintCredits(){
+ const txt=BILL?String(BILL.total):'—';
+ ['credits1','credits2'].forEach(id=>{const e=$(id);if(e)e.textContent=txt});
+ document.querySelectorAll('.creditpill').forEach(p=>p.classList.toggle('low',!!BILL&&BILL.total<5));
+ const t=$('agentTone');
+ if(t&&BILL){t.disabled=!BILL.plan.toneSelector;t.title=BILL.plan.toneSelector?'Choose how your replies sound':'Custom tone is part of Pro (₹199/month)'}
+}
+function hms(sec){
+ sec=Math.max(0,Math.floor(sec));
+ return String(Math.floor(sec/3600)).padStart(2,'0')+':'+String(Math.floor(sec%3600/60)).padStart(2,'0')+':'+String(sec%60).padStart(2,'0');
+}
+function secondsToReset(){return BILL?Math.max(0,(Date.parse(BILL.daily.resetsAt)-Date.now())/1000):0}
+function startBillTick(){
+ clearInterval(BILL_TICK);
+ BILL_TICK=setInterval(()=>{
+  if(!BILL) return;
+  const left=secondsToReset();
+  document.querySelectorAll('[data-cd]').forEach(e=>e.textContent=hms(left));
+  if(left<=0) refreshBilling();
+ },1000);
+}
+function openBilling(note){
+ $('billnote').textContent=note||'Credits power every reply (1) and every deep chat analysis (5).';
+ $('billing').hidden=false;
+ if(BILL) renderBilling();
+ refreshBilling().then(renderBilling);
+ startBillTick();
+}
+function renderBilling(){
+ if(!BILL){$('billbal').innerHTML='<p class="note">Loading your balance…</p>';return}
+ const b=BILL;
+ $('billbal').innerHTML=
+  '<div class="balrow"><span>Total credits</span><b>'+b.total+'</b></div>'+
+  '<div class="balrow"><span>Free daily credits</span><b>'+b.balance.daily+' / '+b.free.dailyCredits+'</b></div>'+
+  '<div class="balrow"><span>Pack credits</span><b>'+b.balance.pack+'</b></div>'+
+  '<div class="balrow"><span>Plan credits</span><b>'+b.balance.plan+'</b></div>'+
+  '<div class="balrow"><span>Welcome bonus</span><b>'+b.balance.bonus+'</b></div>'+
+  '<div class="balrow"><span>Plan</span><b>'+b.plan.tier.toUpperCase()+'</b></div>';
+ $('billcd').innerHTML = b.balance.daily===0
+  ? '<div class="cooldown">Next '+b.free.dailyCredits+' free credits unlock in <b data-cd>'+hms(secondsToReset())+'</b><br><span class="note">Or unlock 60 credits now for ₹49.</span></div>'
+  : '<p class="note" style="margin:8px 0 0">Daily free credits reset in <b data-cd style="font-variant-numeric:tabular-nums">'+hms(secondsToReset())+'</b></p>';
+ $('billplans').innerHTML=b.pricing.map(p=>
+  '<div class="plan'+(p.kind==='pro'?' hot':'')+'">'+
+   '<h3><span>'+p.name+'</span><span class="price">'+money(p.price)+'</span></h3>'+
+   '<div class="tag">'+p.badge+'</div>'+
+   '<ul>'+p.perks.map(x=>'<li>'+x+'</li>').join('')+'</ul>'+
+   '<button class="btn '+(p.kind==='pro'?'primary':'')+'" type="button" data-buy="'+p.id+'">'+(p.kind==='pro'?'Subscribe · '+money(p.price)+'/month':'Buy '+p.credits+' credits')+'</button>'+
+  '</div>').join('');
+ $('billplans').querySelectorAll('[data-buy]').forEach(btn=>btn.onclick=()=>buy(btn.dataset.buy,btn));
+ const tt=$('billtest'); tt.hidden=!b.testMode; tt.textContent=b.testMode?'Test mode: payments are simulated until Razorpay keys are added.':'';
+ startBillTick();
+}
+async function buy(product,btn){
+ if(btn){btn.disabled=true;const old=btn.textContent;btn.textContent='Opening…';setTimeout(()=>{if(btn.disabled){btn.disabled=false;btn.textContent=old}},20000)}
+ const r=await billFetch('/api/billing/order',{method:'POST',body:JSON.stringify({product})});
+ if(!r||!r.body){toast('Could not reach the payment server.');if(btn)btn.disabled=false;return}
+ if(r.body.error){toast(r.body.error);if(btn)btn.disabled=false;return}
+ if(r.body.testMode){return testPay(r.body.orderId,product)}
+ openRazorpay(r.body,btn);
+}
+async function testPay(orderId,product){
+ if(!confirm('Test mode: simulate a successful payment of '+(product==='pro199'?'₹199':'₹49')+'? No money is charged.')) return;
+ const r=await billFetch('/api/billing/test-pay',{method:'POST',body:JSON.stringify({orderId})});
+ if(r&&r.body&&r.body.billing){BILL=r.body.billing;paintCredits();renderBilling();toast('Credits added (test mode).')}
+ else toast('Test payment failed. Try again.');
+}
+function loadRazorpay(){
+ return new Promise(res=>{
+  if(window.Razorpay) return res(true);
+  if(RZP_PENDING){const t=setInterval(()=>{if(window.Razorpay){clearInterval(t);res(true)}},200);return}
+  RZP_PENDING=true;
+  const s=document.createElement('script');
+  s.src='https://checkout.razorpay.com/v1/checkout.js';
+  s.onload=()=>res(true); s.onerror=()=>res(false);
+  document.head.append(s);
+ });
+}
+async function openRazorpay(o,btn){
+ const ok=await loadRazorpay();
+ if(!ok){toast('Could not load Razorpay. Check your connection and try again.');if(btn)btn.disabled=false;return}
+ const rz=new window.Razorpay({
+  key:o.keyId, amount:o.amount, currency:o.currency||'INR', name:o.name||'Soul Sync',
+  description:o.description||o.productName, order_id:o.gatewayOrderId,
+  theme:{color:'#7c5cd6'},
+  modal:{ondismiss:()=>{if(btn)btn.disabled=false}},
+  handler:async resp=>{
+   const v=await billFetch('/api/billing/verify',{method:'POST',body:JSON.stringify({orderId:o.orderId,razorpayOrderId:resp.razorpay_order_id,paymentId:resp.razorpay_payment_id,signature:resp.razorpay_signature})});
+   if(v&&v.body&&v.body.billing){BILL=v.body.billing;paintCredits();renderBilling();toast('Payment successful. Credits added.')}
+   else toast('Payment received. Credits will appear in a moment.');
+   setTimeout(refreshBilling,2500);
+  }
+ });
+ rz.on('payment.failed',e=>{toast('Payment failed: '+(e&&e.error&&e.error.description?e.error.description:'try another method'));if(btn)btn.disabled=false});
+ rz.open();
+}
+function paywall(d){
+ OPEN_PAYWALL=true;
+ if(d&&d.billing){BILL=d.billing;paintCredits()}
+ const need=(d&&d.required)||1;
+ openBilling('You need '+need+' credit'+(need>1?'s':'')+' for that. Top up to keep going — or wait for your free daily credits.');
+}
+let OPEN_PAYWALL=false;
+function agentDrafts(list, costLabel){
+ const box=$('agentmsgs'); if(!box||!list.length) return;
+ const el=document.createElement('div'); el.className='msg';
+ const t=document.createElement('div'); t.className='txt'; t.textContent=list.length+' replies for this moment. Tap one to put it in the send box:'; el.append(t);
+ const wrap=document.createElement('div'); wrap.style.cssText='margin-top:6px';
+ list.forEach((d,i)=>{
+  const b=document.createElement('button'); b.type='button'; b.className='draftopt';
+  b.textContent=(i+1)+'. '+d.text;
+  if(d.why){const s=document.createElement('small'); s.textContent=d.why; b.append(s)}
+  b.onclick=()=>{const o=$('out');if(o){o.value=d.text;o.focus()}hap('light');toast('Reply loaded in the send box.');show('p2')};
+  wrap.append(b);
+ });
+ el.append(wrap);
+ const s=document.createElement('small'); s.textContent='Love guru · '+(costLabel||'1 credit'); el.append(s);
+ box.append(el); box.scrollTop=box.scrollHeight;
+}
+async function afterImportTeaser(){
+ if(!(LIVE&&LIVE.token)) return;
+ const t=threads[cur]; if(!t||!t.msgs||!t.msgs.length) return;
+ if(t._teased) return; t._teased=true;
+ guruMet=true; guruAsked=true; show('p3');
+ const r=await billFetch('/api/analysis/teaser',{method:'POST',body:JSON.stringify({me:t.me,messages:agentMessages()})});
+ if(!r||!r.body) return;
+ if(r.body.billing){BILL=r.body.billing;paintCredits()}
+ agentBubble('I read '+t.msgs.length+' messages in "'+t.name+'". Free preview:');
+ agentBullets('', r.body.teaser||[]);
+ lockedCard(r.body);
+}
+function lockedCard(d){
+ const box=$('agentmsgs'); if(!box) return;
+ const el=document.createElement('div'); el.className='msg';
+ const txt=document.createElement('div'); txt.className='txt';
+ const lb=document.createElement('div'); lb.className='lockedbox';
+ const h=document.createElement('h4'); h.textContent='🔒 Locked — full read of this chat'; lb.append(h);
+ const ul=document.createElement('ul');
+ (d.locked||[]).forEach(x=>{const li=document.createElement('li');li.textContent=x;ul.append(li)});
+ lb.append(ul);
+ const note=document.createElement('div'); note.className='note'; note.style.margin='0 0 8px';
+ note.textContent='Deep analysis reads the whole history. Costs '+(d.cost||5)+' credits.'; lb.append(note);
+ const go=document.createElement('button'); go.type='button'; go.className='btn primary'; go.textContent='Unlock full analysis ('+(d.cost||5)+' credits)';
+ const buyBtn=document.createElement('button'); buyBtn.type='button'; buyBtn.className='btn'; buyBtn.style.cssText='width:100%;margin-top:6px'; buyBtn.textContent='Get credits · 60 for ₹49';
+ lb.append(go,buyBtn); txt.append(lb); el.append(txt);
+ const s=document.createElement('small'); s.textContent='Love guru'; el.append(s);
+ box.append(el); box.scrollTop=box.scrollHeight;
+ go.onclick=()=>runDeep(go);
+ buyBtn.onclick=()=>openBilling('A deep analysis of one chat costs 5 credits.');
+}
+async function runDeep(btn){
+ const t=threads[cur]; if(!t) return;
+ const old=btn?btn.textContent:'';
+ if(btn){btn.disabled=true;btn.textContent='Reading the whole chat…'}
+ guruMood('think','Reading every message…');
+ const r=await billFetch('/api/analysis/deep',{method:'POST',body:JSON.stringify({
+  me:t.me,gender:$('gender').value,relationshipType:$('rel').value,psychologyProfile:$('psy').value,
+  language:$('lang').value,tone:($('agentTone')?$('agentTone').value:''),goal:'deep',messages:agentMessages()
+ })});
+ if(!r){if(btn){btn.disabled=false;btn.textContent=old}return}
+ if(r.status===402){paywall(r.body||{required:5});return}
+ if(r.body&&r.body.billing){BILL=r.body.billing;paintCredits()}
+ const d=r.body||{};
+ if(!d.read){agentBubble(d.error||'I could not finish that read. Nothing was charged.');if(btn){btn.disabled=false;btn.textContent=old}return}
+ if(btn){btn.disabled=true;btn.textContent='Unlocked ✓'}
+ agentBubble(d.read);
+ agentBullets('What is really going on:', d.friction||[]);
+ agentBullets('What to do about it:', d.insights||[]);
+ const list=(Array.isArray(d.drafts)?d.drafts:[]).map(x=>typeof x==='string'?{text:x,why:''}:{text:String(x&&x.text||''),why:String(x&&x.why||'')}).filter(x=>x.text);
+ if(list.length) agentDrafts(list, (d.cost||5)+' credits');
+ lastFlirts=Array.isArray(d.flirts)?d.flirts:[];
+ if(lastFlirts.length) agentBubble('Want the cute lines too? Say yes.');
+ guruMood('wink','That is the full picture.');
+}
+function hearts(){
+ const box=document.createElement('div');box.className='hearts';box.setAttribute('aria-hidden','true');
+ for(let i=0;i<20;i++){
+  const h=document.createElement('i'),size=(62+Math.random()*92).toFixed(0);
+  h.style.cssText='left:'+(Math.random()*100).toFixed(1)+'%;width:'+size+'px;height:'+size+'px;'+
+   '--d:'+(14+Math.random()*16).toFixed(1)+'s;--delay:-'+(Math.random()*24).toFixed(1)+'s;--x:'+(Math.random()*90-45).toFixed(0)+'px;'+
+   'opacity:'+(.5+Math.random()*.35).toFixed(2);
+  box.append(h);
+ }
+ document.body.prepend(box);
+ // A copy inside every full-screen card layer, so hearts float behind each card.
+ document.querySelectorAll('.gate').forEach(g=>g.prepend(box.cloneNode(true)));
+}
+function init(){
+ hearts();
+ agentGuru();
+ populateAgentOptions();
+ loadThreads(); // chats and messages survive a reload, like a real messenger
+ updateBell();
+ startBillTick();
+ swRegister().then(reg=>{if(reg&&notifyOn())subscribePush()}); // ready for push notifications
+ if(innerWidth<=1000)show('p2');
+ step0();
+ // Logo forms first, then the sign-up screen is revealed underneath it.
+ const intr=$('intro');
+ if(intr){
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduce){intr.remove()}
+  else{setTimeout(()=>{intr.classList.add('gone');setTimeout(()=>intr.remove(),600)},4400)}
+ }
+}
+$('bell').onclick=async()=>{if(!notifyOn())return enableAlerts();await subscribePush();notifyNow('Soul Sync','Notifications are on. This is what a new message looks like.','test');};
+$('gurufab').onclick=()=>{if(guruMet)openGuruPanel();else $('guruintro').hidden=false};
+$('gurustart').onclick=openGuruPanel;
+$('guruclose').onclick=()=>{$('guruintro').hidden=true};
+$('agentsend').onclick=agentSend;
+(function(){
+ const sc=$('msgs')&&$('msgs').parentElement;
+ if(sc) sc.addEventListener('scroll', scheduleWindowRender, {passive:true});
+})();
+$('creditpill1').onclick=()=>openBilling();
+$('creditpill2').onclick=()=>openBilling();
+$('billclose').onclick=()=>{$('billing').hidden=true;clearInterval(BILL_TICK)};
+$('agentout').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();agentSend()}});
 try{new MutationObserver(syncGateCall).observe($('gate'),{attributes:true,attributeFilter:['hidden']})}catch(e){}
 init();
+</script>
+<script src="jszip.min.js"></script>
+<script src="config.js"></script>
+<script>
+(function(){
+  var Cap = window.Capacitor;
+  if(!Cap || typeof Cap.isNativePlatform !== 'function' || !Cap.isNativePlatform()) return;
+  var ShareTarget = Cap.Plugins && Cap.Plugins.ShareTarget;
+  var Filesystem = Cap.Plugins && Cap.Plugins.Filesystem;
+  if(!ShareTarget) return;
+  function isZip(f){
+    var n = (f && f.name ? f.name : '').toLowerCase();
+    var m = (f && f.mimeType ? f.mimeType : '').toLowerCase();
+    return n.endsWith('.zip') || m.indexOf('zip') !== -1;
+  }
+  async function readSharedFileAsText(f){
+    // Returns { text, isZip }.
+    var base64 = null, asText = null;
+    try { var r = await fetch(f.uri); if(r && r.ok){ asText = await r.text(); } } catch(_){}
+    if(asText && !isZip(f)) return { text: asText, isZip: false };
+    if(Filesystem){
+      try {
+        var res = await Filesystem.readFile({ path: f.uri });
+        var data = res && res.data;
+        if(typeof data === 'string'){
+          // Filesystem returns base64 for binary; try base64 decode for text if not zip.
+          if(isZip(f)) return { base64: data.replace(/\s/g,''), isZip: true };
+          try { return { text: atob(data.replace(/\s/g,'')), isZip: false }; } catch(_){ return { text: data, isZip: false }; }
+        }
+      } catch(_){}
+    }
+    if(asText) return { text: asText, isZip: isZip(f) };
+    return null;
+  }
+  async function extractTextFromShared(f){
+    var r = await readSharedFileAsText(f);
+    if(!r) return null;
+    if(!r.isZip) return r.text || null;
+    if(!window.JSZip){ console.warn('JSZip not loaded'); return null; }
+    try {
+      var zip = await window.JSZip.loadAsync(r.base64, { base64: true });
+      // Find the chat transcript .txt inside the zip.
+      var txtName = Object.keys(zip.files).find(function(n){ return /\.txt$/i.test(n) && !zip.files[n].dir; });
+      if(!txtName) return null;
+      return await zip.files[txtName].async('string');
+    } catch(e){ console.warn('zip extract failed', e); return null; }
+  }
+  async function handleShare(ev){
+    ev = ev || {};
+    var texts = ev.texts || [];
+    var files = ev.files || [];
+    var content = texts.join('\n');
+    for(var i=0;i<files.length;i++){
+      var t = await extractTextFromShared(files[i]);
+      if(t) content += (content ? '\n' : '') + t;
+    }
+    if(!content.trim()) return;
+    var name = (files[0] && files[0].name) ? files[0].name : 'Shared chat';
+    var msgs = (typeof parseAsync === 'function') ? await parseAsync(content) : [];
+    if(!msgs || !msgs.length){ try { alert('No messages found in the shared file.'); } catch(_){} return; }
+    if(typeof addThread === 'function'){ addThread(name.replace(/^WhatsApp Chat with /i,'').replace(/\.txt$/i,'').replace(/\.zip$/i,''), msgs); }
+    if(typeof show === 'function') show('p2');
+    setTimeout(function(){ if(typeof afterImportTeaser === 'function') afterImportTeaser(); }, 700);
+  }
+  ShareTarget.addListener('shareReceived', handleShare).catch(function(e){ console.warn('share target listener failed', e); });
+})();
+</script>
+<script>
+// RevenueCat native IAP trigger (Android/iOS only).
+(function(){
+  var Cap = window.Capacitor;
+  if(!Cap || typeof Cap.isNativePlatform !== 'function' || !Cap.isNativePlatform()) return;
+  var Purchases = Cap.Plugins && Cap.Plugins.Purchases;
+  if(!Purchases) return;
+  var cfg = (window.SOULSYNC_CONFIG && window.SOULSYNC_CONFIG.revenueCat) || {};
+  var platform = Cap.getPlatform ? Cap.getPlatform() : (Cap.platform || 'web');
+  var apiKey = platform === 'ios' ? cfg.iosKey : cfg.androidKey;
+  if(!apiKey || apiKey.indexOf('YOUR_') === 0){ console.warn('RevenueCat key not configured'); return; }
+  Purchases.configure({ apiKey: apiKey, appUserID: (window.LIVE && window.LIVE.userId) || null }).catch(function(e){ console.warn('RC configure failed', e); });
+  window.buyRevenueCat = async function(product){
+    try {
+      var res = await Purchases.getOfferings();
+      var offering = res && res.current;
+      if(!offering){ alert('No offerings available.'); return; }
+      var pkgId = product === 'pro' ? cfg.offerings.pro : cfg.offerings.starter;
+      var aPackage = (offering.availablePackages || []).find(function(p){ return p.identifier === pkgId || (p.product && p.product.identifier === pkgId); });
+      if(!aPackage){ alert('Package ' + pkgId + ' not found.'); return; }
+      var purchase = await Purchases.purchasePackage({ aPackage: aPackage });
+      console.log('purchase ok', purchase);
+      alert('Purchase successful. Credits will be added shortly.');
+      if(typeof refreshBilling === 'function') refreshBilling();
+    } catch(e){
+      if(e && e.userCancelled) return;
+      console.warn('purchase failed', e);
+      alert('Purchase failed: ' + (e && e.message ? e.message : 'unknown error'));
+    }
+  };
+})();
 </script>
 </body>
 </html>

@@ -1,2 +1,20 @@
 [build]
+  # Netlify runs this on Linux; CAP_SYNC=0 skips the Capacitor sync (which is local-only).
+  command = "npm run build"
   publish = "web"
+
+[build.environment]
+  NODE_VERSION = "22.14.0"
+  CAP_SYNC = "0"
+
+# Single-page app: unknown paths fall through to index.html with 200.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# The service worker must never be cached, or updates never reach installed clients.
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
