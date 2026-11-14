@@ -898,13 +898,20 @@ app.post('/api/agent/stream', limiter(30, 60e3), chargeCredits(COSTS.reply, 'rep
     send({ done: true, payload: out, billing: billingFor(req.userId) });
   } catch (e) {
     refundCharge(req, 'ai_unavailable');
+    log.error({ err: String(e?.message || e) }, 'agent AI failed');
     send({ error: 'Both AI providers are unavailable right now.', billing: billingFor(req.userId) });
   } finally {
     res.end();
   }
 });
 
-const server = app.listen(PORT, '0.0.0.0', () => console.log('Soul Sync server on 0.0.0.0:' + PORT));
+const server = app.listen(PORT, '0.0.0.0', () => {
+  console.log('Soul Sync server on 0.0.0.0:' + PORT);
+  console.log('[env] GEMINI_API_KEY:', process.env.GEMINI_API_KEY ? 'set (' + process.env.GEMINI_API_KEY.slice(0,6) + '...)' : 'MISSING');
+  console.log('[env] OPENAI_API_KEY:', process.env.OPENAI_API_KEY ? 'set (' + process.env.OPENAI_API_KEY.slice(0,6) + '...)' : 'MISSING');
+  console.log('[env] GEMINI_MODEL:', process.env.GEMINI_MODEL || '(default)');
+  console.log('[env] OPENAI_MODEL:', process.env.OPENAI_MODEL || '(default)');
+});
 
 // 3) WhatsApp bridge over WebSocket (one Baileys socket per connected tab)
 const wss = new WebSocketServer({ server, path: '/ws', maxPayload: 20 * 1024 * 1024 }); // photos and voice clips
