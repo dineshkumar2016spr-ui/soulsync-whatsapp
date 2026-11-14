@@ -739,8 +739,20 @@ function agentServerCard(){
  el.append(inp,go);
  box.append(el); box.scrollTop=box.scrollHeight;
 }
+let lastAgentError='';
 function agentTrouble(){
- if(LIVE&&LIVE.token){ agentBubble('I could not reach your server just now. It may be starting up — give it a moment and send that again.'); return; }
+ if(LIVE&&LIVE.token){
+  if(lastAgentError){
+   agentBubble('Your server answered, but the AI provider refused the request. This is the exact reason:');
+   const box=$('agentmsgs');
+   const el=document.createElement('div'); el.className='msg';
+   const t=document.createElement('div'); t.className='txt'; t.style.fontSize='12px'; t.style.opacity='.75';
+   t.textContent=lastAgentError;
+   el.append(t); box.append(el); box.scrollTop=box.scrollHeight;
+   return;
+  }
+  agentBubble('I could not reach your server just now. It may be starting up — give it a moment and send that again.'); return;
+ }
  if(!serverUrl()){
   agentBubble('I am not connected to a server yet, so I cannot think.');
   agentServerCard();
@@ -813,11 +825,11 @@ async function agentCall(situation, goal){
  const ck=replyCacheKey(situation,goal);
  const cached=cacheGet(ck);
  if(cached&&Array.isArray(cached.drafts)&&cached.drafts.length){ return cached; }
- guruBusy=true;
+ guruBusy=true;lastAgentError='';
  try{
   const r=await fetch(LIVE.url+'/api/agent',{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+LIVE.token},body:JSON.stringify({me:t?t.me:'You',gender:$('gender').value,relationshipType:$('rel').value,psychologyProfile:$('psy').value,psychology:'',language:$('lang')?$('lang').value:'english',tone:($('agentTone')?$('agentTone').value:''),situation:situation||'',goal:goal||'analyze',messages:agentMessages()})});
   if(r.status===402){ const d=await r.json().catch(()=>null); paywall(d||{required:1}); return null; }
-  if(!r.ok) return null;
+  if(!r.ok){ lastAgentError='HTTP '+r.status+' '+(await r.text().catch(()=>'')).slice(0,300); return null; }
   const out=await r.json();
   if(out&&out.billing){BILL=out.billing;paintCredits()}
   try{ if(out&&out.drafts&&out.drafts.length) cachePut(ck,out); }catch(_){}
@@ -879,7 +891,7 @@ async function agentCallStream(situation, goal, onProgress){
  const ck=replyCacheKey(situation,goal);
  const cached=cacheGet(ck);
  if(cached&&Array.isArray(cached.drafts)&&cached.drafts.length) return cached;
- guruBusy=true;
+ guruBusy=true;lastAgentError='';
  try{
   const t=threads[cur];
   const r=await fetch(LIVE.url+'/api/agent/stream',{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+LIVE.token},body:JSON.stringify({me:t?t.me:'You',gender:$('gender').value,relationshipType:$('rel').value,psychologyProfile:$('psy').value,psychology:'',language:$('lang')?$('lang').value:'english',tone:($('agentTone')?$('agentTone').value:''),situation:situation||'',goal:goal||'reply',messages:agentMessages()})});
@@ -897,7 +909,7 @@ async function agentCallStream(situation, goal, onProgress){
     let ev;try{ev=JSON.parse(line.slice(5))}catch(_){continue}
     if(ev.delta){raw+=ev.delta;const ds=extractDrafts(raw);if(ds.length&&onProgress)onProgress(ds)}
     else if(ev.done){if(ev.billing){BILL=ev.billing;paintCredits()}const out={...(ev.payload||{})};cachePut(ck,out);return out}
-    else if(ev.error){if(ev.billing){BILL=ev.billing;paintCredits()}return null}
+    else if(ev.error){if(ev.billing){BILL=ev.billing;paintCredits()}lastAgentError=String(ev.detail||ev.error||'');return null}
    }
   }
   return null;
