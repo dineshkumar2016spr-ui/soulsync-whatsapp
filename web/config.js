@@ -2,7 +2,7 @@
 window.SOULSYNC_CONFIG = {
   // Backend origin for fetch + SSE. '' means same origin (local dev server / Capacitor).
   // Production: baked in from VITE_API_BASE_URL at build time, e.g. https://soulsync.up.railway.app
-  apiBaseUrl: '',
+  apiBaseUrl: "https://soulsync-whatsapp.onrender.com",
   revenueCat: {
     // Paste your RevenueCat public SDK keys here (safe to ship in client code).
     androidKey: 'YOUR_REVENUECAT_ANDROID_KEY',
