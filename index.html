@@ -63,6 +63,10 @@ button{cursor:pointer}
 .msg img{display:block;max-width:100%;max-height:320px;border-radius:10px;margin:2px 0 4px;cursor:zoom-in}
 .msg audio{display:block;width:240px;max-width:100%;margin:2px 0 4px}
 .send .icon{padding:7px 8px;line-height:1}
+.dots{display:inline-flex;gap:4px;align-items:center;height:16px}
+.dots i{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.4;animation:dotb 1.1s infinite}
+.dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}
+@keyframes dotb{0%,60%,100%{opacity:.25;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
 #micbtn.rec,#agentmicbtn.rec{background:var(--warn);border-color:var(--warn);color:#fff}
 .msg .quote{font-size:12px;border-left:3px solid currentColor;opacity:.72;padding:1px 8px;margin-bottom:4px;white-space:pre-wrap;overflow-wrap:anywhere}
 .msg .reacts{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}
@@ -347,6 +351,7 @@ select{background:var(--bg);border:1px solid var(--line);border-radius:8px;paddi
     <button class="btn icon" id="chatvideo" type="button" aria-label="Video call this chat" title="Video call this chat">🎥</button>
     <label class="note">I am <select id="me" aria-label="Which sender are you"></select></label>
    </div></div>
+  <div id="chatstatus" class="note" style="padding:0 14px 6px;min-height:16px;font-size:12px"></div>
   <div id="olderbar" style="display:none;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 12px;border-bottom:1px solid var(--line)">
    <button class="btn" id="older">Sync older messages</button>
    <button class="btn" id="olderall">Sync full history</button>
@@ -594,6 +599,17 @@ function scheduleWindowRender(){
   if(top<vinOffset(VWIN.start)-240 || top>vinOffset(VWIN.end)-460) renderChat();
  });
 }
+// "typing…", online and last seen under the chat title.
+function paintPresence(t){
+ const el=$('chatstatus'); if(!el) return;
+ if(!t){el.textContent='';return}
+ if(t.typing){el.style.color='var(--accent)';el.textContent=t.name+' is typing…';return}
+ el.style.color='';
+ if(t.online){el.textContent='online';return}
+ const ls=Number(t.lastSeen||0);
+ el.textContent=ls?('last seen '+new Date(ls<1e12?ls*1000:ls).toLocaleString([],{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})):'';
+}
+const TICK_RANK={sent:1,delivered:2,read:3};
 function renderChat(){
  const t=threads[cur],box=$('msgs'),sc=box.parentElement;
  const keep=renderChat.cur===cur&&sc.scrollHeight-sc.scrollTop-sc.clientHeight>80,fb=sc.scrollHeight-sc.scrollTop;
@@ -617,6 +633,7 @@ function renderChat(){
  }
  VWIN.start=start;VWIN.end=end;VWIN.n=n;
  $('title').textContent=t.name;
+ paintPresence(t);
  const sel=$('me');sel.textContent='';
  [...new Set(t.msgs.map(m=>m.sender))].forEach(n=>{const o=document.createElement('option');o.textContent=n;o.value=n;o.selected=n===t.me;sel.append(o)});
  if(start>0){const sp=document.createElement('div');sp.className='vspacer';sp.dataset.v='top';sp.style.height=vinOffset(start)+'px';box.append(sp)}
@@ -653,6 +670,13 @@ function renderChat(){
    ['❤️','😂','😮','😢','👍','🙏','🔥','👏'].forEach(e=>{const b=document.createElement('button');b.type='button';b.textContent=e;b.title='React '+e;b.onclick=()=>sendReaction(m,e);row.append(b)});el.append(row)}
   const s=document.createElement('small');
   s.textContent=(m.sender===t.me?'':m.sender+' · ')+m.t.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  if(m.sender===t.me&&LIVE){
+   const k=document.createElement('span');
+   k.textContent=m.status==='read'?'✓✓':m.status==='delivered'?'✓✓':'✓';
+   k.title=m.status==='read'?'Read':m.status==='delivered'?'Delivered':'Sent';
+   k.style.cssText='margin-left:4px;font-size:11px;letter-spacing:-1px'+(m.status==='read'?';color:#2e7cf6':'');
+   s.append(k);
+  }
   el.append(s);el.dataset.i=vidx;box.append(el);
  });
  if(end<n){const sp=document.createElement('div');sp.className='vspacer';sp.dataset.v='bot';sp.style.height=(vinOffset(n)-vinOffset(end))+'px';box.append(sp)}
@@ -778,6 +802,19 @@ function agentBubble(text, who='agent'){
  box.append(el); box.scrollTop=box.scrollHeight;
  agentLog({k:'bubble',who,text:String(text==null?'':text).slice(0,4000)});
 }
+// A live "typing" row, so a slow answer looks like a chat app instead of a frozen screen.
+function agentTyping(on){
+ const box=$('agentmsgs'); if(!box) return;
+ let el=document.getElementById('agenttyping');
+ if(!on||document.getElementById('streamdrafts')){ if(el) el.remove(); return; }
+ if(el) return;
+ el=document.createElement('div'); el.id='agenttyping'; el.className='msg';
+ const t=document.createElement('div'); t.className='txt'; t.innerHTML='<span class="dots"><i></i><i></i><i></i></span>';
+ el.append(t); box.append(el); box.scrollTop=box.scrollHeight;
+}
+function setAgentBusy(b){
+ const btn=$('agentsend'); if(btn) btn.textContent=b?'Stop':'Send';
+}
 function greetAgent(){ const box=$('agentmsgs'); if(box && box.children.length) return; agentBubble('Hi i am your love guru'); }
 // The guru runs on your own server. When that server is missing or unreachable, say what to do
 // instead of blaming the person for something they cannot see.
@@ -800,7 +837,7 @@ function agentServerCard(){
  el.append(inp,go);
  box.append(el); box.scrollTop=box.scrollHeight;
 }
-let lastAgentError='';
+let lastAgentError='',agentAbort=null;
 function agentTrouble(){
  if(LIVE&&LIVE.token){
   if(lastAgentError){
@@ -902,10 +939,10 @@ async function agentCall(situation, goal){
  const ck=replyCacheKey(situation,goal);
  const cached=cacheGet(ck);
  if(cached&&Array.isArray(cached.drafts)&&cached.drafts.length){ return cached; }
- guruBusy=true;lastAgentError='';
+ guruBusy=true;lastAgentError='';agentAbort=new AbortController();agentTyping(true);setAgentBusy(true);
  try{
   const body=JSON.stringify({me:t?t.me:'You',gender:$('gender').value,relationshipType:$('rel').value,psychologyProfile:$('psy').value,psychology:'',language:$('lang')?$('lang').value:'english',tone:($('agentTone')?$('agentTone').value:''),situation:situation||'',goal:goal||'analyze',messages:agentMessages()});
-  const post=tok=>fetch(LIVE.url+'/api/agent',{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+tok},body});
+  const post=tok=>fetch(LIVE.url+'/api/agent',{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+tok},body,signal:agentAbort?agentAbort.signal:undefined});
   let r=await post(LIVE.token);
   if(r.status===401&&await refreshToken())r=await post(LIVE.token);
   if(r.status===402){ const d=await r.json().catch(()=>null); paywall(d||{required:1}); return null; }
@@ -915,7 +952,7 @@ async function agentCall(situation, goal){
   try{ if(out&&out.drafts&&out.drafts.length) cachePut(ck,out); }catch(_){}
   return out;
  }catch(e){ return null; }
- finally{ guruBusy=false; }
+ finally{ guruBusy=false;agentTyping(false);setAgentBusy(false); }
 }
 async function guruStart(){
  agentRestore();
@@ -941,6 +978,7 @@ function extractDrafts(raw){
 }
 function showSkeletons(){
  const old=document.getElementById('streamdrafts'); if(old) old.remove();
+ agentTyping(false);
  const el=document.createElement('div'); el.id='streamdrafts'; el.className='msg';
  const t=document.createElement('div'); t.className='txt'; t.textContent='Writing your options…'; el.append(t);
  // 216px = three 66px cards plus their 6px gaps: the reserved box matches the final stack.
@@ -973,11 +1011,11 @@ async function agentCallStream(situation, goal, onProgress){
  const ck=replyCacheKey(situation,goal);
  const cached=cacheGet(ck);
  if(cached&&Array.isArray(cached.drafts)&&cached.drafts.length) return cached;
- guruBusy=true;lastAgentError='';
+ guruBusy=true;lastAgentError='';agentAbort=new AbortController();agentTyping(true);setAgentBusy(true);
  try{
   const t=threads[cur];
   const body=JSON.stringify({me:t?t.me:'You',gender:$('gender').value,relationshipType:$('rel').value,psychologyProfile:$('psy').value,psychology:'',language:$('lang')?$('lang').value:'english',tone:($('agentTone')?$('agentTone').value:''),situation:situation||'',goal:goal||'reply',messages:agentMessages()});
-  const post=tok=>fetch(LIVE.url+'/api/agent/stream',{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+tok},body});
+  const post=tok=>fetch(LIVE.url+'/api/agent/stream',{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+tok},body,signal:agentAbort?agentAbort.signal:undefined});
   let r=await post(LIVE.token);
   if(r.status===401&&await refreshToken())r=await post(LIVE.token);
   if(r.status===402){const d=await r.json().catch(()=>null);paywall(d||{required:1});return null}
@@ -999,7 +1037,7 @@ async function agentCallStream(situation, goal, onProgress){
   }
   return null;
  }catch(e){return null}
- finally{guruBusy=false}
+ finally{guruBusy=false;agentTyping(false);setAgentBusy(false)}
 }
 async function guruReply(situation){
  guruMood('think','Thinking about what to say…');
@@ -1025,7 +1063,6 @@ function agentSend(){
  agentBubble(v,'user'); $('agentout').value='';
  const low=v.toLowerCase();
  if(!guruScanned){
-  if(!confirm('Scan this chat and prepare a reply now?')) return;
   guruScanned=true;agentMeta();
   guruReply(v);
   return;
@@ -1650,6 +1687,26 @@ function openLive(url, token, resumed){
   const m=JSON.parse(ev.data);
   try{if(handleCallMessage(m))return}catch(e){console.warn('call',e)}
   if(m.type==='notify'){notify(m.title,m.body,m.jid)}
+  else if(m.type==='presence'){
+   const t=threads.find(x=>x.jid===m.jid);
+   if(t){
+    t.typing=m.state==='composing';
+    t.online=m.state==='available';
+    if(m.lastSeen)t.lastSeen=Number(m.lastSeen);
+    if(t===threads[cur])paintPresence(t);
+   }
+  }
+  else if(m.type==='receipt'){
+   const t=threads.find(x=>x.jid===m.jid);
+   if(t){
+    let hit=false;
+    (m.ids||[]).forEach(id=>{
+     const x=t.msgs.find(y=>y.id===id);
+     if(x&&(TICK_RANK[m.status]||0)>(TICK_RANK[x.status]||0)){x.status=m.status;hit=true}
+    });
+    if(hit&&t===threads[cur])renderChat();
+   }
+  }
   else if(m.type==='qr'){
    // A QR only arrives while this device is unpaired, so it always belongs on screen; otherwise
    // the visitor stares at "0 chats found" while the code that would fix it stays invisible.
@@ -1709,7 +1766,8 @@ function openLive(url, token, resumed){
   }
   else if(m.type==='message'){const t=thread(m.jid);
    if(m.id){if(!t.ids)t.ids=new Set();if(t.ids.has(m.id))return;t.ids.add(m.id)}
-   const dm=!m.jid.endsWith('@g.us');t.msgs.push({id:m.id,sender:m.fromMe?'You':(dm?t.name:(m.sender||t.name)),dm:dm&&!m.fromMe,t:new Date(m.ts),text:m.text||'',kind:m.kind||'text',mediaId:m.mediaId,replyTo:m.replyTo||null,reacts:m.reacts||{}});
+   const dm=!m.jid.endsWith('@g.us');t.msgs.push({id:m.id,sender:m.fromMe?'You':(dm?t.name:(m.sender||t.name)),dm:dm&&!m.fromMe,t:new Date(m.ts),text:m.text||'',kind:m.kind||'text',mediaId:m.mediaId,replyTo:m.replyTo||null,reacts:m.reacts||{},status:m.fromMe?'sent':''});
+   if(t===threads[cur]&&!m.fromMe&&t.typing){t.typing=false;paintPresence(t)}
    clearTimeout(LIVE.r);LIVE.r=setTimeout(()=>{threads.forEach(x=>x.msgs.sort((a,b)=>a.t-b.t));render()},150)}
   else if(m.type==='reaction'){
    const t=thread(m.jid),target=t.msgs.find(x=>x.id===m.targetId);
@@ -2567,7 +2625,14 @@ $('bell').onclick=async()=>{if(!notifyOn())return enableAlerts();await subscribe
 $('gurufab').onclick=()=>{if(guruMet)openGuruPanel();else $('guruintro').hidden=false};
 $('gurustart').onclick=openGuruPanel;
 $('guruclose').onclick=()=>{$('guruintro').hidden=true};
-$('agentsend').onclick=agentSend;
+$('agentsend').onclick=()=>{
+ if(guruBusy&&agentAbort&&!agentAbort.signal.aborted){agentAbort.abort();toast('Stopped.');return}
+ agentSend();
+};
+// Enter sends, Shift+Enter makes a new line — the way every chat app behaves.
+$('agentout').addEventListener('keydown',ev=>{
+ if(ev.key==='Enter'&&!ev.shiftKey){ev.preventDefault();$('agentsend').click()}
+});
 (function(){
  const sc=$('msgs')&&$('msgs').parentElement;
  if(sc) sc.addEventListener('scroll', scheduleWindowRender, {passive:true});

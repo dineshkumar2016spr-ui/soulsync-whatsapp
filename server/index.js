@@ -1523,6 +1523,40 @@ wss.on('connection', (ws0, req) => {
     sock.ev.on('messages.upsert', ({ messages }) => {
       messages.forEach(m => { noteMessage(m); handle(m, false); });
     });
+    // "typing…", online and last seen for the chat you have open.
+    sock.ev.on('presence.update', ({ id, presences }) => {
+      const openAs = pickedIdFor(id);
+      if (!openAs) return;
+      for (const p of Object.values(presences || {})) {
+        send({
+          type: 'presence', jid: openAs,
+          state: p?.lastKnownPresence || '',
+          lastSeen: p?.lastSeen || null
+        });
+      }
+    });
+    // Read receipts: our message moving sent → delivered → read (the blue ticks).
+    sock.ev.on('message-receipt.update', updates => {
+      for (const u of updates || []) {
+        const jid = u?.key?.remoteJid, id = u?.key?.id;
+        if (!jid || !id) continue;
+        const openAs = pickedIdFor(jid);
+        if (!openAs) continue;
+        const r = u.receipt || {};
+        send({ type: 'receipt', jid: openAs, ids: [id], status: r.readTimestamp ? 'read' : r.receiptTimestamp ? 'delivered' : 'sent' });
+      }
+    });
+    // WhatsApp's own ack for messages we sent (2 sent, 3 delivered, 4 read).
+    sock.ev.on('messages.update', updates => {
+      for (const u of updates || []) {
+        const jid = u?.key?.remoteJid, id = u?.key?.id;
+        if (!jid || !id || !u.key.fromMe) continue;
+        const openAs = pickedIdFor(jid);
+        if (!openAs) continue;
+        const ack = Number(u.update?.status || 0);
+        if (ack) send({ type: 'receipt', jid: openAs, ids: [id], status: ack >= 4 ? 'read' : ack >= 3 ? 'delivered' : 'sent' });
+      }
+    });
   }
 
   // Forward picked chats; every chat stays in memory only (never on disk, never analysed) so it can be opened later
@@ -1819,6 +1853,8 @@ wss.on('connection', (ws0, req) => {
       }
       if (msg.type === 'open' && typeof msg.jid === 'string' && picked.has(msg.jid) && sock) {
         sendRecent(msg.jid);
+        // Ask WhatsApp for this contact's presence so "typing…" and last seen start arriving.
+        try { sock.presenceSubscribe?.(msg.jid); } catch { /* not linked yet */ }
       }
       if (msg.type === 'load_older' && typeof msg.jid === 'string' && picked.has(msg.jid) && sock) {
         if (pending.has(msg.jid)) return;
