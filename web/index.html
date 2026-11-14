@@ -1497,20 +1497,24 @@ function openLive(url, token, resumed){
 
  const chats=new Map(),sel=new Set();
  refreshBilling();
+ // The one place that draws the scan screen. A saved link that has quietly expired must land here
+ // too, instead of dropping the visitor into an empty chat list with nothing to scan.
+ function linkScreen(again){
+  gc.innerHTML='<h2>Link this device</h2>'+(again?'<p>Your saved WhatsApp link has expired, so this device has to be paired again.</p>':'')+'<p>In WhatsApp open Settings, Linked devices, Link a device, then scan. The code refreshes about every 20 seconds.</p><div id="qrbox" style="width:230px;margin:0 auto 12px;padding:8px;background:#fff;border-radius:8px;min-height:230px"></div><div class="code" id="pc"></div><input id="ph" placeholder="Phone with country code, e.g. 14155550123" style="width:100%;margin-bottom:8px;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)"><button class="btn" id="pairbtn" style="width:100%">Use a pairing code instead</button>';
+  $('gate').hidden=false;
+  guruEnter('Scan this code with your phone: Settings → Linked devices → Link a device.');
+  const pb=$('pairbtn');if(pb)pb.onclick=()=>{const p=$('ph').value.trim();if(p)ws.send(JSON.stringify({type:'pair',phone:p}))};
+ }
  ws.onopen=()=>{
   refreshBilling();
+  sendCall({type:'hello',name:myCallName()});
+  syncGateCall();
   if(resumed){
    // Same saved WhatsApp link: no QR code, just wait for the session to replay the chats.
    gc.innerHTML='<h2>Welcome back</h2><p>Restoring your saved chats…</p>';
-   sendCall({type:'hello',name:myCallName()});
-   syncGateCall();
    return;
   }
-  gc.innerHTML='<h2>Link this device</h2><p>In WhatsApp open Settings, Linked devices, Link a device, then scan. The code refreshes about every 20 seconds.</p><div id="qrbox" style="width:230px;margin:0 auto 12px;padding:8px;background:#fff;border-radius:8px;min-height:230px"></div><div class="code" id="pc"></div><input id="ph" placeholder="Phone with country code, e.g. 14155550123" style="width:100%;margin-bottom:8px;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)"><button class="btn" id="pairbtn" style="width:100%">Use a pairing code instead</button>';
-  guruEnter('Scan this code with your phone: Settings → Linked devices → Link a device.');
-  $('pairbtn').onclick=()=>{const p=$('ph').value.trim();if(p)ws.send(JSON.stringify({type:'pair',phone:p}))};
-  sendCall({type:'hello',name:myCallName()});
-  syncGateCall();
+  linkScreen(false);
  };
 
  function drawList(){
@@ -1526,7 +1530,7 @@ function openLive(url, token, resumed){
    const sp=document.createElement('span');sp.textContent=c.name+(done?' (imported)':'');
    const w=document.createElement('small');w.style.marginLeft='auto';w.style.color='var(--mute)';w.textContent=when(c.ts);
    l.append(i,sp,w);cl.append(l)});
-  $('cc').textContent=chats.size+' chats found · newest first';
+  $('cc').textContent=chats.size?chats.size+' chats found · newest first':'No chats yet. WhatsApp may still be syncing — wait a moment, then close and reopen this list. If a code is on screen, scan it first.';
  }
  function picker(){
   LIVE.pickerOpen=true;
@@ -1544,7 +1548,12 @@ function openLive(url, token, resumed){
   const m=JSON.parse(ev.data);
   try{if(handleCallMessage(m))return}catch(e){console.warn('call',e)}
   if(m.type==='notify'){notify(m.title,m.body,m.jid)}
-  else if(m.type==='qr'){const q=qrcode(0,'L');q.addData(m.qr);q.make();const b=$('qrbox');if(b){b.innerHTML=q.createSvgTag(4,0);const v=b.querySelector('svg');if(v){v.style.width='100%';v.style.height='auto'}}}
+  else if(m.type==='qr'){
+   // A QR only arrives while this device is unpaired, so it always belongs on screen; otherwise
+   // the visitor stares at "0 chats found" while the code that would fix it stays invisible.
+   if(!$('qrbox')){linkScreen(true);$('gate').hidden=false;}
+   const q=qrcode(0,'L');q.addData(m.qr);q.make();const b=$('qrbox');if(b){b.innerHTML=q.createSvgTag(4,0);const v=b.querySelector('svg');if(v){v.style.width='100%';v.style.height='auto'}}
+  }
   else if(m.type==='pairing_code'){$('pc').textContent=m.code}
   else if(m.type==='ready'){
    if(resumed&&threads.some(t=>t.jid)){
@@ -1556,7 +1565,13 @@ function openLive(url, token, resumed){
    // The chat list often arrives before this message; don't wait for another one
    clearTimeout(LIVE.ready);
    LIVE.ready=setTimeout(()=>{
-    if(!chats.size)return;
+    if(!chats.size){
+     // Connected, but WhatsApp has not listed a single chat: say so, and make re-pairing one tap.
+     gc.innerHTML='<h2>Linked</h2><p>Waiting for WhatsApp to send your chat list.</p><button class="btn" id="rescan" style="width:100%">Show another QR code</button>';
+     $('gate').hidden=false;
+     $('rescan').onclick=()=>{gc.innerHTML='<h2>Re-linking</h2><p>Asking WhatsApp for a fresh code…</p>';ws.send(JSON.stringify({type:'relink'}))};
+     return;
+    }
     if(threads.length){$('gate').hidden=true;show('p2');render()}
     else picker();
    },900);

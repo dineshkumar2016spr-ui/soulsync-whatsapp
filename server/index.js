@@ -1780,6 +1780,17 @@ wss.on('connection', (ws0, req) => {
         try { send({ type: 'pairing_code', code: await sock.requestPairingCode(phone) }); }
         catch { send({ type: 'error', message: 'Could not get a pairing code. Try the QR code instead.' }); }
       }
+      if (msg.type === 'relink') {
+        // A saved link that quietly stopped working looks like an empty chat list to the visitor.
+        // Drop the dead credentials and start over so WhatsApp issues a fresh QR code.
+        try { sock?.ev?.removeAllListeners?.(); } catch { /* ignore */ }
+        try { sock?.end(undefined); } catch { /* already closed */ }
+        sock = null;
+        attempts = 0;
+        try { fs.rmSync(authDir(userId), { recursive: true, force: true }); } catch { /* nothing saved */ }
+        send({ type: 'relinking' });
+        connect().catch(e => log.error(e));
+      }
       if (msg.type === 'import') {
         // Additive: every call can add more chats; already-imported ones are kept
         const add = [];
