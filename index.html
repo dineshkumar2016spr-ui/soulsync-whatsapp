@@ -63,7 +63,7 @@ button{cursor:pointer}
 .msg img{display:block;max-width:100%;max-height:320px;border-radius:10px;margin:2px 0 4px;cursor:zoom-in}
 .msg audio{display:block;width:240px;max-width:100%;margin:2px 0 4px}
 .send .icon{padding:7px 8px;line-height:1}
-#micbtn.rec{background:var(--warn);border-color:var(--warn);color:#fff}
+#micbtn.rec,#agentmicbtn.rec{background:var(--warn);border-color:var(--warn);color:#fff}
 .msg .quote{font-size:12px;border-left:3px solid currentColor;opacity:.72;padding:1px 8px;margin-bottom:4px;white-space:pre-wrap;overflow-wrap:anywhere}
 .msg .reacts{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}
 .msg .reacts span{background:rgba(0,0,0,.08);border-radius:99px;padding:1px 6px;font-size:12px}
@@ -246,7 +246,7 @@ select{background:var(--bg);border:1px solid var(--line);border-radius:8px;paddi
 @media (max-width:1000px){
  .app{grid-template-columns:minmax(0,1fr);padding-bottom:56px}
  .panel{display:none;border:0}.panel.on{display:flex}
- .tabs{display:grid;grid-template-columns:repeat(3,1fr);position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.94);backdrop-filter:blur(6px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+ .tabs{display:grid;grid-template-columns:repeat(3,1fr);position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(255,255,255,.94);backdrop-filter:blur(6px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
  .tabs button{border:0;background:transparent;padding:14px 4px;font-weight:600;color:var(--mute)}
  .tabs button[aria-selected="true"]{color:var(--accent);box-shadow:inset 0 3px 0 var(--accent)}
  .msg{max-width:92%;font-size:16px}
@@ -414,7 +414,9 @@ select{background:var(--bg);border:1px solid var(--line);border-radius:8px;paddi
   <label class="chk"><input type="radio" name="su_gender" value="female"><span>Female</span></label>
  </div>
  <div class="gdiv">or</div>
- <button class="btn" id="su_google" type="button" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;font-weight:600"><img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18" height="18" alt="">Sign in with Google</button>
+ <div id="gsiwrap" style="display:flex;justify-content:center;min-height:40px;margin-bottom:8px"></div>
+ <button class="btn" id="su_google" type="button" hidden style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;font-weight:600"><img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18" height="18" alt="">Continue without Google</button>
+ <p class="note" id="gsi_hint" role="status" hidden style="margin:0 0 8px"></p>
  <button class="btn primary" id="su_go" disabled>Sign up</button>
  <p class="note" id="su_err" role="alert" hidden style="margin:8px 0 0;color:var(--warn)"></p>
 </div></div>
@@ -716,6 +718,37 @@ function agentBubble(text, who='agent'){
  box.append(el); box.scrollTop=box.scrollHeight;
 }
 function greetAgent(){ const box=$('agentmsgs'); if(box && box.children.length) return; agentBubble('Hi i am your love guru'); }
+// The guru runs on your own server. When that server is missing or unreachable, say what to do
+// instead of blaming the person for something they cannot see.
+function agentServerCard(){
+ const box=$('agentmsgs'); if(!box) return;
+ const el=document.createElement('div'); el.className='msg';
+ const t=document.createElement('div'); t.className='txt';
+ t.textContent='Paste your Soul Sync backend address (for example https://your-app.up.railway.app) and I will connect.';
+ el.append(t);
+ const inp=document.createElement('input');
+ inp.type='url'; inp.inputMode='url'; inp.placeholder='https://your-app.up.railway.app';
+ inp.value=serverUrl()||''; inp.autocapitalize='none'; inp.autocomplete='url';
+ inp.style.cssText='width:100%;margin:8px 0;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font-size:15px';
+ const go=document.createElement('button'); go.type='button'; go.className='btn primary'; go.style.width='100%'; go.textContent='Connect';
+ go.onclick=()=>{
+  const u=(inp.value||'').trim().replace(/\/+$/,'');
+  if(!/^https?:\/\/[^\s]+$/i.test(u)){ toast('Enter the full address, starting with https://'); return; }
+  el.remove(); agentBubble('Connecting to '+u.replace(/^https?:\/\//,'')+'…'); live(u);
+ };
+ el.append(inp,go);
+ box.append(el); box.scrollTop=box.scrollHeight;
+}
+function agentTrouble(){
+ if(LIVE&&LIVE.token){ agentBubble('I could not reach your server just now. It may be starting up — give it a moment and send that again.'); return; }
+ if(!serverUrl()){
+  agentBubble('I am not connected to a server yet, so I cannot think.');
+  agentServerCard();
+  return;
+ }
+ agentBubble('I lost the connection to your server. Reconnect below and send that again.');
+ agentServerCard();
+}
 function agentBullets(title, list){
  const box=$('agentmsgs'); if(!box || !list || !list.length) return;
  const el=document.createElement('div'); el.className='msg';
@@ -876,7 +909,7 @@ async function guruReply(situation){
  agentBubble('Scanning your chat...');
  showSkeletons();
  const d=await agentCallStream(situation,'reply',list=>{if(list.length)streamDraftBox(list)});
- if(!d){ clearStreamDrafts(); agentBubble('I could not reach my brain just now. Check the server is running, then send that again.'); return; }
+ if(!d){ clearStreamDrafts(); agentTrouble(); return; }
  clearStreamDrafts();
  if(d.read) agentBubble(d.read);
  agentBullets('What is really going on:', d.friction||[]);
@@ -913,7 +946,7 @@ function agentSend(){
   guruMood('think','Let me think...');
   agentBubble('Scanning your chat...');
   agentCall(v,'analyze').then(d=>{
-   if(!d){ agentBubble('I could not reach my brain just now. Check the server is running, then send that again.'); return; }
+   if(!d){ agentTrouble(); return; }
    if(d.read) agentBubble(d.read);
    agentBullets('What is really going on:', d.friction||[]);
    agentBullets('What to do about it:', d.insights||[]);
@@ -1091,8 +1124,8 @@ function step0(){
   wrap.style.cssText='position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:16px';
   const card=document.createElement('div');
   card.style.cssText='background:#fff;border-radius:14px;padding:18px;width:100%;max-width:360px;box-shadow:0 10px 40px rgba(0,0,0,.25);font-family:inherit';
-  card.innerHTML='<h3 style="margin:0 0 10px;font-size:18px">Sign in with Google</h3>'+
-   '<p style="margin:0 0 12px;font-size:13px;color:#555">Google sign-in is not available on this device/browser (or this origin is not authorized). Enter your details to continue.</p>'+
+  card.innerHTML='<h3 style="margin:0 0 10px;font-size:18px">Continue without Google</h3>'+
+   '<p style="margin:0 0 12px;font-size:13px;color:#555">Google sign-in could not start on this device or browser. Enter your details to continue.</p>'+
    '<label style="display:block;font-size:13px;margin-bottom:4px">Display name</label>'+
    '<input id="mg_name" type="text" style="width:100%;padding:8px 10px;border:1px solid #ccc;border-radius:8px;margin-bottom:10px;font-size:15px" autocomplete="name">'+
    '<label style="display:block;font-size:13px;margin-bottom:4px">Email address</label>'+
@@ -1109,33 +1142,44 @@ function step0(){
   [nameI,emailI].forEach(i=>i.addEventListener('keydown',ev=>{ if(ev.key==='Enter'){ev.preventDefault();submit()} }));
   setTimeout(()=>nameI.focus(),50);
  };
- if(gbtn) gbtn.onclick=()=>{
-  const cid=window.GOOGLE_CLIENT_ID||'';
-  if(cid && window.google && google.accounts && google.accounts.id){
-   let done=false;
-   google.accounts.id.initialize({client_id:cid,callback:(resp)=>{
-    if(done) return; done=true;
-    try{
-     const payload=JSON.parse(atob(resp.credential.split('.')[1].replace(/-/g,'+').replace(/_/g,'/')));
-     finishGoogleProfile(payload.name||'',payload.email||'');
-    }catch(e){alert('Google sign-in failed: '+e.message); manualGoogle();}
-   }});
-   try{
-    google.accounts.id.prompt((n)=>{
-     if(done) return;
-     const notShown = !n || (typeof n.isNotDisplayed==='function' && n.isNotDisplayed()) || (typeof n.isSkippedMoment==='function' && n.isSkippedMoment()) || (typeof n.isDismissedMoment==='function' && n.isDismissedMoment());
-     if(notShown){ done=true; manualGoogle(); }
-    });
-   }catch(e){ done=true; manualGoogle(); }
-   // Safety net for mobile browsers where the prompt callback never fires.
-   setTimeout(()=>{ if(!done){ done=true; manualGoogle(); } }, 6000);
-   return;
-  }
-  manualGoogle();
+ const ghint=$('gsi_hint'),gwrap=$('gsiwrap');
+ const googleFallback=(msg)=>{
+  if(gwrap)gwrap.hidden=true;
+  if(gbtn)gbtn.hidden=false;
+  if(ghint){ghint.hidden=!msg;ghint.textContent=msg||''}
  };
- if(window.GOOGLE_CLIENT_ID){
-  const s=document.createElement('script');s.src='https://accounts.google.com/gsi/client';s.async=true;s.defer=true;document.head.append(s);
- }
+ const onGoogleCredential=(resp)=>{
+  try{
+   const part=String(resp&&resp.credential||'').split('.')[1];
+   if(!part) throw new Error('Google did not return a credential.');
+   const payload=JSON.parse(atob(part.replace(/-/g,'+').replace(/_/g,'/')));
+   if(!payload||!payload.email) throw new Error('Google did not return an email address.');
+   finishGoogleProfile(payload.name||payload.email.split('@')[0],payload.email);
+  }catch(e){ googleFallback('Google sign-in did not finish. '+e.message+' Try again, or continue without Google.') }
+ };
+ // Google's own button is the only sign-in path that works in mobile browsers: One Tap does not
+ // render in most mobile webviews. Render it in place, and fall back to the email form if it cannot load.
+ let gsiTries=0;
+ const renderGoogleButton=()=>{
+  const cid=window.GOOGLE_CLIENT_ID||'';
+  if(!cid) return googleFallback('Google sign-in is not configured for this build.');
+  if(!(window.google&&google.accounts&&google.accounts.id)){
+   if(gsiTries++<24) return setTimeout(renderGoogleButton,250);
+   return googleFallback('Google sign-in could not load. Check your connection, or continue without Google.');
+  }
+  try{
+   google.accounts.id.initialize({client_id:cid,callback:onGoogleCredential,auto_select:false,ux_mode:'popup'});
+   const w=Math.round((gwrap&&gwrap.getBoundingClientRect().width)||300);
+   google.accounts.id.renderButton(gwrap,{type:'standard',theme:'outline',size:'large',text:'continue_with',shape:'pill',logo_alignment:'left',width:Math.min(400,Math.max(220,w))});
+   gwrap.hidden=false;
+   setTimeout(()=>{
+    if(gwrap.querySelector('div,iframe')){ if(gbtn)gbtn.hidden=true; if(ghint)ghint.hidden=true; }
+    else googleFallback('Google sign-in did not start on this browser. Continue without Google instead.');
+   },1200);
+  }catch(e){ googleFallback('Google sign-in failed to start on this browser.') }
+ };
+ if(gbtn) gbtn.onclick=()=>{ manualGoogle(); };
+ renderGoogleButton();
  function again(){if(ok())return true;if(err){err.hidden=false;err.textContent='Add your first name, last name, a valid email and your gender.'}return false}
 }
 
@@ -1164,7 +1208,7 @@ const CHATS=[{name:'Maya',text:SAMPLE},
 const POL=['I accept the Terms of Service','I accept the Privacy Policy','I allow Soul Sync to read the chats I select','I allow selected messages to be sent to Gemini or OpenAI for analysis'];
 const gc=$('gcard');
 function step1(){
- gc.innerHTML='<h2>Connect WhatsApp</h2><p>Tick every box to continue. Demo mode: no real account is touched.</p>'+POL.map((p,i)=>'<label class="chk"><input type="checkbox" class="pol" data-i="'+i+'"><span>'+p+'</span></label>').join('')+'<p class="note" style="margin:8px 0 0"><a href="TERMS.html" target="_blank" rel="noopener">Terms of Service</a> &middot; <a href="PRIVACY.html" target="_blank" rel="noopener">Privacy Policy</a></p>'+'<label class="note" for="srv">Server URL (leave empty for demo)</label><input id="srv" placeholder="https://your-server.example.com" style="width:100%;margin:4px 0 8px;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)"><button class="btn primary" id="g1" disabled>Continue</button>';
+ gc.innerHTML='<h2>Connect WhatsApp</h2><p>Tick every box to continue. Demo mode: no real account is touched.</p>'+POL.map((p,i)=>'<label class="chk"><input type="checkbox" class="pol" data-i="'+i+'"><span>'+p+'</span></label>').join('')+'<p class="note" style="margin:8px 0 0"><a href="TERMS.html" target="_blank" rel="noopener">Terms of Service</a> &middot; <a href="PRIVACY.html" target="_blank" rel="noopener">Privacy Policy</a></p>'+'<label class="note" for="srv">Server URL (needed for the love guru and live WhatsApp; leave empty only to try the demo)</label><input id="srv" placeholder="https://your-server.example.com" style="width:100%;margin:4px 0 8px;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)"><button class="btn primary" id="g1" disabled>Continue</button>';
  try{
   const saved=localStorage.getItem('ss_server')||'';
   const local=/^(localhost|127\.0\.0\.1|\[::1\])$/i.test(location.hostname);
@@ -1230,7 +1274,45 @@ function blobB64(blob){
 }
 $('imgbtn').onclick=()=>$('imgfile').click();
 $('agentimgbtn').onclick=()=>$('imgfile').click();
-$('agentmicbtn').onclick=()=>$('micbtn').click();
+// Voice in the Agent panel is dictation for the love guru, not a WhatsApp voice note.
+(function(){
+ const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+ let rec=null,said='',spoke=false;
+ const btn=$('agentmicbtn'),ta=$('agentout');
+ if(!btn||!ta) return;
+ btn.onclick=()=>{
+  if(rec){try{rec.stop()}catch(e){}return}
+  if(!SR){toast('Voice input is not supported in this browser. Type your message instead.');return}
+  let r;try{r=new SR()}catch(e){toast('Voice input is not available right now.');return}
+  rec=r;said='';spoke=false;
+  const base=(ta.value||'').trim();
+  const lang=($('lang')&&$('lang').value)||'english';
+  r.lang=lang==='telugu'?'te-IN':lang==='hinglish'?'hi-IN':'en-IN';
+  r.interimResults=true;r.continuous=false;r.maxAlternatives=1;
+  r.onresult=e=>{
+   let interim='';
+   for(let i=e.resultIndex;i<e.results.length;i++){
+    const res=e.results[i];
+    if(!res) continue;
+    if(res.isFinal) said+=res[0].transcript+' '; else interim+=res[0].transcript;
+   }
+   if(said||interim) spoke=true;
+   ta.value=((base?base+' ':'')+said+interim).replace(/\s+/g,' ').trim();
+  };
+  r.onerror=ev=>{
+   const m=ev&&ev.error;
+   if(m==='not-allowed'||m==='service-not-allowed') toast('Allow microphone access for this site to speak to your guru.');
+   else if(m==='no-speech') toast('I did not hear anything. Tap the mic and speak again.');
+  };
+  r.onend=()=>{
+   rec=null;btn.classList.remove('rec');btn.textContent='🎤';
+   if(spoke&&(ta.value||'').trim()) agentSend();
+   else if(!said.trim()) toast('I did not catch that. Tap the mic and speak again.');
+  };
+  btn.classList.add('rec');btn.textContent='⏹';
+  try{r.start()}catch(e){rec=null;btn.classList.remove('rec');btn.textContent='🎤';toast('Voice input could not start on this browser.')}
+ };
+})();
 $('imgfile').onchange=async e=>{
  const f=e.target.files&&e.target.files[0];e.target.value='';
  if(!f)return;
