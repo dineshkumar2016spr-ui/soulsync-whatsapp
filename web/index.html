@@ -670,7 +670,7 @@ function renderChat(){
    ['❤️','😂','😮','😢','👍','🙏','🔥','👏'].forEach(e=>{const b=document.createElement('button');b.type='button';b.textContent=e;b.title='React '+e;b.onclick=()=>sendReaction(m,e);row.append(b)});el.append(row)}
   const s=document.createElement('small');
   s.textContent=(m.sender===t.me?'':m.sender+' · ')+m.t.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-  if(m.sender===t.me&&LIVE){
+  if(m.sender===t.me&&LIVE&&t.jid){
    const k=document.createElement('span');
    k.textContent=m.status==='read'?'✓✓':m.status==='delivered'?'✓✓':'✓';
    k.title=m.status==='read'?'Read':m.status==='delivered'?'Delivered':'Sent';
@@ -1106,13 +1106,8 @@ function agentSend(){
  const v=$('agentout').value.trim(); if(!v) return;
  agentBubble(v,'user'); $('agentout').value='';
  const low=v.toLowerCase();
- if(!guruScanned){
-  const t0=threads[cur];
-  if(t0&&!t0.brief)t0.brief=v.slice(0,600);
-  if(asksForReply(v)||asksForAnalysis(v)){ guruScanned=true;agentMeta(); guruReply(v); return; }
-  guruListen(v);
-  return;
- }
+ const t0=threads[cur];
+ if(t0&&!t0.brief)t0.brief=v.slice(0,600);
  if(/\b(yes|yeah|yep|sure|ok|okay)\b/.test(low) && lastFlirts.length){
   agentFlirts('Cute lines that fit right now (tap one to use it):', lastFlirts);
   agentBubble('Want me to suggest another reply instead? Just tell me what happened.');
@@ -1120,6 +1115,13 @@ function agentSend(){
  }
  if(/\b(no|nope|nah)\b/.test(low) && lastFlirts.length){
   agentBubble('Okay, no cute lines. I will be here. Tell me when they reply and I will suggest your next move.');
+  return;
+ }
+ // An explicit ask reads the chat. Anything else is the person talking about their situation, which
+ // stays a conversation however many times they have asked before.
+ if(asksForReply(v)||asksForAnalysis(v)){
+  if(!guruScanned){ guruScanned=true; agentMeta(); }
+  guruReply(v);
   return;
  }
  if(v.includes('?')){
@@ -1137,7 +1139,8 @@ function agentSend(){
   });
   return;
  }
- guruReply(v);
+ // A plain description, not a request: keep talking with them instead of dumping drafts.
+ guruListen(v);
 }
 function analyze(){
  const t=threads[cur],me=t.me,ms=t.msgs;
@@ -1254,7 +1257,8 @@ $('file').onchange=async e=>{const f=e.target.files[0];if(!f)return;
  const msgs=await parseAsync(await f.text());
  if(!msgs.length){alert('No messages found. Use an exported WhatsApp .txt file.');return}
  addThread(f.name.replace(/^WhatsApp Chat with /i,'').replace(/\.txt$/i,''),msgs);show('p2');e.target.value='';
- setTimeout(afterImportTeaser,700)};
+ // Open the guru with its greeting: it listens first and reads the chat when asked.
+ setTimeout(()=>{guruMet=true;show('p3');guruStart()},700)};
 $('me').onchange=e=>{threads[cur].me=e.target.value;render()};
 
 // Open live chat picker button handler
@@ -2753,7 +2757,7 @@ init();
     if(!msgs || !msgs.length){ try { alert('No messages found in the shared file.'); } catch(_){} return; }
     if(typeof addThread === 'function'){ addThread(name.replace(/^WhatsApp Chat with /i,'').replace(/\.txt$/i,'').replace(/\.zip$/i,''), msgs); }
     if(typeof show === 'function') show('p2');
-    setTimeout(function(){ if(typeof afterImportTeaser === 'function') afterImportTeaser(); }, 700);
+    setTimeout(function(){ guruMet=true; if(typeof show==='function') show('p3'); if(typeof guruStart==='function') guruStart(); }, 700);
   }
   ShareTarget.addListener('shareReceived', handleShare).catch(function(e){ console.warn('share target listener failed', e); });
 })();

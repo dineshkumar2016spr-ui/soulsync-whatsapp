@@ -636,7 +636,7 @@ async function openai(prompt, system = SYSTEM) {
 }
 async function run(provider, prompt, system = SYSTEM) {
   const out = clean(await provider(prompt, system));
-  if (!out.read && !out.drafts.length && !(out.insights && out.insights.length)) throw new Error('no insights returned');
+  if (!out.read && !out.ask && !out.drafts.length && !(out.insights && out.insights.length)) throw new Error('no insights returned');
   return out;
 }
 
@@ -957,7 +957,7 @@ app.post('/api/agent/stream', limiter(30, 60e3), chargeCredits(COSTS.reply, 'rep
     }
     if (!raw) throw new Error(why || 'no provider answered');
     const out = clean(raw);
-    if (!out.read && !out.drafts.length && !(out.insights && out.insights.length)) throw new Error('no insights returned');
+    if (!out.read && !out.ask && !out.drafts.length && !(out.insights && out.insights.length)) throw new Error('no insights returned');
     send({ done: true, payload: out, billing: billingFor(req.userId) });
   } catch (e) {
     refundCharge(req, 'ai_unavailable');
