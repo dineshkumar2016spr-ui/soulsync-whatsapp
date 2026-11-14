@@ -799,6 +799,7 @@ function agentContext(body, userId) {
   if (String(goal) === 'listen') {
     system += `\n\n=== CONVERSATION MODE ===\nYou are getting to know the person before any analysis. Reply warmly in "read" with 2-4 short sentences that show you understood what they said, and END that reply with exactly ONE specific question. Put that same question in "ask". Leave "drafts", "flirts", "friction" and "insights" empty: do not tell them what to send yet. Set "ready" to true only when you clearly understand what they want from you and could write their next message.`;
   }
+  system += `\n\nREMINDER: every field this person can read — read, ask, recommend, friction, insights, why, drafts, flirts — is written in ${lang.toUpperCase()}. JSON keys stay English.`;
   const them = safe.find(m => m.sender && m.sender !== String(me || ''))?.sender || '';
   const prompt = JSON.stringify({
     me: String(me || '').slice(0, 60),
