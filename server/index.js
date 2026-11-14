@@ -942,6 +942,7 @@ const server = app.listen(PORT, '0.0.0.0', () => {
   console.log('Soul Sync server on 0.0.0.0:' + PORT);
   console.log('[env] GEMINI_API_KEY:', process.env.GEMINI_API_KEY ? 'set (' + process.env.GEMINI_API_KEY.slice(0,6) + '...)' : 'MISSING');
   console.log('[env] OPENAI_API_KEY:', process.env.OPENAI_API_KEY ? 'set (' + process.env.OPENAI_API_KEY.slice(0,6) + '...)' : 'MISSING');
+  console.log('[env] DATA_DIR:', DATA_DIR, '(must be on a persistent disk, or every deploy forgets the WhatsApp link)');
   console.log('[env] GEMINI_MODEL:', process.env.GEMINI_MODEL || '(default)');
   console.log('[env] OPENAI_MODEL:', process.env.OPENAI_MODEL || '(default)');
 });
@@ -1900,13 +1901,22 @@ wss.on('connection', (ws0, req) => {
     w.inCall = null;
     if (sock?.user) { w.waJid = sock.user.id || ''; w.waLid = sock.user.lid || ''; }
     w.on('message', onMessage);
-    w.on('close', suspend);
+    // A stale socket closing after a newer tab attached must not tear the live session down.
+    w.on('close', () => { if (w === ws) suspend(); });
     clearTimeout(idleTimer); idleTimer = null;
     closed = false;
     send({ type: 'you', id: userId });
     send({ type: 'call_config', iceServers: ICE_SERVERS });
     broadcastPeers();
     if (resumed) {
+      // A restarted server has no socket yet: rebuild it from the saved credentials instead of
+      // telling the browser it is ready with an empty chat list.
+      if (!sock) {
+        attempts = 0;
+        send({ type: 'restoring' });
+        connect().catch(e => { log.error(e); send({ type: 'error', message: 'Could not restore the WhatsApp connection.' }); });
+        return;
+      }
       send({ type: 'resumed', picked: [...picked] });
       send({ type: 'ready' });
       send({ type: 'chats', chats: [...chats.values()].map(({ jid, name, ts }) => ({ jid, name, ts: ts || 0 })) });

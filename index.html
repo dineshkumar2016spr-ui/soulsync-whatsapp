@@ -819,6 +819,20 @@ function replyCacheKey(situation,goal){
  const base=(t?t.name:'')+'|'+(t?t.msgs.map(m=>m.sender+':'+m.text).join('|'):'')+'|'+goal+'|'+situation+'|'+($('agentTone')?$('agentTone').value:'')+'|'+($('lang')?$('lang').value:'');
  return 'ss_reply_'+hashStr(base);
 }
+// Access tokens live 12 hours. When one expires the app can mint a fresh one from the saved
+// device secret, so a long-open tab keeps working instead of failing with 401.
+async function refreshToken(){
+ const url=(LIVE&&LIVE.url)||serverUrl(), dev=lsGet('ss_device');
+ if(!url||!dev)return false;
+ try{
+  const r=await fetch(url+'/api/resume',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({device:dev})});
+  if(!r.ok)return false;
+  const j=await r.json();
+  if(!j||!j.token)return false;
+  if(LIVE)LIVE.token=j.token;
+  return true;
+ }catch(e){return false}
+}
 async function agentCall(situation, goal){
  const t=threads[cur];
  if(!(LIVE&&LIVE.token)) return null;
@@ -827,7 +841,10 @@ async function agentCall(situation, goal){
  if(cached&&Array.isArray(cached.drafts)&&cached.drafts.length){ return cached; }
  guruBusy=true;lastAgentError='';
  try{
-  const r=await fetch(LIVE.url+'/api/agent',{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+LIVE.token},body:JSON.stringify({me:t?t.me:'You',gender:$('gender').value,relationshipType:$('rel').value,psychologyProfile:$('psy').value,psychology:'',language:$('lang')?$('lang').value:'english',tone:($('agentTone')?$('agentTone').value:''),situation:situation||'',goal:goal||'analyze',messages:agentMessages()})});
+  const body=JSON.stringify({me:t?t.me:'You',gender:$('gender').value,relationshipType:$('rel').value,psychologyProfile:$('psy').value,psychology:'',language:$('lang')?$('lang').value:'english',tone:($('agentTone')?$('agentTone').value:''),situation:situation||'',goal:goal||'analyze',messages:agentMessages()});
+  const post=tok=>fetch(LIVE.url+'/api/agent',{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+tok},body});
+  let r=await post(LIVE.token);
+  if(r.status===401&&await refreshToken())r=await post(LIVE.token);
   if(r.status===402){ const d=await r.json().catch(()=>null); paywall(d||{required:1}); return null; }
   if(!r.ok){ lastAgentError='HTTP '+r.status+' '+(await r.text().catch(()=>'')).slice(0,300); return null; }
   const out=await r.json();
@@ -894,7 +911,10 @@ async function agentCallStream(situation, goal, onProgress){
  guruBusy=true;lastAgentError='';
  try{
   const t=threads[cur];
-  const r=await fetch(LIVE.url+'/api/agent/stream',{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+LIVE.token},body:JSON.stringify({me:t?t.me:'You',gender:$('gender').value,relationshipType:$('rel').value,psychologyProfile:$('psy').value,psychology:'',language:$('lang')?$('lang').value:'english',tone:($('agentTone')?$('agentTone').value:''),situation:situation||'',goal:goal||'reply',messages:agentMessages()})});
+  const body=JSON.stringify({me:t?t.me:'You',gender:$('gender').value,relationshipType:$('rel').value,psychologyProfile:$('psy').value,psychology:'',language:$('lang')?$('lang').value:'english',tone:($('agentTone')?$('agentTone').value:''),situation:situation||'',goal:goal||'reply',messages:agentMessages()});
+  const post=tok=>fetch(LIVE.url+'/api/agent/stream',{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+tok},body});
+  let r=await post(LIVE.token);
+  if(r.status===401&&await refreshToken())r=await post(LIVE.token);
   if(r.status===402){const d=await r.json().catch(()=>null);paywall(d||{required:1});return null}
   if(!r.ok||!r.body) return null;
   const reader=r.body.getReader(),dec=new TextDecoder();let buf='',raw='';
@@ -1285,7 +1305,8 @@ function blobB64(blob){
  return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(String(r.result).split(',')[1]||'');r.onerror=reject;r.readAsDataURL(blob)});
 }
 $('imgbtn').onclick=()=>$('imgfile').click();
-$('agentimgbtn').onclick=()=>$('imgfile').click();
+// Photos belong to a WhatsApp chat, not the guru chat: say so instead of quietly opening the chat picker.
+$('agentimgbtn').onclick=()=>toast('Photos go to a WhatsApp chat — open Threads and use the attachment button there.');
 // Voice in the Agent panel is dictation for the love guru, not a WhatsApp voice note.
 (function(){
  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
@@ -1565,15 +1586,21 @@ function openLive(url, token, resumed){
    // The chat list often arrives before this message; don't wait for another one
    clearTimeout(LIVE.ready);
    LIVE.ready=setTimeout(()=>{
-    if(!chats.size){
-     // Connected, but WhatsApp has not listed a single chat: say so, and make re-pairing one tap.
-     gc.innerHTML='<h2>Linked</h2><p>Waiting for WhatsApp to send your chat list.</p><button class="btn" id="rescan" style="width:100%">Show another QR code</button>';
+    const go=()=>{if(threads.length){$('gate').hidden=true;show('p2');render()}else picker()};
+    if(chats.size){go();return}
+    // A returning visitor may only need to wait: a big account replays history slowly. Give it a
+    // few rounds before suggesting a re-pair, and never leave a silent empty screen.
+    let n=0;
+    const again=()=>{
+     if(chats.size){go();return}
+     n++;
+     const late=n>=4;
+     gc.innerHTML='<h2>'+(late?'Still waiting for WhatsApp':'Welcome back')+'</h2><p>'+(late?'No chat list has arrived yet. WhatsApp may still be syncing, or the saved link has ended.':'Restoring your saved chats… this can take a minute on a big account.')+'</p>'+(late?'<button class="btn" id="rescan" style="width:100%">Scan a fresh QR code</button>':'');
      $('gate').hidden=false;
-     $('rescan').onclick=()=>{gc.innerHTML='<h2>Re-linking</h2><p>Asking WhatsApp for a fresh code…</p>';ws.send(JSON.stringify({type:'relink'}))};
-     return;
-    }
-    if(threads.length){$('gate').hidden=true;show('p2');render()}
-    else picker();
+     const b=$('rescan');if(b)b.onclick=()=>{gc.innerHTML='<h2>Re-linking</h2><p>Asking WhatsApp for a fresh code…</p>';ws.send(JSON.stringify({type:'relink'}))};
+     if(n<12)setTimeout(again,3000);
+    };
+    again();
    },900);
   }
   else if(m.type==='chats'){
