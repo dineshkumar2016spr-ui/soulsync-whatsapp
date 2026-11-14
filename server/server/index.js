@@ -564,6 +564,8 @@ const cleanDraft = d => {
 const clean = d => ({
   tone: TONES.includes(d?.tone) ? d.tone : 'neutral',
   read: String(d?.read || '').slice(0, 1200),
+  ask: String(d?.ask || '').slice(0, 400),
+  ready: d?.ready === true,
   friction: strs(d?.friction), insights: strs(d?.insights), flirts: strs(d?.flirts).slice(0, 3),
   drafts: (Array.isArray(d?.drafts) ? d.drafts : []).map(cleanDraft).filter(x => x.text).slice(0, 3)
 });
@@ -768,6 +770,11 @@ function agentContext(body, userId) {
   const snap = billingFor(userId);
   if (tone && snap.plan.toneSelector) {
     system += `\n\n=== USER-CHOSEN TONE ===\nWrite the drafts in a ${String(tone).slice(0, 20)} tone, while staying honest and respectful.`;
+  }
+  // Conversation first: the person's own words decide what the advice will be, so listening is a
+  // mode of its own and it produces no drafts until they ask for them.
+  if (String(goal) === 'listen') {
+    system += `\n\n=== CONVERSATION MODE ===\nYou are getting to know the person before any analysis. Reply warmly in "read" with 2-4 short sentences that show you understood what they said, and put exactly ONE specific question in "ask". Leave "drafts", "flirts", "friction" and "insights" empty: do not tell them what to send yet. Set "ready" to true only when you clearly understand what they want from you and could write their next message.`;
   }
   const them = safe.find(m => m.sender && m.sender !== String(me || ''))?.sender || '';
   const prompt = JSON.stringify({
