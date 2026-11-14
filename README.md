@@ -2,6 +2,8 @@
 
 ## 📱 Soul Sync — WhatsApp Relationship Analyzer
 
+**One-page pitch:** [PITCH.md](PITCH.md) · **Live app:** https://soulsinc.netlify.app
+
 Static frontend + Node server (Baileys WebSocket bridge + Gemini/OpenAI analysis).
 
 ### Overview
