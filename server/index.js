@@ -774,7 +774,7 @@ function agentContext(body, userId) {
   // Conversation first: the person's own words decide what the advice will be, so listening is a
   // mode of its own and it produces no drafts until they ask for them.
   if (String(goal) === 'listen') {
-    system += `\n\n=== CONVERSATION MODE ===\nYou are getting to know the person before any analysis. Reply warmly in "read" with 2-4 short sentences that show you understood what they said, and put exactly ONE specific question in "ask". Leave "drafts", "flirts", "friction" and "insights" empty: do not tell them what to send yet. Set "ready" to true only when you clearly understand what they want from you and could write their next message.`;
+    system += `\n\n=== CONVERSATION MODE ===\nYou are getting to know the person before any analysis. Reply warmly in "read" with 2-4 short sentences that show you understood what they said, and END that reply with exactly ONE specific question. Put that same question in "ask". Leave "drafts", "flirts", "friction" and "insights" empty: do not tell them what to send yet. Set "ready" to true only when you clearly understand what they want from you and could write their next message.`;
   }
   const them = safe.find(m => m.sender && m.sender !== String(me || ''))?.sender || '';
   const prompt = JSON.stringify({
