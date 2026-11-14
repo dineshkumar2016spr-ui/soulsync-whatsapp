@@ -111,8 +111,3 @@ A WhatsApp link lives only while the browser tab is connected. When the tab clos
 - 🔄 On restart, leftover sessions are wiped (intentional ephemeral design).
 - 📦 The frontend's Connect screen demo mode simulates the pairing flow without a real WhatsApp account.
 
----
-
-**Generated with [Claude Code](https://claude.com/claude-code)**
-
-Co-Authored-By: Claude Code <noreply@anthropic.com>
