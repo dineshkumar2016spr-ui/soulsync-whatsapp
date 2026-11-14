@@ -19,6 +19,7 @@ html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{background:linear-gradient(180deg,#fffafc 0%,var(--bg) 42%,#f5eeff 100%);color:var(--ink);font:16px/1.5 Figtree,system-ui,sans-serif;overflow:hidden;overscroll-behavior:none;-webkit-tap-highlight-color:transparent;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 /* Capacitor native shell: no bounce, no accidental text selection on controls */
 html,body{height:100%;margin:0;-webkit-user-select:none;user-select:none}
+.msg .txt,.scroll{-webkit-user-select:text;user-select:text}
 input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text}
 button,label,.chk{touch-action:manipulation}
 /* 60fps tactile feel: transform/opacity only */
@@ -41,7 +42,7 @@ h1,h2{font-family:Fraunces,Georgia,serif;font-weight:600;margin:0}
 button,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.app{position:relative;z-index:1;height:100%;display:grid;grid-template-columns:270px minmax(0,1fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr)}
+.app{position:relative;z-index:1;height:100%;height:100dvh;display:grid;grid-template-columns:270px minmax(0,1fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr)}
 .panel{background:var(--panel);min-height:0;display:flex;flex-direction:column;border-right:1px solid var(--line)}
 .panel.center{background:rgba(255,255,255,.5)}
 .head{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:8px}
