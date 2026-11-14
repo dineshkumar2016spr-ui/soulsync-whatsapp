@@ -777,7 +777,7 @@ function paintAgent(e){
   const t=document.createElement('div'); t.className='txt'; t.textContent=e.list.length+' replies for this moment. Tap one to put it in the send box:'; el.append(t);
   const wrap=document.createElement('div'); wrap.style.cssText='margin-top:6px';
   e.list.forEach((d,i)=>{const b=document.createElement('button');b.type='button';b.className='draftopt';b.textContent=(i+1)+'. '+d.text;
-   if(d.why){const s=document.createElement('small');s.textContent=d.why;b.append(s)}
+   if(d.why||d.label){const s=document.createElement('small');s.textContent=(d.label?String(d.label).toUpperCase()+' · ':'')+(d.why||'');b.append(s)}
    b.onclick=()=>{const o=$('out');if(o){o.value=d.text;o.focus()}hap('light');toast('Reply loaded in the send box.');show('p2')};wrap.append(b)});
   el.append(wrap);
   const s=document.createElement('small'); s.textContent='Love guru'; el.append(s); box.append(el);
@@ -954,17 +954,45 @@ async function agentCall(situation, goal){
  }catch(e){ return null; }
  finally{ guruBusy=false;agentTyping(false);setAgentBusy(false); }
 }
+// The opening greeting follows the chosen reply language, like a friend starting the chat.
+const GREET={
+ english:"Hey! ❤️ I'm here. Tell me what's happening — a crush, a relationship issue, or a message you want to send but don't know how to start? Don't worry, let's figure it out together.",
+ telugu:'హే! ❤️ నేను ఇక్కడ ఉన్నాను. ఏం జరుగుతోంది చెప్పు — క్రష్ ఆ? రిలేషన్‌షిప్ ఇష్యూ ఆ? లేదా మెసేజ్ ఎలా మొదలు పెట్టాలో అర్థం కావట్లేదా? డోంట్ వర్రీ, కలిసి చూద్దాం!',
+ tenglish:"Hey! ❤️ Nenu ikkada unna. Cheppu em jarugutondi — crush aa? relationship issue aa? leda message ela start cheyyalo artham avatleda? Don't worry, kalisi chuddam!",
+ hinglish:"Hey! ❤️ Main yahan hoon. Batao kya chal raha hai — crush hai? relationship issue hai? ya message kaise shuru karein samajh nahi aa raha? Don't worry, milke dekhte hain!"
+};
+const AGENT_CHIPS={
+ english:[['Generate a reply','What should I say next? Give me three options.'],["What's going on?","What's going on between us? Please explain it to me."],['Cute & flirty lines','Give me cute and flirty lines for this chat.'],['What is my next move?','What is my next move here?']],
+ telugu:[['రిప్లై కావాలి','What should I say next? Give me three options.'],['ఏం జరుగుతోంది?','What is going on between us? Please explain.'],['క్యూట్ లైన్స్','Give me cute and flirty lines for this chat.'],['నా నెక్స్ట్ స్టెప్?','What is my next move here?']],
+ tenglish:[['Reply kavali','What should I say next? Give me three options.'],['Em jarugutondi?','What is going on between us? Please explain.'],['Cute lines','Give me cute and flirty lines for this chat.'],['Next step enti?','What is my next move here?']],
+ hinglish:[['Reply chahiye','What should I say next? Give me three options.'],['Kya chal raha hai?','What is going on between us? Please explain.'],['Cute lines','Give me cute and flirty lines for this chat.'],['Next move kya?','What is my next move here?']]
+};
+function agentChips(){
+ const box=$('agentmsgs'); if(!box||document.getElementById('agentchips')) return;
+ const lang=($('lang')&&$('lang').value)||'english';
+ const list=AGENT_CHIPS[lang]||AGENT_CHIPS.english;
+ const el=document.createElement('div'); el.id='agentchips'; el.className='msg';
+ const wrap=document.createElement('div'); wrap.style.cssText='display:flex;flex-direction:column;gap:6px;margin-top:2px';
+ list.forEach(([label,prompt])=>{
+  const b=document.createElement('button'); b.type='button'; b.className='flirt'; b.textContent=label;
+  b.onclick=()=>{el.remove();$('agentout').value=prompt;agentSend()};
+  wrap.append(b);
+ });
+ el.append(wrap); box.append(el); box.scrollTop=box.scrollHeight;
+}
 async function guruStart(){
  agentRestore();
  if(guruAsked) return;
  guruAsked=true;
  if($('agentmsgs')&&$('agentmsgs').children.length){ guruMood('happy','Picking up our chat about this one.'); return; }
- // One calm opening message. Understanding the person comes before any analysis.
  guruMood('happy','Take your time — I am listening.');
- agentBubble('Hello! I am your Love Guru. How can I help you — setting a girl, fixing your relationship, or anything else?');
+ const lang=($('lang')&&$('lang').value)||'english';
+ agentBubble(GREET[lang]||GREET.english);
+ agentChips();
 }
 // A request for an actual message means: read the chat now and write it.
-const asksForReply=v=>/\b(what (should|do) i (say|send|text)|what to (say|send|text)|tell me what to (say|send)|suggest|draft|reply to (her|him|them)|make (her|him|them) (reply|text|set)|fix (it|this|the fight)|cute lines?|flirt)/i.test(String(v||''));
+const asksForReply=v=>/\b(what (should|do) i (say|send|text)|what to (say|send|text)|tell me what to (say|send)|suggest|draft|reply to (her|him|them)|make (her|him|them) (reply|text|set)|fix (it|this|the fight)|cute lines?|flirt|next move|three options|replies)/i.test(String(v||''));
+const asksForAnalysis=v=>/\b(what'?s going on|what is going on|does (she|he|they) like me|is (she|he|they) losing interest|why (is|did) (she|he|they)|explain|am i doing something wrong|one[- ]sided)/i.test(String(v||''));
 // Conversation mode: listen, reflect back, ask one question. No drafts until they ask for them.
 async function guruListen(text){
  const t=threads[cur];
@@ -1064,11 +1092,12 @@ async function guruReply(situation){
  if(d.read) agentBubble(d.read);
  agentBullets('What is really going on:', d.friction||[]);
  agentBullets('What to do about it:', d.insights||[]);
- const list=(Array.isArray(d.drafts)?d.drafts:[]).map(x=>typeof x==='string'?{text:x,why:''}:{text:String(x&&x.text||''),why:String(x&&x.why||'')}).filter(x=>x.text);
+ const list=(Array.isArray(d.drafts)?d.drafts:[]).map(x=>typeof x==='string'?{text:x,why:'',label:''}:{text:String(x&&x.text||''),why:String(x&&x.why||''),label:String(x&&x.label||'')}).filter(x=>x.text);
  const box=$('out');
  if(list.length&&box){ box.value=list[0].text; box.focus(); }
  if(list.length) agentDrafts(list);
  if(list.length) agentBubble('Option 1 is already in your send box. Tap any option to switch.');
+ if(d.recommend) agentBubble('My recommendation: '+d.recommend);
  lastFlirts=Array.isArray(d.flirts)?d.flirts:[];agentMeta();
  agentBubble('Do you want me to give cute lines? (say yes or no)');
  guruMood('wink','Try this one — it fits the moment.');
@@ -1080,7 +1109,7 @@ function agentSend(){
  if(!guruScanned){
   const t0=threads[cur];
   if(t0&&!t0.brief)t0.brief=v.slice(0,600);
-  if(asksForReply(v)){ guruScanned=true;agentMeta(); guruReply(v); return; }
+  if(asksForReply(v)||asksForAnalysis(v)){ guruScanned=true;agentMeta(); guruReply(v); return; }
   guruListen(v);
   return;
  }
@@ -1101,6 +1130,9 @@ function agentSend(){
    if(d.read) agentBubble(d.read);
    agentBullets('What is really going on:', d.friction||[]);
    agentBullets('What to do about it:', d.insights||[]);
+   if(d.recommend) agentBubble('My recommendation: '+d.recommend);
+   const list=(Array.isArray(d.drafts)?d.drafts:[]).filter(x=>x&&x.text);
+   if(list.length){ const o=$('out'); if(o)o.value=list[0].text; agentDrafts(list); }
    guruMood('happy','Anything else you want to know?');
   });
   return;
@@ -2541,14 +2573,14 @@ function agentDrafts(list, costLabel){
  list.forEach((d,i)=>{
   const b=document.createElement('button'); b.type='button'; b.className='draftopt';
   b.textContent=(i+1)+'. '+d.text;
-  if(d.why){const s=document.createElement('small'); s.textContent=d.why; b.append(s)}
+  if(d.why||d.label){const s=document.createElement('small'); s.textContent=(d.label?String(d.label).toUpperCase()+' · ':'')+(d.why||''); b.append(s)}
   b.onclick=()=>{const o=$('out');if(o){o.value=d.text;o.focus()}hap('light');toast('Reply loaded in the send box.');show('p2')};
   wrap.append(b);
  });
  el.append(wrap);
  const s=document.createElement('small'); s.textContent='Love guru · '+(costLabel||'1 credit'); el.append(s);
  box.append(el); box.scrollTop=box.scrollHeight;
- agentLog({k:'drafts',list:list.map(d=>({text:String(d.text||''),why:String(d.why||'')}))});
+ agentLog({k:'drafts',list:list.map(d=>({text:String(d.text||''),why:String(d.why||''),label:String(d.label||'')}))});
 }
 async function afterImportTeaser(){
  if(!(LIVE&&LIVE.token)) return;
@@ -2599,7 +2631,7 @@ async function runDeep(btn){
  agentBubble(d.read);
  agentBullets('What is really going on:', d.friction||[]);
  agentBullets('What to do about it:', d.insights||[]);
- const list=(Array.isArray(d.drafts)?d.drafts:[]).map(x=>typeof x==='string'?{text:x,why:''}:{text:String(x&&x.text||''),why:String(x&&x.why||'')}).filter(x=>x.text);
+ const list=(Array.isArray(d.drafts)?d.drafts:[]).map(x=>typeof x==='string'?{text:x,why:'',label:''}:{text:String(x&&x.text||''),why:String(x&&x.why||''),label:String(x&&x.label||'')}).filter(x=>x.text);
  if(list.length) agentDrafts(list, (d.cost||5)+' credits');
  lastFlirts=Array.isArray(d.flirts)?d.flirts:[];agentMeta();
  if(lastFlirts.length) agentBubble('Want the cute lines too? Say yes.');
